@@ -1,0 +1,1829 @@
+{
+  "contractName": "BaseScheduler",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "temporalUnit",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "factoryAddress",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_toAddress",
+          "type": "address"
+        },
+        {
+          "name": "_callData",
+          "type": "bytes"
+        },
+        {
+          "name": "_uintArgs",
+          "type": "uint256[7]"
+        }
+      ],
+      "name": "schedule",
+      "outputs": [
+        {
+          "name": "newRequest",
+          "type": "address"
+        }
+      ],
+      "payable": true,
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "futureTransaction",
+      "outputs": [
+        {
+          "name": "toAddress",
+          "type": "address"
+        },
+        {
+          "name": "callData",
+          "type": "bytes"
+        },
+        {
+          "name": "callGas",
+          "type": "uint256"
+        },
+        {
+          "name": "callValue",
+          "type": "uint256"
+        },
+        {
+          "name": "windowSize",
+          "type": "uint256"
+        },
+        {
+          "name": "windowStart",
+          "type": "uint256"
+        },
+        {
+          "name": "gasPrice",
+          "type": "uint256"
+        },
+        {
+          "name": "donation",
+          "type": "uint256"
+        },
+        {
+          "name": "payment",
+          "type": "uint256"
+        },
+        {
+          "name": "reservedWindowSize",
+          "type": "uint256"
+        },
+        {
+          "name": "freezePeriod",
+          "type": "uint256"
+        },
+        {
+          "name": "claimWindowSize",
+          "type": "uint256"
+        },
+        {
+          "name": "temporalUnit",
+          "type": "uint8"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "payable": true,
+      "stateMutability": "payable",
+      "type": "fallback"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "request",
+          "type": "address"
+        }
+      ],
+      "name": "NewRequest",
+      "type": "event"
+    }
+  ],
+  "bytecode": "0x6060604052341561000f57600080fd5b610daa8061001e6000396000f300606060405260043610610062576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680633c8a072e14610064578063966dae0e1461009b578063afbf783e146100f0578063e666bbcb146101cd575b005b341561006f57600080fd5b610077610306565b6040518082600281111561008757fe5b60ff16815260200191505060405180910390f35b34156100a657600080fd5b6100ae610319565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b61018b600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803590602001908201803590602001908080601f01602080910402602001604051908101604052809392919081815260200183838082843782019150505050505091908060e00190600780602002604051908101604052809291908260076020028082843782019150505050509190505061033e565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34156101d857600080fd5b6101e06106f3565b604051808e73ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001806020018d81526020018c81526020018b81526020018a815260200189815260200188815260200187815260200186815260200185815260200184815260200183600281111561026257fe5b60ff16815260200182810382528e8181546001816001161561010002031660029004815260200191508054600181600116156101000203166002900480156102eb5780601f106102c0576101008083540402835291602001916102eb565b820191906000526020600020905b8154815290600101906020018083116102ce57829003601f168201915b50509e50505050505050505050505050505060405180910390f35b600060149054906101000a900460ff1681565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b60006001600281111561034d57fe5b600060149054906101000a900460ff16600281111561036857fe5b141561040557600173__SchedulerLib__________________________6314c84e5d90916000604051602001526040518263ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018082815260200191505060206040518083038186803b15156103e457600080fd5b6102c65a03f415156103f557600080fd5b50505060405180519050506104cf565b60028081111561041157fe5b600060149054906101000a900460ff16600281111561042c57fe5b14156104c957600173__SchedulerLib__________________________63e9d2437790916000604051602001526040518263ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018082815260200191505060206040518083038186803b15156104a857600080fd5b6102c65a03f415156104b957600080fd5b50505060405180519050506104ce565b600080fd5b5b83600160000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055508260018001908051906020019061052b929190610cd9565b5081600060078110151561053b57fe5b602002015160016002018190555081600160078110151561055857fe5b602002015160016003018190555081600260078110151561057557fe5b602002015160016004018190555081600360078110151561059257fe5b60200201516001600501819055508160046007811015156105af57fe5b60200201516001600601819055508160056007811015156105cc57fe5b60200201516001600701819055508160066007811015156105e957fe5b6020020151600160080181905550600060149054906101000a900460ff166001600c0160006101000a81548160ff0219169083600281111561062757fe5b02179055506106616000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff16600161077390919063ffffffff16565b905060008173ffffffffffffffffffffffffffffffffffffffff161415151561068957600080fd5b7f2749295aa7ffdbd4d16719dc03d592cd081eebd9bb790ceedce201a40675fc0381604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390a19392505050565b60018060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1690806001019080600201549080600301549080600401549080600501549080600601549080600701549080600801549080600901549080600a01549080600b01549080600c0160009054906101000a900460ff1690508d565b600080600083915073__MathLib_______________________________637ae2b5c76108398760080154886007015489600201548a600301548b6006015473__RequestLib____________________________6345104b166000604051602001526040518163ffffffff167c010000000000000000000000000000000000000000000000000000000002815260040160206040518083038186803b151561081957600080fd5b6102c65a03f4151561082a57600080fd5b50505060405180519050610bdc565b3073ffffffffffffffffffffffffffffffffffffffff16316000604051602001526040518363ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808381526020018281526020019250505060206040518083038186803b15156108b057600080fd5b6102c65a03f415156108c157600080fd5b5050506040518051905090508173ffffffffffffffffffffffffffffffffffffffff16636f032c52826060604051908101604052803373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200173ecc9c5fff8937578141592e7e62c2d2e364311b873ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020018960000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815250610160604051908101604052808a6007015481526020018a6008015481526020018a600b015481526020018a600a015481526020018a6009015481526020018a600c0160009054906101000a900460ff166002811115610a1e57fe5b81526020018a6004015481526020018a6005015481526020018a6002015481526020018a6003015481526020018a60060154815250896001016000604051602001526040518563ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018084600360200280838360005b83811015610ab6578082015181840152602081019050610a9b565b5050505090500183600b60200280838360005b83811015610ae4578082015181840152602081019050610ac9565b5050505090500180602001828103825283818154600181600116156101000203166002900481526020019150805460018160011615610100020316600290048015610b705780601f10610b4557610100808354040283529160200191610b70565b820191906000526020600020905b815481529060010190602001808311610b5357829003601f168201915b50509450505050506020604051808303818588803b1515610b9057600080fd5b6125ee5a03f11515610ba157600080fd5b5050505060405180519050925060008373ffffffffffffffffffffffffffffffffffffffff1614151515610bd457600080fd5b505092915050565b6000610c21610bed86868587610c2d565b610c136002610c058a8c610c8290919063ffffffff16565b610ca390919063ffffffff16565b610c8290919063ffffffff16565b90509695505050505050565b6000610c7884610c6a610c498587610ca390919063ffffffff16565b610c5c868a610ca390919063ffffffff16565b610c8290919063ffffffff16565b610c8290919063ffffffff16565b9050949350505050565b6000808284019050838110151515610c9957600080fd5b8091505092915050565b60008082840290506000841480610cc45750828482811515610cc157fe5b04145b1515610ccf57600080fd5b8091505092915050565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f10610d1a57805160ff1916838001178555610d48565b82800160010185558215610d48579182015b82811115610d47578251825591602001919060010190610d2c565b5b509050610d559190610d59565b5090565b610d7b91905b80821115610d77576000816000905550600101610d5f565b5090565b905600a165627a7a72305820964b5aae0bdd35ee675555b354c67e904706c98d0face5e3d507776774618f980029",
+  "deployedBytecode": "0x606060405260043610610062576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680633c8a072e14610064578063966dae0e1461009b578063afbf783e146100f0578063e666bbcb146101cd575b005b341561006f57600080fd5b610077610306565b6040518082600281111561008757fe5b60ff16815260200191505060405180910390f35b34156100a657600080fd5b6100ae610319565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b61018b600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803590602001908201803590602001908080601f01602080910402602001604051908101604052809392919081815260200183838082843782019150505050505091908060e00190600780602002604051908101604052809291908260076020028082843782019150505050509190505061033e565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34156101d857600080fd5b6101e06106f3565b604051808e73ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001806020018d81526020018c81526020018b81526020018a815260200189815260200188815260200187815260200186815260200185815260200184815260200183600281111561026257fe5b60ff16815260200182810382528e8181546001816001161561010002031660029004815260200191508054600181600116156101000203166002900480156102eb5780601f106102c0576101008083540402835291602001916102eb565b820191906000526020600020905b8154815290600101906020018083116102ce57829003601f168201915b50509e50505050505050505050505050505060405180910390f35b600060149054906101000a900460ff1681565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b60006001600281111561034d57fe5b600060149054906101000a900460ff16600281111561036857fe5b141561040557600173__SchedulerLib__________________________6314c84e5d90916000604051602001526040518263ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018082815260200191505060206040518083038186803b15156103e457600080fd5b6102c65a03f415156103f557600080fd5b50505060405180519050506104cf565b60028081111561041157fe5b600060149054906101000a900460ff16600281111561042c57fe5b14156104c957600173__SchedulerLib__________________________63e9d2437790916000604051602001526040518263ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018082815260200191505060206040518083038186803b15156104a857600080fd5b6102c65a03f415156104b957600080fd5b50505060405180519050506104ce565b600080fd5b5b83600160000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055508260018001908051906020019061052b929190610cd9565b5081600060078110151561053b57fe5b602002015160016002018190555081600160078110151561055857fe5b602002015160016003018190555081600260078110151561057557fe5b602002015160016004018190555081600360078110151561059257fe5b60200201516001600501819055508160046007811015156105af57fe5b60200201516001600601819055508160056007811015156105cc57fe5b60200201516001600701819055508160066007811015156105e957fe5b6020020151600160080181905550600060149054906101000a900460ff166001600c0160006101000a81548160ff0219169083600281111561062757fe5b02179055506106616000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff16600161077390919063ffffffff16565b905060008173ffffffffffffffffffffffffffffffffffffffff161415151561068957600080fd5b7f2749295aa7ffdbd4d16719dc03d592cd081eebd9bb790ceedce201a40675fc0381604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390a19392505050565b60018060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1690806001019080600201549080600301549080600401549080600501549080600601549080600701549080600801549080600901549080600a01549080600b01549080600c0160009054906101000a900460ff1690508d565b600080600083915073__MathLib_______________________________637ae2b5c76108398760080154886007015489600201548a600301548b6006015473__RequestLib____________________________6345104b166000604051602001526040518163ffffffff167c010000000000000000000000000000000000000000000000000000000002815260040160206040518083038186803b151561081957600080fd5b6102c65a03f4151561082a57600080fd5b50505060405180519050610bdc565b3073ffffffffffffffffffffffffffffffffffffffff16316000604051602001526040518363ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808381526020018281526020019250505060206040518083038186803b15156108b057600080fd5b6102c65a03f415156108c157600080fd5b5050506040518051905090508173ffffffffffffffffffffffffffffffffffffffff16636f032c52826060604051908101604052803373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200173ecc9c5fff8937578141592e7e62c2d2e364311b873ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020018960000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815250610160604051908101604052808a6007015481526020018a6008015481526020018a600b015481526020018a600a015481526020018a6009015481526020018a600c0160009054906101000a900460ff166002811115610a1e57fe5b81526020018a6004015481526020018a6005015481526020018a6002015481526020018a6003015481526020018a60060154815250896001016000604051602001526040518563ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018084600360200280838360005b83811015610ab6578082015181840152602081019050610a9b565b5050505090500183600b60200280838360005b83811015610ae4578082015181840152602081019050610ac9565b5050505090500180602001828103825283818154600181600116156101000203166002900481526020019150805460018160011615610100020316600290048015610b705780601f10610b4557610100808354040283529160200191610b70565b820191906000526020600020905b815481529060010190602001808311610b5357829003601f168201915b50509450505050506020604051808303818588803b1515610b9057600080fd5b6125ee5a03f11515610ba157600080fd5b5050505060405180519050925060008373ffffffffffffffffffffffffffffffffffffffff1614151515610bd457600080fd5b505092915050565b6000610c21610bed86868587610c2d565b610c136002610c058a8c610c8290919063ffffffff16565b610ca390919063ffffffff16565b610c8290919063ffffffff16565b90509695505050505050565b6000610c7884610c6a610c498587610ca390919063ffffffff16565b610c5c868a610ca390919063ffffffff16565b610c8290919063ffffffff16565b610c8290919063ffffffff16565b9050949350505050565b6000808284019050838110151515610c9957600080fd5b8091505092915050565b60008082840290506000841480610cc45750828482811515610cc157fe5b04145b1515610ccf57600080fd5b8091505092915050565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f10610d1a57805160ff1916838001178555610d48565b82800160010185558215610d48579182015b82811115610d47578251825591602001919060010190610d2c565b5b509050610d559190610d59565b5090565b610d7b91905b80821115610d77576000816000905550600101610d5f565b5090565b905600a165627a7a72305820964b5aae0bdd35ee675555b354c67e904706c98d0face5e3d507776774618f980029",
+  "sourceMap": "321:2230:39:-;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "321:2230:39:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;539:51:27;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;456:29;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1606:943:39;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;700:55:27;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;539:51;;;;;;;;;;;;;:::o;456:29::-;;;;;;;;;;;;;:::o;1606:943:39:-;1780:18;954:38:27;938:54;;;;;;;;:12;;;;;;;;;;;:54;;;;;;;;;934:286;;;1008:17;:30;;;;:32;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;934:286;;;1077:41;1061:57;;;;;;;;:12;;;;;;;;;;;:57;;;;;;;;;1057:163;;;1134:17;:34;;;;:36;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1057:163;;;1201:8;;;1057:163;934:286;1848:10:39;1814:17;:27;;;:44;;;;;;;;;;;;;;;;;;1902:9;1868:17;:26;;:43;;;;;;;;;;;;:::i;:::-;;1955:9;1965:1;1955:12;;;;;;;;;;;;;1921:17;:25;;:46;;;;2011:9;2021:1;2011:12;;;;;;;;;;;;;1977:17;:27;;:46;;;;2067:9;2077:1;2067:12;;;;;;;;;;;;;2033:17;:28;;:46;;;;2123:9;2133:1;2123:12;;;;;;;;;;;;;2089:17;:29;;:46;;;;2179:9;2189:1;2179:12;;;;;;;;;;;;;2145:17;:26;;:46;;;;2235:9;2245:1;2235:12;;;;;;;;;;;;;2201:17;:26;;:46;;;;2291:9;2301:1;2291:12;;;;;;;;;;;;;2257:17;:25;;:46;;;;2348:12;;;;;;;;;;;2314:17;:30;;;:46;;;;;;;;;;;;;;;;;;;;;;;;2384:42;2411:14;;;;;;;;;;;2384:17;:26;;:42;;;;:::i;:::-;2371:55;;2459:3;2445:10;:17;;;;2436:28;;;;;;;;2475:22;2486:10;2475:22;;;;;;;;;;;;;;;;;;;;;;1606:943;;;;;:::o;700:55:27:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;4290:1884:38:-;4414:25;4456:31;4541:14;4514:15;4456:74;;4558:7;:11;4583:274;4628:4;:12;;;4658:4;:13;;;4689:4;:12;;;4719:4;:14;;;4751:4;:13;;;4782:10;:33;:35;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;4583:27;:274::i;:::-;4859:4;:12;;;4558:314;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;4541:331;;4903:7;:30;;;4940:9;4903:1090;;;;;;;;;4982:10;4903:1090;;;;;;;;402:42;4903:1090;;;;;;;;5112:4;:14;;;;;;;;;;;;4903:1090;;;;;;;;;;;;;;;;5203:4;:13;;;4903:1090;;;;5269:4;:12;;;4903:1090;;;;5334:4;:20;;;4903:1090;;;;5405:4;:17;;;4903:1090;;;;5473:4;:23;;;4903:1090;;;;5552:4;:17;;;;;;;;;;;;5547:23;;;;;;;;4903:1090;;;;5640:4;:15;;;4903:1090;;;;5706:4;:16;;;4903:1090;;;;5773:4;:12;;;4903:1090;;;;5834:4;:14;;;4903:1090;;;;5897:4;:13;;;4903:1090;;;5970:4;:13;;4903:1090;;;;;;;;;;;;;;;;;;;;;;;;;23:1:-1;8:100;33:3;30:1;27:2;8:100;;;99:1;94:3;90;84:5;80:1;75:3;71;64:6;52:2;49:1;45:3;40:15;;8:100;;;12:14;3:109;;;;;;;;;;;;;23:1;8:100;33:3;30:1;27:2;8:100;;;99:1;94:3;90;84:5;80:1;75:3;71;64:6;52:2;49:1;45:3;40:15;;8:100;;;12:14;3:109;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;4883:1110:38;;6111:3;6090:17;:24;;;;6082:33;;;;;;;;4290:1884;;;;;;:::o;3279:375:34:-;3489:4;3516:131;3585:61;3600:8;3610:10;3622:12;3636:9;3585:14;:61::i;:::-;3516:47;3561:1;3516:40;3546:9;3516:8;:29;;:40;;;;:::i;:::-;:44;;:47;;;;:::i;:::-;:68;;:131;;;;:::i;:::-;3509:138;;3279:375;;;;;;;;:::o;3915:316::-;4075:4;4102:122;4213:10;4102:81;4155:27;4172:9;4155:12;:16;;:27;;;;:::i;:::-;4102:23;4115:9;4102:8;:12;;:23;;;;:::i;:::-;:52;;:81;;;;:::i;:::-;:110;;:122;;;;:::i;:::-;4095:129;;3915:316;;;;;;:::o;672:130:41:-;730:7;745:9;761:1;757;:5;745:17;;781:1;776;:6;;768:15;;;;;;;;796:1;789:8;;672:130;;;;;:::o;138:144::-;196:7;211:9;227:1;223;:5;211:17;;247:1;242;:6;:20;;;;261:1;256;252;:5;;;;;;;;:10;242:20;234:29;;;;;;;;276:1;269:8;;138:144;;;;;:::o;321:2230:39:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o",
+  "source": "pragma solidity ^0.4.18;\n\nimport \"contracts/Interface/SchedulerInterface.sol\";\nimport \"contracts/Library/RequestScheduleLib.sol\";\nimport \"contracts/Library/SchedulerLib.sol\";\n\n/**\n * @title BaseScheduler\n * @dev The foundational contract which provides the API for scheduling future transactions on the Alarm Client.\n */\ncontract BaseScheduler is SchedulerInterface {\n    using SchedulerLib for SchedulerLib.FutureTransaction;\n\n    /*\n     * @dev Fallback function to be able to receive ether. This can occur\n     *  legitimately when scheduling fails due to a validation error.\n     */\n    function() public payable {}\n\n    /// Event that bubbles up the address of new requests made with this scheduler.\n    event NewRequest(address request);\n\n    /**\n     * @dev Schedules a new TransactionRequest using the 'full' parameters.\n     * @param _toAddress The address destination of the transaction.\n     * @param _callData The bytecode that will be included with the transaction.\n     * @param _uintArgs [0] The callGas of the transaction.\n     * @param _uintArgs [1] The value of ether to be sent with the transaction.\n     * @param _uintArgs [2] The size of the execution window of the transaction.\n     * @param _uintArgs [3] The (block or timestamp) of when the execution window starts.\n     * @param _uintArgs [4] The gasPrice which will be used to execute this transaction.\n     * @param _uintArgs [5] The donation value attached to this transaction.\n     * @param _uintArgs [6] The payment value attached to this transaction.\n     * @return The address of the new TransactionRequest.   \n     */ \n    function schedule(address   _toAddress,\n                      bytes     _callData,\n                      uint[7]   _uintArgs)\n        doReset\n        public payable returns (address newRequest)\n    {\n        futureTransaction.toAddress     = _toAddress;\n        futureTransaction.callData      = _callData;\n        futureTransaction.callGas       = _uintArgs[0];\n        futureTransaction.callValue     = _uintArgs[1];\n        futureTransaction.windowSize    = _uintArgs[2];\n        futureTransaction.windowStart   = _uintArgs[3];\n        futureTransaction.gasPrice      = _uintArgs[4];\n        futureTransaction.donation      = _uintArgs[5];\n        futureTransaction.payment       = _uintArgs[6];\n\n        futureTransaction.temporalUnit  = temporalUnit;\n\n        newRequest = futureTransaction.schedule(factoryAddress);\n        require( newRequest != 0x0 );\n\n        NewRequest(newRequest);\n        /// Automatically returns newRequest\n    }\n}\n",
+  "sourcePath": "contracts/Scheduler/BaseScheduler.sol",
+  "ast": {
+    "attributes": {
+      "absolutePath": "contracts/Scheduler/BaseScheduler.sol",
+      "exportedSymbols": {
+        "BaseScheduler": [
+          11825
+        ]
+      }
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "^",
+            "0.4",
+            ".18"
+          ]
+        },
+        "id": 11701,
+        "name": "PragmaDirective",
+        "src": "0:24:39"
+      },
+      {
+        "attributes": {
+          "SourceUnit": 6691,
+          "absolutePath": "contracts/Interface/SchedulerInterface.sol",
+          "file": "contracts/Interface/SchedulerInterface.sol",
+          "scope": 11826,
+          "symbolAliases": [
+            null
+          ],
+          "unitAlias": ""
+        },
+        "id": 11702,
+        "name": "ImportDirective",
+        "src": "26:52:39"
+      },
+      {
+        "attributes": {
+          "SourceUnit": 11301,
+          "absolutePath": "contracts/Library/RequestScheduleLib.sol",
+          "file": "contracts/Library/RequestScheduleLib.sol",
+          "scope": 11826,
+          "symbolAliases": [
+            null
+          ],
+          "unitAlias": ""
+        },
+        "id": 11703,
+        "name": "ImportDirective",
+        "src": "79:50:39"
+      },
+      {
+        "attributes": {
+          "SourceUnit": 11700,
+          "absolutePath": "contracts/Library/SchedulerLib.sol",
+          "file": "contracts/Library/SchedulerLib.sol",
+          "scope": 11826,
+          "symbolAliases": [
+            null
+          ],
+          "unitAlias": ""
+        },
+        "id": 11704,
+        "name": "ImportDirective",
+        "src": "130:44:39"
+      },
+      {
+        "attributes": {
+          "contractDependencies": [
+            6690
+          ],
+          "contractKind": "contract",
+          "documentation": "@title BaseScheduler\n@dev The foundational contract which provides the API for scheduling future transactions on the Alarm Client.",
+          "fullyImplemented": true,
+          "linearizedBaseContracts": [
+            11825,
+            6690
+          ],
+          "name": "BaseScheduler",
+          "scope": 11826
+        },
+        "children": [
+          {
+            "attributes": {
+              "arguments": [
+                null
+              ]
+            },
+            "children": [
+              {
+                "attributes": {
+                  "contractScope": null,
+                  "name": "SchedulerInterface",
+                  "referencedDeclaration": 6690,
+                  "type": "contract SchedulerInterface"
+                },
+                "id": 11705,
+                "name": "UserDefinedTypeName",
+                "src": "347:18:39"
+              }
+            ],
+            "id": 11706,
+            "name": "InheritanceSpecifier",
+            "src": "347:18:39"
+          },
+          {
+            "children": [
+              {
+                "attributes": {
+                  "contractScope": null,
+                  "name": "SchedulerLib",
+                  "referencedDeclaration": 11699,
+                  "type": "library SchedulerLib"
+                },
+                "id": 11707,
+                "name": "UserDefinedTypeName",
+                "src": "378:12:39"
+              },
+              {
+                "attributes": {
+                  "contractScope": null,
+                  "name": "SchedulerLib.FutureTransaction",
+                  "referencedDeclaration": 11341,
+                  "type": "struct SchedulerLib.FutureTransaction storage pointer"
+                },
+                "id": 11708,
+                "name": "UserDefinedTypeName",
+                "src": "395:30:39"
+              }
+            ],
+            "id": 11709,
+            "name": "UsingForDirective",
+            "src": "372:54:39"
+          },
+          {
+            "attributes": {
+              "constant": false,
+              "implemented": true,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "",
+              "payable": true,
+              "scope": 11825,
+              "stateMutability": "payable",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 11710,
+                "name": "ParameterList",
+                "src": "599:2:39"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 11711,
+                "name": "ParameterList",
+                "src": "617:0:39"
+              },
+              {
+                "attributes": {
+                  "statements": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 11712,
+                "name": "Block",
+                "src": "617:2:39"
+              }
+            ],
+            "id": 11713,
+            "name": "FunctionDefinition",
+            "src": "591:28:39"
+          },
+          {
+            "attributes": {
+              "anonymous": false,
+              "name": "NewRequest"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "indexed": false,
+                      "name": "request",
+                      "scope": 11717,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "type": "address"
+                        },
+                        "id": 11714,
+                        "name": "ElementaryTypeName",
+                        "src": "726:7:39"
+                      }
+                    ],
+                    "id": 11715,
+                    "name": "VariableDeclaration",
+                    "src": "726:15:39"
+                  }
+                ],
+                "id": 11716,
+                "name": "ParameterList",
+                "src": "725:17:39"
+              }
+            ],
+            "id": 11717,
+            "name": "EventDefinition",
+            "src": "709:34:39"
+          },
+          {
+            "attributes": {
+              "constant": false,
+              "implemented": true,
+              "isConstructor": false,
+              "name": "schedule",
+              "payable": true,
+              "scope": 11825,
+              "stateMutability": "payable",
+              "superFunction": 6689,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "_toAddress",
+                      "scope": 11824,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "type": "address"
+                        },
+                        "id": 11718,
+                        "name": "ElementaryTypeName",
+                        "src": "1624:7:39"
+                      }
+                    ],
+                    "id": 11719,
+                    "name": "VariableDeclaration",
+                    "src": "1624:20:39"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "_callData",
+                      "scope": 11824,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bytes memory",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bytes",
+                          "type": "bytes storage pointer"
+                        },
+                        "id": 11720,
+                        "name": "ElementaryTypeName",
+                        "src": "1668:5:39"
+                      }
+                    ],
+                    "id": 11721,
+                    "name": "VariableDeclaration",
+                    "src": "1668:19:39"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "_uintArgs",
+                      "scope": 11824,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256[7] memory",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "type": "uint256[7] storage pointer"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "name": "uint",
+                              "type": "uint256"
+                            },
+                            "id": 11722,
+                            "name": "ElementaryTypeName",
+                            "src": "1711:4:39"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "hexvalue": "37",
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "subdenomination": null,
+                              "token": "number",
+                              "type": "int_const 7",
+                              "value": "7"
+                            },
+                            "id": 11723,
+                            "name": "Literal",
+                            "src": "1716:1:39"
+                          }
+                        ],
+                        "id": 11724,
+                        "name": "ArrayTypeName",
+                        "src": "1711:7:39"
+                      }
+                    ],
+                    "id": 11725,
+                    "name": "VariableDeclaration",
+                    "src": "1711:19:39"
+                  }
+                ],
+                "id": 11726,
+                "name": "ParameterList",
+                "src": "1623:108:39"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "newRequest",
+                      "scope": 11824,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "type": "address"
+                        },
+                        "id": 11729,
+                        "name": "ElementaryTypeName",
+                        "src": "1780:7:39"
+                      }
+                    ],
+                    "id": 11730,
+                    "name": "VariableDeclaration",
+                    "src": "1780:18:39"
+                  }
+                ],
+                "id": 11731,
+                "name": "ParameterList",
+                "src": "1779:20:39"
+              },
+              {
+                "attributes": {
+                  "arguments": [
+                    null
+                  ]
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "overloadedDeclarations": [
+                        null
+                      ],
+                      "referencedDeclaration": 6674,
+                      "type": "modifier ()",
+                      "value": "doReset"
+                    },
+                    "id": 11727,
+                    "name": "Identifier",
+                    "src": "1740:7:39"
+                  }
+                ],
+                "id": 11728,
+                "name": "ModifierInvocation",
+                "src": "1740:7:39"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "address"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": true,
+                              "member_name": "toAddress",
+                              "referencedDeclaration": 11316,
+                              "type": "address"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 6642,
+                                  "type": "struct SchedulerLib.FutureTransaction storage ref",
+                                  "value": "futureTransaction"
+                                },
+                                "id": 11732,
+                                "name": "Identifier",
+                                "src": "1814:17:39"
+                              }
+                            ],
+                            "id": 11734,
+                            "name": "MemberAccess",
+                            "src": "1814:27:39"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 11719,
+                              "type": "address",
+                              "value": "_toAddress"
+                            },
+                            "id": 11735,
+                            "name": "Identifier",
+                            "src": "1848:10:39"
+                          }
+                        ],
+                        "id": 11736,
+                        "name": "Assignment",
+                        "src": "1814:44:39"
+                      }
+                    ],
+                    "id": 11737,
+                    "name": "ExpressionStatement",
+                    "src": "1814:44:39"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "bytes storage ref"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": true,
+                              "member_name": "callData",
+                              "referencedDeclaration": 11318,
+                              "type": "bytes storage ref"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 6642,
+                                  "type": "struct SchedulerLib.FutureTransaction storage ref",
+                                  "value": "futureTransaction"
+                                },
+                                "id": 11738,
+                                "name": "Identifier",
+                                "src": "1868:17:39"
+                              }
+                            ],
+                            "id": 11740,
+                            "name": "MemberAccess",
+                            "src": "1868:26:39"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 11721,
+                              "type": "bytes memory",
+                              "value": "_callData"
+                            },
+                            "id": 11741,
+                            "name": "Identifier",
+                            "src": "1902:9:39"
+                          }
+                        ],
+                        "id": 11742,
+                        "name": "Assignment",
+                        "src": "1868:43:39"
+                      }
+                    ],
+                    "id": 11743,
+                    "name": "ExpressionStatement",
+                    "src": "1868:43:39"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "uint256"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": true,
+                              "member_name": "callGas",
+                              "referencedDeclaration": 11320,
+                              "type": "uint256"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 6642,
+                                  "type": "struct SchedulerLib.FutureTransaction storage ref",
+                                  "value": "futureTransaction"
+                                },
+                                "id": 11744,
+                                "name": "Identifier",
+                                "src": "1921:17:39"
+                              }
+                            ],
+                            "id": 11746,
+                            "name": "MemberAccess",
+                            "src": "1921:25:39"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "type": "uint256"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 11725,
+                                  "type": "uint256[7] memory",
+                                  "value": "_uintArgs"
+                                },
+                                "id": 11747,
+                                "name": "Identifier",
+                                "src": "1955:9:39"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "hexvalue": "30",
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": true,
+                                  "lValueRequested": false,
+                                  "subdenomination": null,
+                                  "token": "number",
+                                  "type": "int_const 0",
+                                  "value": "0"
+                                },
+                                "id": 11748,
+                                "name": "Literal",
+                                "src": "1965:1:39"
+                              }
+                            ],
+                            "id": 11749,
+                            "name": "IndexAccess",
+                            "src": "1955:12:39"
+                          }
+                        ],
+                        "id": 11750,
+                        "name": "Assignment",
+                        "src": "1921:46:39"
+                      }
+                    ],
+                    "id": 11751,
+                    "name": "ExpressionStatement",
+                    "src": "1921:46:39"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "uint256"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": true,
+                              "member_name": "callValue",
+                              "referencedDeclaration": 11322,
+                              "type": "uint256"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 6642,
+                                  "type": "struct SchedulerLib.FutureTransaction storage ref",
+                                  "value": "futureTransaction"
+                                },
+                                "id": 11752,
+                                "name": "Identifier",
+                                "src": "1977:17:39"
+                              }
+                            ],
+                            "id": 11754,
+                            "name": "MemberAccess",
+                            "src": "1977:27:39"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "type": "uint256"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 11725,
+                                  "type": "uint256[7] memory",
+                                  "value": "_uintArgs"
+                                },
+                                "id": 11755,
+                                "name": "Identifier",
+                                "src": "2011:9:39"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "hexvalue": "31",
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": true,
+                                  "lValueRequested": false,
+                                  "subdenomination": null,
+                                  "token": "number",
+                                  "type": "int_const 1",
+                                  "value": "1"
+                                },
+                                "id": 11756,
+                                "name": "Literal",
+                                "src": "2021:1:39"
+                              }
+                            ],
+                            "id": 11757,
+                            "name": "IndexAccess",
+                            "src": "2011:12:39"
+                          }
+                        ],
+                        "id": 11758,
+                        "name": "Assignment",
+                        "src": "1977:46:39"
+                      }
+                    ],
+                    "id": 11759,
+                    "name": "ExpressionStatement",
+                    "src": "1977:46:39"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "uint256"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": true,
+                              "member_name": "windowSize",
+                              "referencedDeclaration": 11324,
+                              "type": "uint256"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 6642,
+                                  "type": "struct SchedulerLib.FutureTransaction storage ref",
+                                  "value": "futureTransaction"
+                                },
+                                "id": 11760,
+                                "name": "Identifier",
+                                "src": "2033:17:39"
+                              }
+                            ],
+                            "id": 11762,
+                            "name": "MemberAccess",
+                            "src": "2033:28:39"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "type": "uint256"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 11725,
+                                  "type": "uint256[7] memory",
+                                  "value": "_uintArgs"
+                                },
+                                "id": 11763,
+                                "name": "Identifier",
+                                "src": "2067:9:39"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "hexvalue": "32",
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": true,
+                                  "lValueRequested": false,
+                                  "subdenomination": null,
+                                  "token": "number",
+                                  "type": "int_const 2",
+                                  "value": "2"
+                                },
+                                "id": 11764,
+                                "name": "Literal",
+                                "src": "2077:1:39"
+                              }
+                            ],
+                            "id": 11765,
+                            "name": "IndexAccess",
+                            "src": "2067:12:39"
+                          }
+                        ],
+                        "id": 11766,
+                        "name": "Assignment",
+                        "src": "2033:46:39"
+                      }
+                    ],
+                    "id": 11767,
+                    "name": "ExpressionStatement",
+                    "src": "2033:46:39"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "uint256"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": true,
+                              "member_name": "windowStart",
+                              "referencedDeclaration": 11326,
+                              "type": "uint256"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 6642,
+                                  "type": "struct SchedulerLib.FutureTransaction storage ref",
+                                  "value": "futureTransaction"
+                                },
+                                "id": 11768,
+                                "name": "Identifier",
+                                "src": "2089:17:39"
+                              }
+                            ],
+                            "id": 11770,
+                            "name": "MemberAccess",
+                            "src": "2089:29:39"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "type": "uint256"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 11725,
+                                  "type": "uint256[7] memory",
+                                  "value": "_uintArgs"
+                                },
+                                "id": 11771,
+                                "name": "Identifier",
+                                "src": "2123:9:39"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "hexvalue": "33",
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": true,
+                                  "lValueRequested": false,
+                                  "subdenomination": null,
+                                  "token": "number",
+                                  "type": "int_const 3",
+                                  "value": "3"
+                                },
+                                "id": 11772,
+                                "name": "Literal",
+                                "src": "2133:1:39"
+                              }
+                            ],
+                            "id": 11773,
+                            "name": "IndexAccess",
+                            "src": "2123:12:39"
+                          }
+                        ],
+                        "id": 11774,
+                        "name": "Assignment",
+                        "src": "2089:46:39"
+                      }
+                    ],
+                    "id": 11775,
+                    "name": "ExpressionStatement",
+                    "src": "2089:46:39"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "uint256"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": true,
+                              "member_name": "gasPrice",
+                              "referencedDeclaration": 11328,
+                              "type": "uint256"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 6642,
+                                  "type": "struct SchedulerLib.FutureTransaction storage ref",
+                                  "value": "futureTransaction"
+                                },
+                                "id": 11776,
+                                "name": "Identifier",
+                                "src": "2145:17:39"
+                              }
+                            ],
+                            "id": 11778,
+                            "name": "MemberAccess",
+                            "src": "2145:26:39"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "type": "uint256"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 11725,
+                                  "type": "uint256[7] memory",
+                                  "value": "_uintArgs"
+                                },
+                                "id": 11779,
+                                "name": "Identifier",
+                                "src": "2179:9:39"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "hexvalue": "34",
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": true,
+                                  "lValueRequested": false,
+                                  "subdenomination": null,
+                                  "token": "number",
+                                  "type": "int_const 4",
+                                  "value": "4"
+                                },
+                                "id": 11780,
+                                "name": "Literal",
+                                "src": "2189:1:39"
+                              }
+                            ],
+                            "id": 11781,
+                            "name": "IndexAccess",
+                            "src": "2179:12:39"
+                          }
+                        ],
+                        "id": 11782,
+                        "name": "Assignment",
+                        "src": "2145:46:39"
+                      }
+                    ],
+                    "id": 11783,
+                    "name": "ExpressionStatement",
+                    "src": "2145:46:39"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "uint256"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": true,
+                              "member_name": "donation",
+                              "referencedDeclaration": 11330,
+                              "type": "uint256"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 6642,
+                                  "type": "struct SchedulerLib.FutureTransaction storage ref",
+                                  "value": "futureTransaction"
+                                },
+                                "id": 11784,
+                                "name": "Identifier",
+                                "src": "2201:17:39"
+                              }
+                            ],
+                            "id": 11786,
+                            "name": "MemberAccess",
+                            "src": "2201:26:39"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "type": "uint256"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 11725,
+                                  "type": "uint256[7] memory",
+                                  "value": "_uintArgs"
+                                },
+                                "id": 11787,
+                                "name": "Identifier",
+                                "src": "2235:9:39"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "hexvalue": "35",
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": true,
+                                  "lValueRequested": false,
+                                  "subdenomination": null,
+                                  "token": "number",
+                                  "type": "int_const 5",
+                                  "value": "5"
+                                },
+                                "id": 11788,
+                                "name": "Literal",
+                                "src": "2245:1:39"
+                              }
+                            ],
+                            "id": 11789,
+                            "name": "IndexAccess",
+                            "src": "2235:12:39"
+                          }
+                        ],
+                        "id": 11790,
+                        "name": "Assignment",
+                        "src": "2201:46:39"
+                      }
+                    ],
+                    "id": 11791,
+                    "name": "ExpressionStatement",
+                    "src": "2201:46:39"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "uint256"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": true,
+                              "member_name": "payment",
+                              "referencedDeclaration": 11332,
+                              "type": "uint256"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 6642,
+                                  "type": "struct SchedulerLib.FutureTransaction storage ref",
+                                  "value": "futureTransaction"
+                                },
+                                "id": 11792,
+                                "name": "Identifier",
+                                "src": "2257:17:39"
+                              }
+                            ],
+                            "id": 11794,
+                            "name": "MemberAccess",
+                            "src": "2257:25:39"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "type": "uint256"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 11725,
+                                  "type": "uint256[7] memory",
+                                  "value": "_uintArgs"
+                                },
+                                "id": 11795,
+                                "name": "Identifier",
+                                "src": "2291:9:39"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "hexvalue": "36",
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": true,
+                                  "lValueRequested": false,
+                                  "subdenomination": null,
+                                  "token": "number",
+                                  "type": "int_const 6",
+                                  "value": "6"
+                                },
+                                "id": 11796,
+                                "name": "Literal",
+                                "src": "2301:1:39"
+                              }
+                            ],
+                            "id": 11797,
+                            "name": "IndexAccess",
+                            "src": "2291:12:39"
+                          }
+                        ],
+                        "id": 11798,
+                        "name": "Assignment",
+                        "src": "2257:46:39"
+                      }
+                    ],
+                    "id": 11799,
+                    "name": "ExpressionStatement",
+                    "src": "2257:46:39"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "enum RequestScheduleLib.TemporalUnit"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": true,
+                              "member_name": "temporalUnit",
+                              "referencedDeclaration": 11340,
+                              "type": "enum RequestScheduleLib.TemporalUnit"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 6642,
+                                  "type": "struct SchedulerLib.FutureTransaction storage ref",
+                                  "value": "futureTransaction"
+                                },
+                                "id": 11800,
+                                "name": "Identifier",
+                                "src": "2314:17:39"
+                              }
+                            ],
+                            "id": 11802,
+                            "name": "MemberAccess",
+                            "src": "2314:30:39"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 6640,
+                              "type": "enum RequestScheduleLib.TemporalUnit",
+                              "value": "temporalUnit"
+                            },
+                            "id": 11803,
+                            "name": "Identifier",
+                            "src": "2348:12:39"
+                          }
+                        ],
+                        "id": 11804,
+                        "name": "Assignment",
+                        "src": "2314:46:39"
+                      }
+                    ],
+                    "id": 11805,
+                    "name": "ExpressionStatement",
+                    "src": "2314:46:39"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "address"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 11730,
+                              "type": "address",
+                              "value": "newRequest"
+                            },
+                            "id": 11806,
+                            "name": "Identifier",
+                            "src": "2371:10:39"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "isStructConstructorCall": false,
+                              "lValueRequested": false,
+                              "names": [
+                                null
+                              ],
+                              "type": "address",
+                              "type_conversion": false
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": [
+                                    {
+                                      "typeIdentifier": "t_address",
+                                      "typeString": "address"
+                                    }
+                                  ],
+                                  "isConstant": false,
+                                  "isLValue": true,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "member_name": "schedule",
+                                  "referencedDeclaration": 11698,
+                                  "type": "function (struct SchedulerLib.FutureTransaction storage pointer,address) returns (address)"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 6642,
+                                      "type": "struct SchedulerLib.FutureTransaction storage ref",
+                                      "value": "futureTransaction"
+                                    },
+                                    "id": 11807,
+                                    "name": "Identifier",
+                                    "src": "2384:17:39"
+                                  }
+                                ],
+                                "id": 11808,
+                                "name": "MemberAccess",
+                                "src": "2384:26:39"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 6638,
+                                  "type": "address",
+                                  "value": "factoryAddress"
+                                },
+                                "id": 11809,
+                                "name": "Identifier",
+                                "src": "2411:14:39"
+                              }
+                            ],
+                            "id": 11810,
+                            "name": "FunctionCall",
+                            "src": "2384:42:39"
+                          }
+                        ],
+                        "id": 11811,
+                        "name": "Assignment",
+                        "src": "2371:55:39"
+                      }
+                    ],
+                    "id": 11812,
+                    "name": "ExpressionStatement",
+                    "src": "2371:55:39"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": false,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "type": "tuple()",
+                          "type_conversion": false
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_bool",
+                                  "typeString": "bool"
+                                }
+                              ],
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 12134,
+                              "type": "function (bool) pure",
+                              "value": "require"
+                            },
+                            "id": 11813,
+                            "name": "Identifier",
+                            "src": "2436:7:39"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "commonType": {
+                                "typeIdentifier": "t_address",
+                                "typeString": "address"
+                              },
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "operator": "!=",
+                              "type": "bool"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 11730,
+                                  "type": "address",
+                                  "value": "newRequest"
+                                },
+                                "id": 11814,
+                                "name": "Identifier",
+                                "src": "2445:10:39"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "hexvalue": "307830",
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": true,
+                                  "lValueRequested": false,
+                                  "subdenomination": null,
+                                  "token": "number",
+                                  "type": "int_const 0",
+                                  "value": "0x0"
+                                },
+                                "id": 11815,
+                                "name": "Literal",
+                                "src": "2459:3:39"
+                              }
+                            ],
+                            "id": 11816,
+                            "name": "BinaryOperation",
+                            "src": "2445:17:39"
+                          }
+                        ],
+                        "id": 11817,
+                        "name": "FunctionCall",
+                        "src": "2436:28:39"
+                      }
+                    ],
+                    "id": 11818,
+                    "name": "ExpressionStatement",
+                    "src": "2436:28:39"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": false,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "type": "tuple()",
+                          "type_conversion": false
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_address",
+                                  "typeString": "address"
+                                }
+                              ],
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 11717,
+                              "type": "function (address)",
+                              "value": "NewRequest"
+                            },
+                            "id": 11819,
+                            "name": "Identifier",
+                            "src": "2475:10:39"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 11730,
+                              "type": "address",
+                              "value": "newRequest"
+                            },
+                            "id": 11820,
+                            "name": "Identifier",
+                            "src": "2486:10:39"
+                          }
+                        ],
+                        "id": 11821,
+                        "name": "FunctionCall",
+                        "src": "2475:22:39"
+                      }
+                    ],
+                    "id": 11822,
+                    "name": "ExpressionStatement",
+                    "src": "2475:22:39"
+                  }
+                ],
+                "id": 11823,
+                "name": "Block",
+                "src": "1804:745:39"
+              }
+            ],
+            "id": 11824,
+            "name": "FunctionDefinition",
+            "src": "1606:943:39"
+          }
+        ],
+        "id": 11825,
+        "name": "ContractDefinition",
+        "src": "321:2230:39"
+      }
+    ],
+    "id": 11826,
+    "name": "SourceUnit",
+    "src": "0:2552:39"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.18+commit.9cf6e910.Emscripten.clang"
+  },
+  "networks": {
+    "3": {
+      "events": {
+        "0xc008bc849b42227c61d5063a1313ce509a6e99211bfd59e827e417be6c65c81b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "reason",
+              "type": "uint8"
+            }
+          ],
+          "name": "Aborted",
+          "type": "event"
+        },
+        "0xa761582a460180d55522f9f5fdc076390a1f48a7a62a8afbd45c1bb797948edb": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "rewardPayment",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "measuredGasConsumption",
+              "type": "uint256"
+            }
+          ],
+          "name": "Cancelled",
+          "type": "event"
+        },
+        "0xbcb472984264b16baa8cde752f2af002ea8ce06f35d81caee36625234edd2a46": {
+          "anonymous": false,
+          "inputs": [],
+          "name": "Claimed",
+          "type": "event"
+        },
+        "0x3e504bb8b225ad41f613b0c3c4205cdd752d1615b4d77cd1773417282fcfb5d9": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "payment",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "donation",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "measuredGasConsumption",
+              "type": "uint256"
+            }
+          ],
+          "name": "Executed",
+          "type": "event"
+        }
+      },
+      "links": {
+        "SchedulerLib": "0x1512efb7ff2f4377a412f5ca21b28f6263a63341",
+        "RequestLib": "0x7bb340558c70c9673c3654a975bc0ddbbca3e209",
+        "MathLib": "0x466f50a7528d7108c8507a6416895b10fba9f344"
+      },
+      "address": "0x8b938aa0ff8a099ca67e13a5c24593e91c7500cf"
+    }
+  },
+  "schemaVersion": "1.0.1",
+  "updatedAt": "2017-12-30T17:51:08.040Z"
+}
