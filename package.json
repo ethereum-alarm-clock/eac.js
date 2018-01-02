@@ -34,7 +34,8 @@
     "readline-sync": "^1.4.7",
     "web3": "^1.0.0-beta.27"
   },
-  "bin": "cli/eac.js",
+  "preferGlobal": "true",
+  "bin": "src/cli/eac.js",
   "pkg": {
     "scripts": "build/contracts/*.json",
     "assets": "assets/*.json"

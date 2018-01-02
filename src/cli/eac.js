@@ -234,7 +234,6 @@ const main = async _ => {
     
     else 
     {
-        clear()
         log.info('Please start eac with one of these options:\n-c to run the client\n-t to schedule a test transaction\n-s to enter scheduling wizard')
         process.exit(1)
     }
