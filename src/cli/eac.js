@@ -28,6 +28,7 @@ program
     .option('-c, --client', 'starts the executing client')
     .option('-m, --milliseconds <ms>', 'tells the client to scan every <ms> seconds', 4000)
     .option('--logfile [path]', 'specifies the output logifle', 'default')
+    .option('--logLevel [0,1,2,3]', 'sets the log level', 2)
     .option('--chain [ropsten, rinkeby]', 'selects the chain to use')
     .option('--provider <string>', 'set the HttpProvider to use', 'http://localhost:8545')
     .option('-w, --wallet [path]', 'specify the path to the keyfile you would like to unlock', 'none')
@@ -47,8 +48,14 @@ const main = async _ => {
             throw new Error('Only the ropsten and rinkeby networks are currently supported.')
         }
 
-        testScheduler(program.chain, web3)
-        // setInterval(() => testScheduler(program.chain, web3), 5000)
+        // testScheduler(program.chain, web3)
+        let index = 0
+        setInterval(() => {
+            index++
+            console.log(index)
+            if (index > 20) { process.exit(0) }
+            testScheduler(program.chain, web3)
+        }, 5000)
     }
 
     else if (program.createWallet) {
@@ -85,7 +92,7 @@ const main = async _ => {
                 program.provider,
                 program.milliseconds,
                 program.logfile,
-                2, // logLevel = info
+                program.logLevel, // 1 = debug, 2 = info, 3 = error
                 program.chain,
                 program.wallet,
                 program.password

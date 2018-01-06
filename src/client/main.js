@@ -101,6 +101,10 @@ const main = async (web3, provider, ms, logfile, logLevel, chain, walletFile, pw
     // Begin
     startScanning(ms, conf)
 
+    // For the records, we should keep the time it started scanning.
+    // TODO this isn't used anywhere yet, but will be used in the `getStats` featur
+    const started = new Date()
+
     // Waits a bit before starting the repl so that the accounts have time to print.
     setTimeout(() => startRepl(conf), 1200)
 }
@@ -152,7 +156,7 @@ const startRepl = conf => {
             testScheduler(conf.chain, web3)
         }
     })
-    replServer.defineCommand('stats', {
+    replServer.defineCommand('getStats', {
         help: 'Get some interesting stats on your executing accounts.',
         action () {
             console.log('not yet implemented')
