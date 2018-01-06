@@ -85,6 +85,7 @@ const main = async _ => {
                 program.provider,
                 program.milliseconds,
                 program.logfile,
+                2, // logLevel = info
                 program.chain,
                 program.wallet,
                 program.password

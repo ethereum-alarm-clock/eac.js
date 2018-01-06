@@ -6,14 +6,15 @@ class Config {
     
     constructor(
         logfile,
+        logLevel,
         factory,
         tracker,
         web3,
         provider,
         walletFile,
-        password
-        ) {
-        this.logger = new Logger(logfile)
+        password)
+    {
+        this.logger = new Logger(logfile, logLevel)
 
         this.cache = new Cache(this.logger)
         this.factory = factory 

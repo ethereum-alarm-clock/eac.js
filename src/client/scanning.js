@@ -18,13 +18,10 @@ const scanBlockchain = async conf => {
 
     const left = await web3.eth.getBlockNumber() - 45
     const right = left + 250
+    log.debug(`Scanning bounds from ${left} to ${right}`)
 
     const requestTracker = conf.tracker 
     const requestFactory = conf.factory
-
-    log.debug(`Scanning request tracker at ${requestTracker.options.address}
-Validating results with factory at ${requestFactory.options.address}
-Scanning from ${left} to ${right} bounds.`)
 
     let nextRequestAddress = await requestTracker.methods.query(
         requestFactory.options.address,
@@ -69,6 +66,9 @@ Scanning from ${left} to ${right} bounds.`)
             requestFactory.options.address,
             txRequest.address
         ).call()
+
+        // Hearbeat
+        if (nextRequestAddress === NULL_ADDRESS) { log.info('No new requests.') }
     }
 }
 
