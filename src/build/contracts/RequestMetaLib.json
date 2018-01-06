@@ -12,7 +12,7 @@
       "absolutePath": "contracts/Library/RequestMetaLib.sol",
       "exportedSymbols": {
         "RequestMetaLib": [
-          10929
+          11005
         ]
       }
     },
@@ -26,7 +26,7 @@
             ".18"
           ]
         },
-        "id": 10917,
+        "id": 10993,
         "name": "PragmaDirective",
         "src": "0:24:36"
       },
@@ -42,17 +42,17 @@
           "documentation": "@title RequestMetaLib\n@dev Small library holding all the metadata about a TransactionRequest.",
           "fullyImplemented": true,
           "linearizedBaseContracts": [
-            10929
+            11005
           ],
           "name": "RequestMetaLib",
-          "scope": 10930
+          "scope": 11006
         },
         "children": [
           {
             "attributes": {
               "canonicalName": "RequestMetaLib.RequestMeta",
               "name": "RequestMeta",
-              "scope": 10929,
+              "scope": 11005,
               "visibility": "public"
             },
             "children": [
@@ -60,7 +60,7 @@
                 "attributes": {
                   "constant": false,
                   "name": "owner",
-                  "scope": 10928,
+                  "scope": 11004,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "address",
@@ -73,12 +73,12 @@
                       "name": "address",
                       "type": "address"
                     },
-                    "id": 10918,
+                    "id": 10994,
                     "name": "ElementaryTypeName",
                     "src": "193:7:36"
                   }
                 ],
-                "id": 10919,
+                "id": 10995,
                 "name": "VariableDeclaration",
                 "src": "193:13:36"
               },
@@ -86,7 +86,7 @@
                 "attributes": {
                   "constant": false,
                   "name": "createdBy",
-                  "scope": 10928,
+                  "scope": 11004,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "address",
@@ -99,12 +99,12 @@
                       "name": "address",
                       "type": "address"
                     },
-                    "id": 10920,
+                    "id": 10996,
                     "name": "ElementaryTypeName",
                     "src": "273:7:36"
                   }
                 ],
-                "id": 10921,
+                "id": 10997,
                 "name": "VariableDeclaration",
                 "src": "273:17:36"
               },
@@ -112,7 +112,7 @@
                 "attributes": {
                   "constant": false,
                   "name": "isCancelled",
-                  "scope": 10928,
+                  "scope": 11004,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "bool",
@@ -125,12 +125,12 @@
                       "name": "bool",
                       "type": "bool"
                     },
-                    "id": 10922,
+                    "id": 10998,
                     "name": "ElementaryTypeName",
                     "src": "376:4:36"
                   }
                 ],
-                "id": 10923,
+                "id": 10999,
                 "name": "VariableDeclaration",
                 "src": "376:16:36"
               },
@@ -138,7 +138,7 @@
                 "attributes": {
                   "constant": false,
                   "name": "wasCalled",
-                  "scope": 10928,
+                  "scope": 11004,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "bool",
@@ -151,12 +151,12 @@
                       "name": "bool",
                       "type": "bool"
                     },
-                    "id": 10924,
+                    "id": 11000,
                     "name": "ElementaryTypeName",
                     "src": "463:4:36"
                   }
                 ],
-                "id": 10925,
+                "id": 11001,
                 "name": "VariableDeclaration",
                 "src": "463:14:36"
               },
@@ -164,7 +164,7 @@
                 "attributes": {
                   "constant": false,
                   "name": "wasSuccessful",
-                  "scope": 10928,
+                  "scope": 11004,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "bool",
@@ -177,27 +177,27 @@
                       "name": "bool",
                       "type": "bool"
                     },
-                    "id": 10926,
+                    "id": 11002,
                     "name": "ElementaryTypeName",
                     "src": "539:4:36"
                   }
                 ],
-                "id": 10927,
+                "id": 11003,
                 "name": "VariableDeclaration",
                 "src": "539:18:36"
               }
             ],
-            "id": 10928,
+            "id": 11004,
             "name": "StructDefinition",
             "src": "164:483:36"
           }
         ],
-        "id": 10929,
+        "id": 11005,
         "name": "ContractDefinition",
         "src": "134:516:36"
       }
     ],
-    "id": 10930,
+    "id": 11006,
     "name": "SourceUnit",
     "src": "0:651:36"
   },
@@ -205,13 +205,7 @@
     "name": "solc",
     "version": "0.4.18+commit.9cf6e910.Emscripten.clang"
   },
-  "networks": {
-    "3": {
-      "events": {},
-      "links": {},
-      "address": "0x70138db1fe900b7d0041bd0841923f9744ad8892"
-    }
-  },
+  "networks": {},
   "schemaVersion": "1.0.1",
-  "updatedAt": "2017-12-30T17:51:08.068Z"
+  "updatedAt": "2018-01-06T02:43:01.757Z"
 }

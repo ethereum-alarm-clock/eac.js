@@ -130,6 +130,10 @@ class TxRequest {
         )
     }
 
+    getRequiredDeposit () {
+        return this.data.claimData.requiredDeposi
+    }
+
 }
 
 module.exports.TxRequest = TxRequest

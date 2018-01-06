@@ -10,6 +10,7 @@ class RequestData {
             "claimedBy": data[0][0],
             "claimDeposit": parseInt(data[2][0]),
             "paymentModifier": parseInt(data[3][0]),
+            "requiredDeposit": parseInt(data[2][14]),
         }
 
         this.meta = {

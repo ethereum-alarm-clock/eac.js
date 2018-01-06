@@ -11,11 +11,15 @@ const main = async (chain, web3) => {
 
     const windowStart = await web3.eth.getBlockNumber() + 12
     const gasPrice = web3.utils.toWei('100', 'gwei')
+    const requiredDeposit = web3.utils.toWei('50', 'finney')
 
     const blockScheduler = new web3.eth.Contract(
         BlockSchedulerABI, 
         contracts.blockScheduler
     )
+
+    const ora = require('ora')
+    const spinner = ora('Sending transaction! Waiting for hash from network...').start()
 
     await blockScheduler.methods.schedule(
         '0x009f7EfeD908c05df5101DA1557b7CaaB38EE4Ce',
@@ -23,14 +27,14 @@ const main = async (chain, web3) => {
             Math.floor(Math.random() * 10)
         )),
         [
-            1212121,    //callGas
-            123454321,  //callValue
-            255,        //windowSize
+            1212121,        //callGas
+            123454321,      //callValue
+            255,            //windowSize
             windowStart,
             gasPrice,
-            12,          //donation
-            24           //payment
-
+            12,             //donation
+            24,             //payment
+            requiredDeposit
         ]
     ).send({
         from: me, 
@@ -39,9 +43,16 @@ const main = async (chain, web3) => {
         gasPrice: gasPrice,
     })
     .then((tx) => {
-        console.log(`Transaction mined! ${tx.transactionHash}`)
+        if (tx.status != 1) {
+            spinner.fail(`Status Code ${tx.status} ! Your transaction failed.`)
+        } else {
+            spinner.succeed(`Transaction mined! Hash: ${tx.transactionHash}`)
+        }
     })
-    .catch(err => console.error(err))
+    .catch(err => {
+        spinner.fail(`Transaction failed!`)
+        console.error(err)
+    })
 }
 
 module.exports = main

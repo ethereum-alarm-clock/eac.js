@@ -163,7 +163,7 @@ const claim = async (conf, txRequest) => {
         txRequest.getPayment() * (await txRequest.claimPaymentModifier() / 100)
     )
 
-    const claimDeposit = 2 * txRequest.getPayment()
+    const claimDeposit = txRequest.getRequiredDeposit()
     const gasToClaim = txRequest.instance.methods.claim().estimateGas()
     const gasCostToClaim = parseInt(await web3.eth.getGasPrice()) * gasToClaim
 
@@ -187,7 +187,6 @@ const claim = async (conf, txRequest) => {
         // Wallet is enabled, claim from the next index.
         const claimData = txRequest.instance.methods.claim().encodeABI()
 
-        // TODO change sendFromNExt to simply send
         return conf.wallet.sendFromNext(
             txRequest.address,
             claimDeposit,
