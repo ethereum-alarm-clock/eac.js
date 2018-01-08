@@ -72,9 +72,8 @@ const main = async _ => {
     
         const file = readlineSync.question(chalk.blue('Where would you like to save the encrypted keys? Please provide a valid filename or path.\n> '))
         const password = readlineSync.question(chalk.blue("Please enter a password for the keyfile. Write this down!\n> "))
-    
-        await require('../wallet/1_createWallet').createWallet(web3, numAccounts, file, password)
-        process.exit(0)
+
+        require('../wallet/createWallet.js').createWallet(web3, numAccounts, file, password)
     }
 
     else if (program.client) 

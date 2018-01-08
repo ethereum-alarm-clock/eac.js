@@ -1,3 +1,4 @@
 wallet/keyfile
 node_modules
 getLogs.js
+wallet/*

@@ -32,7 +32,8 @@
     "memory-cache": "^0.2.0",
     "ora": "^1.3.0",
     "readline-sync": "^1.4.7",
-    "web3": "^1.0.0-beta.27"
+    "web3": "^1.0.0-beta.27",
+    "websocket": "^1.0.25"
   },
   "preferGlobal": "true",
   "bin": "src/cli/eac.js",

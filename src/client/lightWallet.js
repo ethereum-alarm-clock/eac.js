@@ -27,7 +27,7 @@ class LightWallet {
                 }
                 throw err;
             }
-            
+
             fs.writeFileSync(
                 file,
                 JSON.stringify(this.wallet.encrypt(password))
