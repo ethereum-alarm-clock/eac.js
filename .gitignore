@@ -1,3 +1,5 @@
 wallet/keyfile
 node_modules
 getLogs.js
+battery-keys
+src/benching/privKeys.txt
