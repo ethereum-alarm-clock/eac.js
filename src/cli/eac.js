@@ -73,7 +73,7 @@ const main = async _ => {
         const file = readlineSync.question(chalk.blue('Where would you like to save the encrypted keys? Please provide a valid filename or path.\n> '))
         const password = readlineSync.question(chalk.blue("Please enter a password for the keyfile. Write this down!\n> "))
     
-        await require('../wallet/1_createWallet').createWallet(web3, numAccounts, file, password)
+        await require('../../wallet/1_createWallet').createWallet(web3, numAccounts, file, password)
         process.exit(0)
     }
 
@@ -83,7 +83,8 @@ const main = async _ => {
             console.log(chalk.green('⏰⏰⏰ Welcome to the Ethereum Alarm Clock client ⏰⏰⏰\n'))
 
             if (program.chain != 'ropsten'
-                && program.chain != 'rinkeby') {
+                && program.chain != 'rinkeby'
+                && program.chain != 'battery') {
                 throw new Error('Only the ropsten and rinkeby networks are currently supported.')
             }
         

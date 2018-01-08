@@ -53,7 +53,7 @@ class LightWallet {
 
     /// Cycles through accounts and sends the transaction from next up.
     sendFromNext (recip, val, gasLimit, gasPrice, data) {
-        const next = this.nonce++ % this.wallet.length 
+        const next = this.nonce++ % this.wallet.length
         return this.sendFromIndex(
             next, recip, val, gasLimit, gasPrice, data
         )
@@ -81,6 +81,10 @@ class LightWallet {
             i++
         }
         return res
+    }
+
+    getLength () {
+        return this.wallet.length
     }
 
 }

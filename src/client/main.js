@@ -74,7 +74,7 @@ const main = async (web3, provider, ms, logfile, logLevel, chain, walletFile, pw
     )
 
     // Assigns the client variable
-    if (chain == 'rinkeby') {
+    if (chain == 'rinkeby' || chain == 'battery') {
         conf.client = 'geth'
     } else { conf.client = 'parity' }
     conf.chain = chain

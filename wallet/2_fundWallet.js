@@ -2,8 +2,7 @@ const Web3 = require('web3')
 const provider = new Web3.providers.HttpProvider('http://localhost:8545')
 const web3 = new Web3(Web3.givenProvider || provider)
 
-const { LightWallet } = require('../client/lightWallet.js')
-const { TxRequest } = require('../contracts/txRequest.js')
+const { LightWallet } = require('../src/client/lightWallet.js')
 
 const fund = (value, recip) => {
     web3.eth.sendTransaction({
@@ -30,5 +29,5 @@ const fundAccounts = async (etherAmount, file, password) => {
     
 }
 
-fundAccounts('5', 'keyfile', 'pw')
+fundAccounts('1.2', './rinkeby-keys', 'pw')
 .catch(err => console.log(err))

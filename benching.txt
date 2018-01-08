@@ -1,0 +1,9 @@
+On one end we need to
+-----------------------
+
+send 10, 20, 30 concurrent transactions per block for 5 blocks
+
+Record every transaction sent, who sent it, the block it was included in
+
+On the other end
+-----------------

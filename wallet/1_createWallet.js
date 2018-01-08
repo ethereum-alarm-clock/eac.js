@@ -1,5 +1,8 @@
-const { LightWallet } = require('../client/lightWallet.js')
-const { TxRequest } = require('../contracts/txRequest.js')
+const { LightWallet } = require('../src/client/lightWallet.js')
+
+const Web3 = require('web3')
+const provider = new Web3.providers.HttpProvider('http://localhost:8545')
+const web3 = new Web3(provider)
 
 const createWallet = async (web3, num, file, password) => {
 
@@ -18,4 +21,5 @@ Saving encrypted file to ${file}. Don't forget your password!`)
 
 }
 
-module.exports.createWallet = createWallet
+// module.exports.createWallet = createWallet
+createWallet(web3, 4, '.keys', 'pw')
