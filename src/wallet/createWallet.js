@@ -16,4 +16,4 @@ Saving encrypted file to ${file}. Don't forget your password!`)
     wallet.encryptAndStore(file, password)
 }
 
-module.exports.createWallet = createWallet
+module.exports = createWallet

@@ -13,13 +13,17 @@ const startScanning = (ms, conf) => {
     log.info(`Scanning every ${ms / 1000} seconds.`)
 
     setInterval(_ => {
-        Scanner.scanBlockchain(conf)
-        .catch(err => log.error(err))
+        if (conf.scanning) {
+            Scanner.scanBlockchain(conf)
+            .catch(err => log.error(err))
+        }
     }, ms)
 
     setInterval(_ => {
-        Scanner.scanCache(conf)
-        .catch(err => log.error(err))
+        if (conf.scanning) {
+            Scanner.scanCache(conf)
+            .catch(err => log.error(err))
+        }
     }, ms + 1000)
 
     setInterval(_ => {
@@ -99,6 +103,7 @@ const main = async (web3, provider, ms, logfile, logLevel, chain, walletFile, pw
     }
 
     // Begin
+    conf.scanning = false
     startScanning(ms, conf)
 
     // For the records, we should keep the time it started scanning.
@@ -106,10 +111,10 @@ const main = async (web3, provider, ms, logfile, logLevel, chain, walletFile, pw
     const started = new Date()
 
     // Waits a bit before starting the repl so that the accounts have time to print.
-    setTimeout(() => startRepl(conf), 1200)
+    setTimeout(() => startRepl(conf, ms), 1200)
 }
 
-const startRepl = conf => {
+const startRepl = (conf, ms) => {
     const web3 = conf.web3
 
     console.log(' ') //blank space
@@ -141,6 +146,18 @@ const startRepl = conf => {
             conf.cache.stored().forEach(entry => {
                 console.log(`${entry} | ${conf.cache.get(entry)}`)
             })
+        }
+    })
+    replServer.defineCommand('start', {
+        help: 'Starts the execution client',
+        action () {
+            conf.scanning = true
+        }
+    })
+    replServer.defineCommand('stop', {
+        help: 'Stops the execution client',
+        action () {
+            conf.scanning = false
         }
     })
     replServer.defineCommand('sweepCache', {

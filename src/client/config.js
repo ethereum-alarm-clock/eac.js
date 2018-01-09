@@ -21,7 +21,9 @@ class Config {
         this.tracker = tracker
         this.web3 = web3
         this.provider = provider
-        this.wallet = this.instantiateWallet(walletFile, password)
+        if (walletFile) {
+            this.wallet = this.instantiateWallet(walletFile, password)
+        }
     }
 
     instantiateWallet (walletFile, password) {

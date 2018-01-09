@@ -8,8 +8,12 @@ const schedule = require('../scheduler.js')
 // temporary
 const testScheduler = require('../testScheduler.js')
 
-const readlineSync = require('readline-sync')
+const createWallet = require('../wallet/createWallet.js')
+const fundAccounts = require('../wallet/fundAccounts.js')
+
 const clear = require('clear')
+const ora = require('ora')       
+const readlineSync = require('readline-sync')
 
 const ethUtil = require('ethereumjs-util')
 
@@ -25,14 +29,15 @@ program
     .version('0.9.0-beta')
     .option('-t, --test', 'sends a test transaction to the network')
     .option('--createWallet', 'guides you through creating a new wallet.')
+    .option('--fundWallet <eth>', 'funds the accounts in wallet with amount "eth"')
     .option('-c, --client', 'starts the executing client')
     .option('-m, --milliseconds <ms>', 'tells the client to scan every <ms> seconds', 4000)
     .option('--logfile [path]', 'specifies the output logifle', 'default')
     .option('--logLevel [0,1,2,3]', 'sets the log level', 2)
     .option('--chain [ropsten, rinkeby]', 'selects the chain to use')
     .option('--provider <string>', 'set the HttpProvider to use', 'http://localhost:8545')
-    .option('-w, --wallet [path]', 'specify the path to the keyfile you would like to unlock', 'none')
-    .option('-p, --password [string]', 'the password to unlock your keystore file', 'password')
+    .option('-w, --wallet [path]', 'specify the path to the keyfile you would like to unlock')
+    .option('-p, --password [string]', 'the password to unlock your keystore file')
     .option('-s, --schedule', 'schedules a transactions')
     .parse(process.argv)
 
@@ -40,22 +45,37 @@ const Web3 = require('web3')
 const provider = new Web3.providers.HttpProvider(`${program.provider}`)
 const web3 = new Web3(provider)
 
+const checkForUnlockedAccount = async web3 => {
+    if (web3.eth.defaultAccount == null) {
+        const accounts = await web3.eth.getAccounts()
+        if (accounts.length < 1) {
+            console.log('\n  error: must have an unlocked account in index 0\n')
+            return false
+        } else {
+            web3.eth.defaultAccount = accounts[0]
+            return true
+        }
+    }
+}
+
 const main = async _ => {
     if (program.test) 
     {
-        if (program.chain != 'ropsten'
-            && program.chain != 'rinkeby') {
-            throw new Error('Only the ropsten and rinkeby networks are currently supported.')
-        }
+        // if (!await checkForUnlockedAccount(web3)) process.exit(1)
+   
+        // if (program.chain != 'ropsten'
+        //     && program.chain != 'rinkeby') {
+        //     throw new Error('Only the ropsten and rinkeby networks are currently supported.')
+        // }
 
-        // testScheduler(program.chain, web3)
-        let index = 0
-        setInterval(() => {
-            index++
-            console.log(index)
-            if (index > 20) { process.exit(0) }
-            testScheduler(program.chain, web3)
-        }, 5000)
+        testScheduler(program.chain, web3)
+        // let index = 0
+        // setInterval(() => {
+        //     index++
+        //     console.log(index)
+        //     if (index > 20) { process.exit(0) }
+        //     testScheduler(program.chain, web3)
+        // }, 5000)
     }
 
     else if (program.createWallet) {
@@ -73,7 +93,30 @@ const main = async _ => {
         const file = readlineSync.question(chalk.blue('Where would you like to save the encrypted keys? Please provide a valid filename or path.\n> '))
         const password = readlineSync.question(chalk.blue("Please enter a password for the keyfile. Write this down!\n> "))
 
-        require('../wallet/createWallet.js').createWallet(web3, numAccounts, file, password)
+        createWallet(web3, numAccounts, file, password)
+    }
+
+    else if (program.fundWallet) {
+        if (!await checkForUnlockedAccount(web3)) process.exit(1)
+
+        if (!program.wallet 
+            || !program.password)
+        {
+            console.log('\n  error: must supply the `--wallet <keyfile>` and `--password <pw>` flags\n')
+            process.exit(1)
+        }
+
+        const spinner = ora('Sending the funding transactions...').start()
+        fundAccounts(web3, program.fundWallet, program.wallet, program.password)
+        .then(res => {
+            res.forEach(txObj => {
+                if (txObj.status != '0x1') {
+                    console.log(`\n  error: funding to ${txObj.to} failed... must retry manually\n`)
+                }
+            })
+            spinner.succeed('Accounts funded!')
+        })
+        .catch(err => spinner.fail(err))
     }
 
     else if (program.client) 
@@ -212,7 +255,6 @@ const main = async _ => {
 
             console.log('\n')
 
-            const ora = require('ora')       
             const spinner = ora('Sending transaction! Waiting for a response...').start()
 
             schedule(
