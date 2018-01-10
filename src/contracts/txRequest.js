@@ -82,7 +82,7 @@ class TxRequest {
 
     async inExecutionWindow() {
         const now = await this.now()
-        return this.windowStart().lessThanOrEqualTo(now) && afterExecutionWindow.greaterThanOrEqualTo(now)
+        return this.windowStart().lessThanOrEqualTo(now) && this.executionWindowEnd().greaterThanOrEqualTo(now)
     }
 
     async afterExecutionWindow () {
@@ -94,6 +94,7 @@ class TxRequest {
     }
 
     async inReservedWindow() {
+        const now = await this.now()
         return this.windowStart().lessThanOrEqualTo(now) && this.reservedExecutionWindowEnd().greaterThan(now)
     }
 

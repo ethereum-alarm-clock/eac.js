@@ -1,3 +1,4 @@
+const { BigNumber } = require('bignumber.js');
 const { GTE_HEX, NULL_ADDRESS } = require('../constants.js')
 const { TxRequest } = require('../contracts/txRequest.js')
 
@@ -43,18 +44,20 @@ const scanBlockchain = async conf => {
             throw new Error(`Encountered unknown address! Please check that you are using the correct contracts JSON file.`)
         }
         
-        const trackerWindowStart = await requestTracker.methods.getWindowStart(
-            requestFactory.options.address,
-            nextRequestAddress
-        ).call()
+        const trackerWindowStart = new BigNumber(
+            await requestTracker.methods.getWindowStart(
+                requestFactory.options.address,
+                nextRequestAddress
+            ).call()
+        )
         
         const txRequest = new TxRequest(nextRequestAddress, web3)
         await txRequest.fillData()
 
-        if (txRequest.getWindowStart() !== parseInt(trackerWindowStart)) {
+        if (!txRequest.getWindowStart().equals(trackerWindowStart)) {
             // The data between the txRequest we have and from the requestTracker do not match.
             log.error(`Data mismatch between txRequest and requestTracker. Double check contract addresses.`)
-        } else if (txRequest.getWindowStart() <= right) {
+        } else if (txRequest.getWindowStart().lessThanOrEqualTo(right)) {
             // This request is within bounds, store it.
             store(conf, txRequest)
         } else {

@@ -209,7 +209,7 @@ const execute = async (conf, txRequest) => {
     const log = conf.logger
     const web3 = conf.web3
 
-    const executeGas = txRequest.callGas() + 180000
+    const executeGas = txRequest.callGas().add(180000)
     const gasLimit = (await web3.eth.getBlock('latest')).gasLimit 
 
     const gasPrice = txRequest.gasPrice()
