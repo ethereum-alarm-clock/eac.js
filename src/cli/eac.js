@@ -58,27 +58,17 @@ const checkForUnlockedAccount = async web3 => {
     }
 }
 
-const main = async _ => {
-    if (program.test) 
-    {
-        // if (!await checkForUnlockedAccount(web3)) process.exit(1)
-   
-        // if (program.chain != 'ropsten'
-        //     && program.chain != 'rinkeby') {
-        //     throw new Error('Only the ropsten and rinkeby networks are currently supported.')
-        // }
-
-        testScheduler(program.chain, web3)
-        // let index = 0
-        // setInterval(() => {
-        //     index++
-        //     console.log(index)
-        //     if (index > 20) { process.exit(0) }
-        //     testScheduler(program.chain, web3)
-        // }, 5000)
+const checkValidChain = chain => {
+    if (chain != 'ropsten'
+        && chain != 'rinkeby') {
+        console.log('\n  error: must supply `--chain <chain>` option with either ropsten or rinkeby')
+        return false
     }
+    return true
+}
 
-    else if (program.createWallet) {
+const main = async _ => {
+    if (program.createWallet) {
         clear()
     
         const numAccounts = readlineSync.question(chalk.blue('How many accounts would you like in your wallet?\n> '))
@@ -119,170 +109,165 @@ const main = async _ => {
         .catch(err => spinner.fail(err))
     }
 
-    else if (program.client) 
-    {
-            clear()
-            console.log(chalk.green('⏰⏰⏰ Welcome to the Ethereum Alarm Clock client ⏰⏰⏰\n'))
+    else if (program.client) {
+        clear()
+        console.log(chalk.green('⏰⏰⏰ Welcome to the Ethereum Alarm Clock client ⏰⏰⏰\n'))
 
-            if (program.chain != 'ropsten'
-                && program.chain != 'rinkeby') {
-                throw new Error('Only the ropsten and rinkeby networks are currently supported.')
-            }
-        
-            alarmClient(
-                web3,
-                program.provider,
-                program.milliseconds,
-                program.logfile,
-                program.logLevel, // 1 = debug, 2 = info, 3 = error
-                program.chain,
-                program.wallet,
-                program.password
-            ).catch(err => {
-                if (err.toString().indexOf('Invalid JSON RPC') !== -1) {
-                    log.error(`Received invalid RPC response, please make sure the blockchain is running.\n`)
-                } else {
-                    log.fatal(err)
-                }
-                process.exit(1)
-            })
-    }
+        if (!checkValidChain(program.chain)) process.exit(1)
     
-    else if (program.schedule) 
-    {
-            /// Starts the scheduling wizard.
-            clear()
-            log.info('🧙 🧙 🧙  Schedule a transaction  🧙 🧙 🧙\n')
-
-            // let toAddress
-            let callData
-            let callGas
-            let callValue 
-            let windowSize 
-            let windowStart 
-            let gasPrice 
-            let donation
-            let payment 
-
-            let toAddress = readlineSync.question(chalk.black.bgBlue('Enter the recipient address:\n'))
-
-            /// Validate the address 
-            toAddress = ethUtil.addHexPrefix(toAddress)
-            if (!ethUtil.isValidAddress(toAddress)) {
-                log.error('Not a valid address')
-                log.fatal('exiting...')
-                process.exit(1)
-            }
-
-            callData = readlineSync.question(chalk.black.bgBlue('Enter call data: [press enter to skip]\n'))
-
-            if (!web3.utils.isHex(callData)) {
-                callData = web3.utils.utf8ToHex(callData)
-            }
-
-            callGas = readlineSync.question(chalk.black.bgBlue(`Enter the call gas: [press enter for recommended]\n`))
-
-            if (!callGas) {
-                callGas = 3000000
-            }
-
-            callValue = readlineSync.question(chalk.black.bgBlue('Enter call value:\n'))
-
-            if (!callValue) {
-                callValue = 0
-            }
-
-            windowSize = readlineSync.question(chalk.black.bgBlue('Enter window size:\n'))
-
-            if (!windowSize) {
-                windowsize = 255
-            }
-
-            windowStart = readlineSync.question(chalk.black.bgBlue(`Enter window start: [Current block number - ${await web3.eth.getBlockNumber()}\n`))
-
-            if (windowStart < await web3.eth.getBlockNumber() + 15) {
-                log.error('That window start time is too soon!')
-                process.exit(1)
-            }
-
-            gasPrice = readlineSync.question(chalk.black.bgBlue('Enter a gas price:\n'))
-
-            if (!gasPrice) {
-                gasPrice = web3.utils.toWei('50', 'gwei')
-            }
-
-            donation = readlineSync.question(chalk.black.bgBlue('Enter a donation amount:\n'))
-
-            if (!donation) {
-                donation = 33
-            }
-
-            payment = readlineSync.question(chalk.black.bgBlue('Enter a payment amount:\n'))
-
-            if (!payment) {
-                payment = 0
-            }
-
-            clear()
-
-            web3.eth.defaultAccount = (await web3.eth.getAccounts())[0]
-            if (web3.eth.defaultAccount === null
-                || !ethUtil.isValidAddress(web3.eth.defaultAccount)) throw new Error('Need to unlock a primary account on your client!')
-
-
-            log.debug(`
-    toAddress   - ${toAddress}
-    callData    - ${callData}
-    callGas     - ${callGas}
-    callValue   - ${callValue}
-    windowSize  - ${windowSize}
-    windowStart - ${windowStart}
-    gasPrice    - ${gasPrice}
-    donation    - ${donation}
-    payment     - ${payment}
-
-    Sending from ${web3.eth.defaultAccount}
-    `)
-
-            const confirm = readlineSync.question('Are all of these variables correct? [Y/n]\n')
-            if (confirm === '' || confirm.toLowerCase() === 'y') {
-                /// Do nothing, just continue
+        alarmClient(
+            web3,
+            program.provider,
+            program.milliseconds,
+            program.logfile,
+            program.logLevel, // 1 = debug, 2 = info, 3 = error
+            program.chain,
+            program.wallet,
+            program.password
+        ).catch(err => {
+            if (err.toString().indexOf('Invalid JSON RPC') !== -1) {
+                log.error(`Received invalid RPC response, please make sure the blockchain is running.\n`)
             } else {
-                log.error('quitting!')
-                setTimeout(() => process.exit(1), 1500)
-                return
+                log.fatal(err)
             }
-
-            console.log('\n')
-
-            const spinner = ora('Sending transaction! Waiting for a response...').start()
-
-            schedule(
-                toAddress,
-                callData,
-                callGas,
-                callValue,
-                windowSize,
-                windowStart,
-                gasPrice,
-                donation,
-                payment
-            ).then(res => {
-                if (res.status != 1) {
-                    spinner.fail(`Transaction mined but something went wrong. Please investigate the transaction at hash ${res.transactionHash} for more information.`)
-                    process.exit(1)
-                }
-                spinner.succeed(`Transaction mined! Hash: ${res.transactionHash}`)
-            })
-            .catch(err => {
-                spinner.fail('Something went wrong! See the error message below.\n')
-                setTimeout(() => console.log(err), 2000)
-            })    
-
+            process.exit(1)
+        })
     }
     
-    else 
-    {
+    else if (program.schedule) {
+        if (!checkValidChain(program.chain)) process.exit(1)
+        if (!checkForUnlockedAccount(web3)) process.exit(1)
+
+        /// Starts the scheduling wizard.
+        clear()
+        log.info('🧙 🧙 🧙  Schedule a transaction  🧙 🧙 🧙\n')
+
+        let toAddress = readlineSync.question(chalk.black.bgBlue('Enter the recipient address:\n'))
+
+        /// Validate the address 
+        toAddress = ethUtil.addHexPrefix(toAddress)
+        if (!ethUtil.isValidAddress(toAddress)) {
+            log.error('Not a valid address')
+            log.fatal('exiting...')
+            process.exit(1)
+        }
+
+        let callData = readlineSync.question(chalk.black.bgBlue('Enter call data: [press enter to skip]\n'))
+
+        if (!callData) {
+            callData = 'Sent from eac.js commandline client.'
+        }
+        if (!web3.utils.isHex(callData)) {
+            callData = web3.utils.utf8ToHex(callData)
+        }
+
+        let callGas = readlineSync.question(chalk.black.bgBlue(`Enter the call gas: [press enter for recommended]\n`))
+
+        if (!callGas) {
+            callGas = 3000000
+        }
+
+        let callValue = readlineSync.question(chalk.black.bgBlue('Enter call value:\n'))
+
+        if (!callValue) {
+            callValue = 123454321
+        }
+
+        let windowSize = readlineSync.question(chalk.black.bgBlue('Enter window size:\n'))
+
+        if (!windowSize) {
+            windowSize = 255
+        }
+
+        let windowStart = readlineSync.question(chalk.black.bgBlue(`Enter window start: [Current block number - ${await web3.eth.getBlockNumber()}\n`))
+
+        if (windowStart < await web3.eth.getBlockNumber() + 25) {
+            log.error('That window start time is too soon!')
+            process.exit(1)
+        }
+
+        let gasPrice = readlineSync.question(chalk.black.bgBlue('Enter a gas price:\n'))
+
+        if (!gasPrice) {
+            gasPrice = web3.utils.toWei('50', 'gwei')
+        }
+
+        let donation = readlineSync.question(chalk.black.bgBlue('Enter a donation amount:\n'))
+
+        if (!donation) {
+            donation = 33
+        }
+
+        let payment = readlineSync.question(chalk.black.bgBlue('Enter a payment amount:\n'))
+
+        if (!payment) {
+            payment = 0
+        }
+
+        let requiredDeposit = readlineSync.question(chalk.black.bgBlue('Enter required claim deposit:\n'))
+
+        if (!requiredDeposit) {
+            requiredDeposit = web3.utils.toWei('20', 'finney')
+        }
+
+        clear()
+
+
+        log.debug(`
+toAddress       - ${toAddress}
+callData        - ${callData}
+callGas         - ${callGas}
+callValue       - ${callValue}
+windowSize      - ${windowSize}
+windowStart     - ${windowStart}
+gasPrice        - ${gasPrice}
+donation        - ${donation}
+payment         - ${payment}
+requiredDeposit - ${requiredDeposit}
+
+Sending from ${web3.eth.defaultAccount}
+`)
+
+        const confirm = readlineSync.question('Are all of these variables correct? [Y/n]\n')
+        if (confirm === '' || confirm.toLowerCase() === 'y') {
+            /// Do nothing, just continue
+        } else {
+            log.error('quitting!')
+            setTimeout(() => process.exit(1), 1500)
+            return
+        }
+
+        console.log('\n')
+        const spinner = ora('Sending transaction! Waiting for a response...').start()
+
+        schedule(
+            web3,
+            program.chain,
+            toAddress,
+            callData,
+            callGas,
+            callValue,
+            windowSize,
+            windowStart,
+            gasPrice,
+            donation,
+            payment,
+            requiredDeposit
+        ).then(res => {
+            if (res.status != 1) {
+                spinner.fail(`Transaction was mined but something went wrong. Please investigate the transaction at hash ${res.transactionHash} for more information.`)
+                process.exit(1)
+            }
+            spinner.succeed(`Transaction mined! Hash: ${res.transactionHash}`)
+        })
+        .catch(err => {
+            spinner.fail('Something went wrong! See the error message below.\n')
+            setTimeout(() => console.log(err), 2000)
+        })    
+    }
+    
+    else {
+        // TODO update
         log.info('Please start eac with one of these options:\n-c to run the client\n-t to schedule a test transaction\n-s to enter scheduling wizard')
         process.exit(1)
     }

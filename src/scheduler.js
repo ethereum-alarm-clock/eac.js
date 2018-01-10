@@ -1,16 +1,6 @@
-/// The schedule.js is just a testing script to pump out transactions.
-/// The scheduler.js will be used to interface with the cli.
-const Web3 = require('web3')
-
-const provider = new Web3.providers.HttpProvider('http://localhost:8545')
-const web3 = new Web3(Web3.givenProvider || provider)
-
-const RopstenAddresses = require('./assets/ropsten.json')
-
-const { getABI } = require('./util.js')
-const BlockSchedulerABI = getABI('BlockScheduler')
-
-const schedule = async (
+const schedule = (
+    web3,
+    chain,
     toAddress,
     callData,
     callGas,
@@ -19,14 +9,16 @@ const schedule = async (
     windowStart,
     gasPrice,
     donation,
-    payment
-) => {
-    const me = (await web3.eth.getAccounts())[0]
-    web3.eth.defaultAccount = me 
+    payment,
+    requiredDeposit) => {
+
+    const contracts = require(`./assets/${chain}.json`)
+    const { getABI } = require('./util.js')
+    const BlockSchedulerABI = getABI('BlockScheduler')
 
     const blockScheduler = new web3.eth.Contract(
         BlockSchedulerABI,
-        RopstenAddresses.blockScheduler
+        contracts.blockScheduler
     )
 
     return blockScheduler.methods.schedule(
@@ -39,7 +31,8 @@ const schedule = async (
             windowStart,
             gasPrice,
             donation,
-            payment 
+            payment,
+            requiredDeposit
         ]
     ).send({
         from: web3.eth.defaultAccount,
