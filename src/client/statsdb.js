@@ -34,16 +34,15 @@ class StatsDB {
         this.web3.eth.getBalance(account)
         .then(bal => {
             bal = new BigNumber(bal)
-            found.currentEther = found.currentEther.plus(bal)
+            const difference = bal.minus(found.currentEther)
+            found.currentEther = found.currentEther.plus(difference)
             this.stats.update(found)
         })
     }
 
     /// Takes the account which has executed a transaction.
     updateExecuted (account) {
-        // console.log(account)
         const found = this.stats.findOne(account)
-        // console.log(found)
         found.executed++
         this.web3.eth.getBalance(account)
         .then(bal => {
