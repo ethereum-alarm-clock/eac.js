@@ -14,6 +14,10 @@ class TxRequest {
         )
     }
 
+    getAddress () {
+        return this.address
+    }
+
     async now () {
         return await this.web3.eth.getBlockNumber()
     }

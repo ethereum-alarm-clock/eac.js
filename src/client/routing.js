@@ -164,15 +164,20 @@ const claim = async (conf, txRequest) => {
     const claimPaymentModifier = await txRequest.claimPaymentModifier() / 100
     const paymentWhenClaimed = txRequest.getPayment().times(claimPaymentModifier).floor()
     const claimDeposit = txRequest.getRequiredDeposit()
-    const gasToClaim = await txRequest.instance.methods.claim().estimateGas({gas: 4000000})
+    const data = txRequest.instance.methods.claim().encodeABI()
+    const sender = conf.wallet ? conf.wallet.getAccounts()[0] : web3.eth.defaultAccount
+    const gasToClaim = await web3.eth.estimateGas({
+        from: sender,
+        to: txRequest.getAddress(),
+        value: claimDeposit.toString(),
+        data: data
+    })
     const currentGasPrice = new BigNumber(await web3.eth.getGasPrice())
     const gasCostToClaim = currentGasPrice.times(gasToClaim)
-    // console.log(currentGasPrice.toNumber())
-    // console.log(gasToClaim)
 
     if (gasCostToClaim.greaterThan(paymentWhenClaimed)) {
         log.debug(`Not profitable to claim. Returning`)
-        return
+        return Promise.resolve({ status: '0x0' })
     }
 
     // The dice roll was originally implemented in the Python client, which I followed
@@ -181,21 +186,19 @@ const claim = async (conf, txRequest) => {
     
     if (diceroll >= await txRequest.claimPaymentModifier()) {
         log.debug(`Fate insists you wait until later.`)
-        return
+        return Promise.resolve({ status: '0x0' })
     }
 
     log.info(`Attempting the claim of txRequest at address ${txRequest.address} | Payment: ${paymentWhenClaimed}`)
     conf.cache.set(txRequest.address, 102)
     if (conf.wallet) {
         // Wallet is enabled, claim from the next index.
-        const claimData = txRequest.instance.methods.claim().encodeABI()
-
         return conf.wallet.sendFromNext(
             txRequest.address,
             claimDeposit,
             gasToClaim + 21000,
             await web3.eth.getGasPrice(),
-            claimData
+            data
         )
     } else {
         // Wallet disabled, claim from default account
