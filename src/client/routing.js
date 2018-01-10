@@ -164,9 +164,11 @@ const claim = async (conf, txRequest) => {
     const claimPaymentModifier = await txRequest.claimPaymentModifier() / 100
     const paymentWhenClaimed = txRequest.getPayment().times(claimPaymentModifier).floor()
     const claimDeposit = txRequest.getRequiredDeposit()
-    const gasToClaim = txRequest.instance.methods.claim().estimateGas()
+    const gasToClaim = await txRequest.instance.methods.claim().estimateGas({gas: 4000000})
     const currentGasPrice = new BigNumber(await web3.eth.getGasPrice())
     const gasCostToClaim = currentGasPrice.times(gasToClaim)
+    // console.log(currentGasPrice.toNumber())
+    // console.log(gasToClaim)
 
     if (gasCostToClaim.greaterThan(paymentWhenClaimed)) {
         log.debug(`Not profitable to claim. Returning`)
@@ -270,6 +272,7 @@ const cleanup = async (conf, txRequest) => {
     }
 
     if (!txRequest.isCancelled()) {
+        // TODO estimateGas() might not work
         const gasToCancel = txRequest.instance.methods.cancel().estimateGas()
         const currentGasPrice = new BigNumber(await web3.eth.getGasPrice())
         const gasCostToCancel = currentGasPrice.times(gasToCancel)
