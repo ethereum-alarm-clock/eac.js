@@ -1,3 +1,4 @@
+const BigNumber = require('bignumber.js')
 
 /**
  * Takes in a txRequest object and routes it to the thread that will act on it,
@@ -158,16 +159,14 @@ const claim = async (conf, txRequest) => {
     const web3 = conf.web3
 
     // All the checks have been done in routing, now we follow through on the actions.
-
-    const paymentWhenClaimed = Math.floor(
-        txRequest.getPayment() * (await txRequest.claimPaymentModifier() / 100)
-    )
-
+    const claimPaymentModifier = await txRequest.claimPaymentModifier() / 100
+    const paymentWhenClaimed = txRequest.getPayment().times(claimPaymentModifier).floor()
     const claimDeposit = txRequest.getRequiredDeposit()
     const gasToClaim = txRequest.instance.methods.claim().estimateGas()
-    const gasCostToClaim = parseInt(await web3.eth.getGasPrice()) * gasToClaim
+    const currentGasPrice = new BigNumber(await web3.eth.getGasPrice())
+    const gasCostToClaim = currentGasPrice.times(gasToClaim)
 
-    if (gasCostToClaim > paymentWhenClaimed) {
+    if (gasCostToClaim.greaterThan(paymentWhenClaimed)) {
         log.debug(`Not profitable to claim. Returning`)
         return
     }
@@ -259,10 +258,10 @@ const cleanup = async (conf, txRequest) => {
     const log = conf.logger
     const web3 = conf.web3
 
-    const txRequestBalance = parseInt(await web3.eth.getBalance(txRequest.address))
+    const txRequestBalance = new BigNumber(await web3.eth.getBalance(txRequest.address))
 
     // If a transaction request has been executed it will route into this option.
-    if (txRequestBalance === 0) {
+    if (txRequestBalance.equals(0)) {
         // set for removal from cache
         conf.cache.set(txRequest.address, 99)
         return
@@ -270,7 +269,8 @@ const cleanup = async (conf, txRequest) => {
 
     if (!txRequest.isCancelled()) {
         const gasToCancel = txRequest.instance.methods.cancel().estimateGas()
-        const gasCostToCancel = gasToCancel * parseInt(await web3.eth.getGasPrice())
+        const currentGasPrice = new BigNumber(await web3.eth.getGasPrice())
+        const gasCostToCancel = currentGasPrice.times(gasToCancel)
         const cancelData = txRequest.instance.methods.cancel().encodeABI()
 
         // If the transaction request is expired and still has money in it but is 
@@ -293,7 +293,7 @@ const cleanup = async (conf, txRequest) => {
                 // owner of the expired transaction in which case, we check to see
                 // if we will not lost money for sending this transaction then send
                 // it from any account.
-                if (gasCostToCancel > txRequestBalance) {
+                if (gasCostToCancel.greaterThan(txRequestBalance)) {
                     // The transaction request does not have enough money to compensate.
                     return
                 }
@@ -315,7 +315,7 @@ const cleanup = async (conf, txRequest) => {
                     gasPrice: await web3.eth.getGasPrice()
                 })
             } else {
-                if (gasCostToCancel > txRequestBalance) {
+                if (gasCostToCancel.greaterThan(txRequestBalance)) {
                     return
                 }
                 txRequest.instance.methods.cancel().send({

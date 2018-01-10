@@ -1,3 +1,5 @@
+const BigNumber = require('bignumber.js')
+
 /// Request Data wrapper for web3 v1.0.0 
 class RequestData {
     constructor(data, txRequest) {
@@ -8,9 +10,9 @@ class RequestData {
         this.txRequest = txRequest
         this.claimData = {
             "claimedBy": data[0][0],
-            "claimDeposit": parseInt(data[2][0]),
+            "claimDeposit": new BigNumber(data[2][0]),
             "paymentModifier": parseInt(data[3][0]),
-            "requiredDeposit": parseInt(data[2][14]),
+            "requiredDeposit": new BigNumber(data[2][14]),
         }
 
         this.meta = {
@@ -24,25 +26,25 @@ class RequestData {
         this.paymentData = {
             "donationBenefactor": data[0][3],
             "paymentBenefactor": data[0][4],
-            "donation": parseInt(data[2][1]),
-            "donationOwed": parseInt(data[2][2]),
-            "payment": parseInt(data[2][3]),
-            "paymentOwed": parseInt(data[2][4]),
+            "donation": new BigNumber(data[2][1]),
+            "donationOwed": new BigNumber(data[2][2]),
+            "payment": new BigNumber(data[2][3]),
+            "paymentOwed": new BigNumber(data[2][4]),
         }
 
         this.schedule = {
-            "claimWindowSize": parseInt(data[2][5]),
-            "freezePeriod": parseInt(data[2][6]),
-            "reservedWindowSize": parseInt(data[2][7]),
+            "claimWindowSize": new BigNumber(data[2][5]),
+            "freezePeriod": new BigNumber(data[2][6]),
+            "reservedWindowSize": new BigNumber(data[2][7]),
             "temporalUnit": parseInt(data[2][8]),
-            "windowSize": parseInt(data[2][9]),
-            "windowStart": parseInt(data[2][10]),
+            "windowSize": new BigNumber(data[2][9]),
+            "windowStart": new BigNumber(data[2][10]),
         }
 
         this.txData = {
-            "callGas": parseInt(data[2][11]),
-            "callValue": parseInt(data[2][12]),
-            "gasPrice": parseInt(data[2][13]),
+            "callGas": new BigNumber(data[2][11]),
+            "callValue": new BigNumber(data[2][12]),
+            "gasPrice": new BigNumber(data[2][13]),
             "toAddress": data[0][5],
         }
     }

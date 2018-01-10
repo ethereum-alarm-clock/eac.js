@@ -1,3 +1,4 @@
+const { BigNumber } = require('bignumber.js');
 const { getABI } = require('../util.js')
 const { RequestData } = require('./requestData.js')
 const { NULL_ADDRESS } = require('../constants.js')
@@ -34,28 +35,29 @@ class TxRequest {
     }
 
     claimWindowStart () {
-        return this.windowStart() - this.data.schedule.freezePeriod - this.data.schedule.claimWindowSize
+        return this.windowStart().minus(this.data.schedule.freezePeriod).minus(this.data.schedule.claimWindowSize)
     }
 
     claimWindowEnd() {
-        return this.claimWindowStart() + this.data.schedule.claimWindowSize
+        return this.claimWindowStart().plus(this.data.schedule.claimWindowSize)
     }
 
     async beforeClaimWindow () {
-        return await this.now() < this.claimWindowStart()
+        return this.claimWindowStart().greaterThan(await this.now())
     }
 
     async inClaimWindow () {
-
-        return this.claimWindowStart() <= await this.now() && await this.now() <  this.claimWindowEnd()
+        const now = await this.now()
+        return this.claimWindowStart().lessThanOrEqualTo(now) && this.claimWindowEnd().greaterThan(now)
     }
 
     freezePeriodEnd () {
-        return this.claimWindowEnd() + this.data.schedule.freezePeriod
+        return this.claimWindowEnd().plus(this.data.schedule.freezePeriod)
     }
 
     async inFreezePeriod () {
-        return this.claimWindowEnd() <= await this.now() && await this.now() < this.freezePeriodEnd()
+        const now = await this.now()
+        return this.claimWindowEnd().lessThanOrEqualTo(now) && this.freezePeriodEnd().greaterThan(now)
     }
 
     isClaimed () {
@@ -75,23 +77,24 @@ class TxRequest {
     }
 
     executionWindowEnd () {
-        return this.data.schedule.windowStart + this.data.schedule.windowSize 
+        return this.data.schedule.windowStart.plus(this.data.schedule.windowSize)
     }
 
     async inExecutionWindow() {
-        return this.windowStart() <= await this.now() && await this.now() <= this.executionWindowEnd()
+        const now = await this.now()
+        return this.windowStart().lessThanOrEqualTo(now) && afterExecutionWindow.greaterThanOrEqualTo(now)
     }
 
     async afterExecutionWindow () {
-        return await this.now() >= this.executionWindowEnd()
+        return this.executionWindowEnd().lessThanOrEqualTo(await this.now())
     }
 
     reservedExecutionWindowEnd() {
-        return this.windowStart() + this.data.schedule.reservedWindowSize
+        return this.windowStart().plus(this.data.schedule.reservedWindowSize)
     }
 
     async inReservedWindow() {
-        return this.windowStart() <= await this.now() && await this.now() < this.reservedExecutionWindowEnd()
+        return this.windowStart().lessThanOrEqualTo(now) && this.reservedExecutionWindowEnd().greaterThan(now)
     }
 
     callGas () {
@@ -123,15 +126,12 @@ class TxRequest {
     }
 
     async claimPaymentModifier () {
-        return Math.floor(
-            100 * (
-            await this.now() - this.claimWindowStart()
-            ) / this.data.schedule.claimWindowSize
-        )
+        const now = new BigNumber(await this.now())
+        return now.minus(this.claimWindowStart()).times(100).dividedToIntegerBy(this.data.schedule.claimWindowSize).toNumber()
     }
 
     getRequiredDeposit () {
-        return this.data.claimData.requiredDeposi
+        return this.data.claimData.requiredDeposit
     }
 
 }
