@@ -1,5 +1,5 @@
 const { Cache } = require('./cache.js')
-const { LightWallet } = require('./lightWallet.js')
+const LightWallet = require('./lightWallet.js')
 const { Logger } = require('./logger.js')
 
 class Config {

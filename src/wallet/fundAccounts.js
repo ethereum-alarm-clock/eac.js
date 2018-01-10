@@ -1,4 +1,4 @@
-const { LightWallet } = require('../client/lightWallet.js')
+const LightWallet = require('../client/lightWallet.js')
 
 // TODO before mainnet - change the default gas / gasPrice
 // to dynamically calculated values
@@ -18,7 +18,6 @@ const fundAccounts = (web3, etherAmount, file, password) => {
     wallet.decryptAndLoad(file, password)
 
     const amt = web3.utils.toWei(etherAmount, 'ether')
-
     
     return Promise.all(wallet.getAccounts().map(account => {
         return fund(web3, account, amt)

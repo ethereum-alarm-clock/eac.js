@@ -85,4 +85,4 @@ class LightWallet {
 
 }
 
-module.exports.LightWallet = LightWallet
+module.exports = LightWallet

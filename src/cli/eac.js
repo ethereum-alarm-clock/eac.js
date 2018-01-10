@@ -10,6 +10,7 @@ const testScheduler = require('../testScheduler.js')
 
 const createWallet = require('../wallet/createWallet.js')
 const fundAccounts = require('../wallet/fundAccounts.js')
+const drainWallet = require('../wallet/drainWallet.js')
 
 const clear = require('clear')
 const ora = require('ora')       
@@ -29,7 +30,7 @@ program
     .version('0.9.0-beta')
     .option('--createWallet', 'guides you through creating a new wallet.')
     .option('--fundWallet <eth>', 'funds the accounts in wallet with amount "eth"')
-    .option('--drainWallet <target> [amt]', 'sends the target address all ether in the wallet')
+    .option('--drainWallet <target>', 'sends the target address all ether in the wallet')
     .option('-c, --client', 'starts the executing client')
     .option('-m, --milliseconds <ms>', 'tells the client to scan every <ms> seconds', 4000)
     .option('--logfile [path]', 'specifies the output logifle', 'default')
@@ -110,7 +111,32 @@ const main = async _ => {
     }
 
     else if (program.drainWallet) {
-        console.log('\n  error: not yet implemented')
+        // console.log('\n  error: not yet implemented')
+        // process.exit(1)
+
+        if (!program.wallet 
+            || !program.password)
+        {
+            console.log('\n  error: must supply the `--wallet <keyfile>` and `--password <pw>` flags\n')
+            process.exit(1)
+        }
+
+        if (!ethUtil.isValidAddress(program.drainWallet)) {
+            console.log(`\n  error: input ${program.drainWallet} not valid Ethereum address`)
+            process.exit(1)
+        }
+
+        const spinner = ora('Sending transactions...').start()
+        web3.eth.getGasPrice()
+        .then(gasPrice => {
+            drainWallet(web3, gasPrice, program.drainWallet, program.wallet, program.password)
+            .then(res => {
+                spinner.succeed('Wallet drained!')
+            })
+            .catch(err => {
+                spinner.fail(err)
+            })
+        })
     }
 
     else if (program.client) {
