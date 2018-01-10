@@ -64,8 +64,6 @@ const main = async (web3, provider, ms, logfile, logLevel, chain, walletFile, pw
         logfile = require('os').homedir() + '/.eac.log'
     }
 
-    
-
     // Loads conf
     const conf = new Config(
         logfile,            //conf.logger.logfile
@@ -84,6 +82,9 @@ const main = async (web3, provider, ms, logfile, logLevel, chain, walletFile, pw
     } else { conf.client = 'parity' }
     conf.chain = chain
 
+    // Creates StatsDB
+    conf.statsdb = new StatsDB(conf.web3)
+
     // Determines wallet support
     if (conf.wallet) {
         console.log('Wallet support: Enabled')
@@ -91,6 +92,7 @@ const main = async (web3, provider, ms, logfile, logLevel, chain, walletFile, pw
         conf.wallet.getAccounts().forEach(async account => {
             console.log(`${account} | Balance: ${web3.utils.fromWei(await web3.eth.getBalance(account))}`)
         })
+        conf.statsdb.initialize(conf.wallet.getAccounts())
     } else { 
         console.log('Wallet support: Disabled')
         console.log('\nExecuting from account:')
@@ -101,6 +103,7 @@ const main = async (web3, provider, ms, logfile, logLevel, chain, walletFile, pw
             throw new Error('Wallet is disabled but you do not have a local account unlocked.')
         }
         console.log(`${account} | Balance: ${web3.utils.fromWei(await web3.eth.getBalance(account))}`)
+        conf.statsdb.initialize(account)
     }
 
     // Begin
@@ -177,7 +180,7 @@ const startRepl = (conf, ms) => {
     replServer.defineCommand('getStats', {
         help: 'Get some interesting stats on your executing accounts.',
         action () {
-            const stats = StatsDB.getStats()
+            const stats = conf.statsdb.getStats()
             stats.forEach(accountStats => {
                 console.log(`${accountStats.account} | Claimed: ${accountStats.claimed} | Executed: ${accountStats.executed} | Ether gain: ${accountsStats.currentEther - accountStats.startingEther}`)
             })
