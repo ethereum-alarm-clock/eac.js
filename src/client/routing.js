@@ -45,6 +45,7 @@ const routeTxRequest = async (conf, txRequest) => {
             if (txObj.status == 1) {
                 log.info(`TxRequest at ${txRequest.address} claimed!`)
                 conf.cache.set(txRequest.address, 103)
+                conf.statsdb.updateClaimed(txObj.from)
             }
             // Or find the reason why it failed TODO
             else return
@@ -80,6 +81,7 @@ const routeTxRequest = async (conf, txRequest) => {
             if (txObj.status == 1) {
                 log.info(`TxRequest at ${txRequest.address} executed!`)
                 conf.cache.set(txRequest.address, 100)
+                conf.statsdb.updateExecuted(txObj.from)
             }
             // Or find the reason why it failed TODO
             else return
