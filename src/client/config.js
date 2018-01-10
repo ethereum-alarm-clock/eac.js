@@ -37,4 +37,4 @@ class Config {
 
 }
 
-module.exports.Config = Config 
+module.exports = Config 

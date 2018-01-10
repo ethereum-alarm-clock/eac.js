@@ -1,5 +1,6 @@
-const { Config } = require('./config.js')
+const Config = require('./config.js')
 const Scanner = require('./scanning.js')
+const StatsDB = require('./statsdb.js')
 
 const ethUtil = require('ethereumjs-util')
 
@@ -176,7 +177,10 @@ const startRepl = (conf, ms) => {
     replServer.defineCommand('getStats', {
         help: 'Get some interesting stats on your executing accounts.',
         action () {
-            console.log('not yet implemented')
+            const stats = StatsDB.getStats()
+            stats.forEach(accountStats => {
+                console.log(`${accountStats.account} | Claimed: ${accountStats.claimed} | Executed: ${accountStats.executed} | Ether gain: ${accountsStats.currentEther - accountStats.startingEther}`)
+            })
         }
     })
 }

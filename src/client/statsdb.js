@@ -4,7 +4,7 @@ const loki = require('lokijs')
 class StatsDB {
 
     constructor (web3) {
-        this.db = new('stats.json')
+        this.db = new ('stats.json')
         this.stats = this.db.addCollection('stats')
         this.web3 = web3
     }
