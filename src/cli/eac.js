@@ -27,9 +27,9 @@ const log = {
 
 program 
     .version('0.9.0-beta')
-    .option('-t, --test', 'sends a test transaction to the network')
     .option('--createWallet', 'guides you through creating a new wallet.')
     .option('--fundWallet <eth>', 'funds the accounts in wallet with amount "eth"')
+    .option('--drainWallet <target> [amt]', 'sends the target address all ether in the wallet')
     .option('-c, --client', 'starts the executing client')
     .option('-m, --milliseconds <ms>', 'tells the client to scan every <ms> seconds', 4000)
     .option('--logfile [path]', 'specifies the output logifle', 'default')
@@ -107,6 +107,10 @@ const main = async _ => {
             spinner.succeed('Accounts funded!')
         })
         .catch(err => spinner.fail(err))
+    }
+
+    else if (program.drainWallet) {
+        console.log('\n  error: not yet implemented')
     }
 
     else if (program.client) {
@@ -267,8 +271,7 @@ Sending from ${web3.eth.defaultAccount}
     }
     
     else {
-        // TODO update
-        log.info('Please start eac with one of these options:\n-c to run the client\n-t to schedule a test transaction\n-s to enter scheduling wizard')
+        console.log('\n  error: please start the client in either client `-c` or sheduling `-s` mode')
         process.exit(1)
     }
 }

@@ -48,6 +48,11 @@ class Cache {
         return this.mem 
     }
 
+    isEmpty () {
+        if (this.len() === 0) return true
+        return false
+    }
+
     sweepExpired () {
         this.mem.forEach(txRequestAddress => {
             if (this.get(txRequestAddress) === 99) {

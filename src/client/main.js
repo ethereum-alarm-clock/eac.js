@@ -147,9 +147,13 @@ const startRepl = (conf, ms) => {
     replServer.defineCommand('dumpCache', {
         help: 'Dumps your cache storage.',
         action () {
-            conf.cache.stored().forEach(entry => {
-                console.log(`${entry} | ${conf.cache.get(entry)}`)
-            })
+            if (conf.cache.isEmpty()) {
+                console.log('Cache empty')
+            } else {
+                conf.cache.stored().forEach(entry => {
+                    console.log(`${entry} | ${conf.cache.get(entry)}`)
+                })
+            }
         }
     })
     replServer.defineCommand('start', {
