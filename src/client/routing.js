@@ -275,11 +275,16 @@ const cleanup = async (conf, txRequest) => {
     }
 
     if (!txRequest.isCancelled()) {
-        // TODO estimateGas() might not work
-        const gasToCancel = txRequest.instance.methods.cancel().estimateGas()
+        const cancelData = txRequest.instance.methods.cancel().enocedeABI()
+        const sender = conf.wallet ? conf.wallet.getAccounts()[0] : web3.eth.defaultAccount
+        const gasToCancel = txRequest.instance.methods.cancel().estimateGas({
+            from: sender,
+            to: txRequest.getAddress(),
+            value: 0,
+            data: cancelData
+        })
         const currentGasPrice = new BigNumber(await web3.eth.getGasPrice())
         const gasCostToCancel = currentGasPrice.times(gasToCancel)
-        const cancelData = txRequest.instance.methods.cancel().encodeABI()
 
         // If the transaction request is expired and still has money in it but is 
         // not cancelled, cancel it for the reward. The first step is to check if
