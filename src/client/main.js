@@ -182,7 +182,9 @@ const startRepl = (conf, ms) => {
         action () {
             const stats = conf.statsdb.getStats()
             stats.forEach(accountStats => {
-                console.log(`${accountStats.account} | Claimed: ${accountStats.claimed} | Executed: ${accountStats.executed} | Ether gain: ${accountsStats.currentEther - accountStats.startingEther}`)
+                let etherGain = accountStats.currentEther.minus(accountStats.startingEther)
+                etherGain = web3.utils.fromWei(etherGain.toString())
+                console.log(`${accountStats.account} | Claimed: ${accountStats.claimed} | Executed: ${accountStats.executed} | Ether gain: ${etherGain}`)
             })
         }
     })
