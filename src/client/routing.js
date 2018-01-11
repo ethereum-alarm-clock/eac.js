@@ -40,12 +40,15 @@ const routeTxRequest = async (conf, txRequest) => {
         }
 
         claim(conf, txRequest)
-        .then(txObj => {
+        .then(receipt => {
             // If success set to claimed
-            if (txObj.status == 1) {
+            if (receipt.status == 1) {
                 log.info(`TxRequest at ${txRequest.address} claimed!`)
                 conf.cache.set(txRequest.address, 103)
-                conf.statsdb.updateClaimed(txObj.from)
+                web3.eth.getTransaction(receipt.transactionHash)
+                .then(txObj => {
+                    conf.statsdb.updateClaimed(txObj.from)
+                })
             }
             // Or find the reason why it failed TODO
             else return
@@ -77,11 +80,14 @@ const routeTxRequest = async (conf, txRequest) => {
             return
         }
         execute(conf, txRequest)
-        .then(txObj => {
-            if (txObj.status == 1) {
+        .then(receipt => {
+            if (receipt.status == 1) {
                 log.info(`TxRequest at ${txRequest.address} executed!`)
                 conf.cache.set(txRequest.address, 100)
-                conf.statsdb.updateExecuted(txObj.from)
+                web3.eth.getTransaction(receipt.transactionHash)
+                .then(txObj => {
+                    conf.statsdb.updateExecuted(txObj.from)
+                })
             }
             // Or find the reason why it failed TODO
             else return
@@ -174,6 +180,7 @@ const claim = async (conf, txRequest) => {
     })
     const currentGasPrice = new BigNumber(await web3.eth.getGasPrice())
     const gasCostToClaim = currentGasPrice.times(gasToClaim)
+
 
     if (gasCostToClaim.greaterThan(paymentWhenClaimed)) {
         log.debug(`Not profitable to claim. Returning`)
@@ -275,12 +282,12 @@ const cleanup = async (conf, txRequest) => {
     }
 
     if (!txRequest.isCancelled()) {
-        const cancelData = txRequest.instance.methods.cancel().enocedeABI()
+        const cancelData = txRequest.instance.methods.cancel().encodeABI()
         const sender = conf.wallet ? conf.wallet.getAccounts()[0] : web3.eth.defaultAccount
-        const gasToCancel = txRequest.instance.methods.cancel().estimateGas({
+        const gasToCancel = await txRequest.instance.methods.cancel().estimateGas({
             from: sender,
             to: txRequest.getAddress(),
-            value: 0,
+            value: '0',
             data: cancelData
         })
         const currentGasPrice = new BigNumber(await web3.eth.getGasPrice())

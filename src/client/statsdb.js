@@ -29,7 +29,7 @@ class StatsDB {
 
     /// Takes the account which has claimed a transaction.
     updateClaimed (account) {
-        const found = this.stats.findOne(account)
+        const found = this.stats.find({ account: account })[0]
         found.claimed++
         this.web3.eth.getBalance(account)
         .then(bal => {
@@ -42,7 +42,7 @@ class StatsDB {
 
     /// Takes the account which has executed a transaction.
     updateExecuted (account) {
-        const found = this.stats.findOne(account)
+        const found = this.stats.find({ account: account })[0]
         found.executed++
         this.web3.eth.getBalance(account)
         .then(bal => {

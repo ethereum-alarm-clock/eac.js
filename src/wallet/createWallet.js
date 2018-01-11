@@ -1,4 +1,4 @@
-const { LightWallet } = require('../client/lightWallet.js')
+const LightWallet = require('../client/lightWallet.js')
 
 const createWallet = async (web3, num, file, password) => {
 
