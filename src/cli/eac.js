@@ -4,9 +4,8 @@ const program = require('commander')
 const chalk = require('chalk')
 
 const alarmClient = require('../client/main.js')
+const EAC_Scheduler = require('../scheduling/eacScheduler.js')
 const schedule = require('../scheduler.js')
-// temporary
-const testScheduler = require('../testScheduler.js')
 
 const createWallet = require('../wallet/createWallet.js')
 const fundAccounts = require('../wallet/fundAccounts.js')
