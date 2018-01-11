@@ -1,4 +1,5 @@
 const { getABI } = require('../util.js')
+const BigNumber = require('bignumber.js')
 
 class EAC_Scheduler {
 
@@ -96,7 +97,20 @@ class EAC_Scheduler {
             gas: this.gasLimit,
             value: this.sendValue
         })
+    }
 
+    calcEndowment(
+        callGas,
+        callValue,
+        gasPrice,
+        donation,
+        payment) {
+
+        return new BigNumber(payment)
+                    .plus(donation).times(2)
+                    .plus(callGas).times(gasPrice)
+                    .plus(180000).times(gasPrice)
+                    .plus(callValue)
     }
 }
 
