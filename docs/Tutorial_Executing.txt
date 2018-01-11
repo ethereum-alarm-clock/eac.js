@@ -60,7 +60,7 @@ Starting in fast mode will greatly reduce the time it takes your node to catch
 up with the current head of the blockchain.
 
 ```
-geth --rinkeby -- fast --cache=512 --rpc console
+geth --rinkeby --fast --cache=512 --rpc --rpcapi net,web3,eth,txpool console
 ```
 
 After you sync up with the chain you will want to create a new account by telling 
