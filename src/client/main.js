@@ -177,7 +177,7 @@ const startRepl = (conf, ms) => {
     replServer.defineCommand('testTx', {
         help: 'Send a test transaction to the network (requires unlocked local account)',
         action () {
-            const testScheduler = require('../scheduling/test.js')
+            const testScheduler = require('../scheduling/testAsync.js')
             testScheduler(conf.chain, web3)
         }
     })
