@@ -2,6 +2,5 @@ wallet/keyfile
 node_modules
 getLogs.js
 wallet/*
-src/scheduling
 src/hasPendingGeth.js
 src/testStatsDb.js
