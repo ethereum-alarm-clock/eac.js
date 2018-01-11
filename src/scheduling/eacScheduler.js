@@ -79,6 +79,7 @@ class EAC_Scheduler {
         payment,
         requiredDeposit) {
         
+            /// TODO autmoatically calculate endowmnet
         return this.timestampScheduler.methods.schedule(
             toAddress,
             callData,
