@@ -100,6 +100,15 @@ class EAC_Scheduler {
         })
     }
 
+    /**
+     * Calculates the required endowment for scheduling a transactions
+     * with the following parameters
+     * @param {BigNumber} callGas 
+     * @param {BigNumber} callValue 
+     * @param {BigNumber} gasPrice 
+     * @param {BigNumber} donation 
+     * @param {BigNumber} payment 
+     */
     calcEndowment(
         callGas,
         callValue,
@@ -107,11 +116,11 @@ class EAC_Scheduler {
         donation,
         payment) {
 
-        return new BigNumber(payment)
-                    .plus(donation).times(2)
-                    .plus(callGas).times(gasPrice)
-                    .plus(180000).times(gasPrice)
-                    .plus(callValue)
+        return payment
+               .plus(donation.times(2))
+               .plus(callGas.times(gasPrice))
+               .plus(gasPrice.times(180000))
+               .plus(callValue)
     }
 }
 
