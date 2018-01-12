@@ -56,96 +56,118 @@ async function main() {
 
     const _ = {from: web3.eth.defaultAccount, gas: 7000000}
 
-
-    ExecutionLib.new(_)
-    .then(instance => {
-        executionLib = instance 
-        return GroveLib.new(_)
-    })
-    .then(instance => {
-        groveLib = instance 
-        return IterTools.new(_)
-    })
-    .then(instance => {
-        iterTools = instance
-        return MathLib.new(_)
-    })
-    .then(instance => {
-        mathLib = instance
-        return RequestMetaLib.new(_)
-    })
-    .then(instance => {
-        requestMetaLib = instance
-        return SafeMath.new(_)
-    })
-    .then(instance => {
-        safeMath = instance
-        return ClaimLib.new(_)
-    })
-    .then(instance => {
-        claimLib = instance
-        return PaymentLib.new(_)
-    })
-    .then(instance => {
-        paymentLib = instance
-        return RequestScheduleLib.new(_)
-    })
-    .then(instance => {
-        requestScheduleLib = instance
-        linkLibrary(RequestLib, mathLib)
-        linkLibrary(RequestLib, paymentLib)
-        linkLibrary(RequestLib, requestScheduleLib)
-        return RequestLib.new(_)
-    })
-    .then(instance => {
-        requestLib = instance
-        linkLibrary(SchedulerLib, mathLib)
-        linkLibrary(SchedulerLib, paymentLib)
-        linkLibrary(SchedulerLib, requestLib)
-        linkLibrary(SchedulerLib, safeMath)
-        return SchedulerLib.new(_)
-    })
-    .then(instance => {
-        schedulerLib = instance
-        linkLibrary(RequestTracker, groveLib)
-        linkLibrary(RequestTracker, mathLib)
-        return RequestTracker.new(_)
-    })
-    .then(instance => {
-        requestTracker = instance
-        linkLibrary(RequestFactory, claimLib)
-        linkLibrary(RequestFactory, mathLib)
-        linkLibrary(RequestFactory, requestScheduleLib)
-        linkLibrary(RequestFactory, iterTools)
-        linkLibrary(RequestFactory, paymentLib)
-        linkLibrary(RequestFactory, requestLib)
-        linkLibrary(RequestFactory, requestTracker)
-        return RequestFactory.new(requestTracker.address, _)
-    })
-    .then(instance => {
-        requestFactory = instance
-        linkLibrary(BlockScheduler, schedulerLib)
-        linkLibrary(BlockScheduler, requestScheduleLib)
-        linkLibrary(BlockScheduler, requestLib)
-        linkLibrary(BlockScheduler, mathLib)
-        return BlockScheduler.new(requestFactory.address, _)
-    })
-    .then(instance => {
-        blockScheduler = instance
-        linkLibrary(TimestampScheduler, schedulerLib)
-        linkLibrary(TimestampScheduler, requestScheduleLib)
-        linkLibrary(TimestampScheduler, requestLib)
-        linkLibrary(TimestampScheduler, mathLib)
-        return TimestampScheduler.new(requestFactory.address, _)
-    })
-    .then(instance => {
-        timestampScheduler = instance
-        console.log(timestampScheduler.temporalUnit())
+    return new Promise((resolve, reject) => {
+        ExecutionLib.new(_)
+        .then(instance => {
+            executionLib = instance 
+            return GroveLib.new(_)
+        })
+        .then(instance => {
+            groveLib = instance 
+            return IterTools.new(_)
+        })
+        .then(instance => {
+            iterTools = instance
+            return MathLib.new(_)
+        })
+        .then(instance => {
+            mathLib = instance
+            return RequestMetaLib.new(_)
+        })
+        .then(instance => {
+            requestMetaLib = instance
+            return SafeMath.new(_)
+        })
+        .then(instance => {
+            safeMath = instance
+            return ClaimLib.new(_)
+        })
+        .then(instance => {
+            claimLib = instance
+            return PaymentLib.new(_)
+        })
+        .then(instance => {
+            paymentLib = instance
+            return RequestScheduleLib.new(_)
+        })
+        .then(instance => {
+            requestScheduleLib = instance
+            linkLibrary(RequestLib, mathLib)
+            linkLibrary(RequestLib, paymentLib)
+            linkLibrary(RequestLib, requestScheduleLib)
+            return RequestLib.new(_)
+        })
+        .then(instance => {
+            requestLib = instance
+            linkLibrary(SchedulerLib, mathLib)
+            linkLibrary(SchedulerLib, paymentLib)
+            linkLibrary(SchedulerLib, requestLib)
+            linkLibrary(SchedulerLib, safeMath)
+            return SchedulerLib.new(_)
+        })
+        .then(instance => {
+            schedulerLib = instance
+            linkLibrary(RequestTracker, groveLib)
+            linkLibrary(RequestTracker, mathLib)
+            return RequestTracker.new(_)
+        })
+        .then(instance => {
+            requestTracker = instance
+            linkLibrary(RequestFactory, claimLib)
+            linkLibrary(RequestFactory, mathLib)
+            linkLibrary(RequestFactory, requestScheduleLib)
+            linkLibrary(RequestFactory, iterTools)
+            linkLibrary(RequestFactory, paymentLib)
+            linkLibrary(RequestFactory, requestLib)
+            linkLibrary(RequestFactory, requestTracker)
+            return RequestFactory.new(requestTracker.address, _)
+        })
+        .then(instance => {
+            requestFactory = instance
+            linkLibrary(BlockScheduler, schedulerLib)
+            linkLibrary(BlockScheduler, requestScheduleLib)
+            linkLibrary(BlockScheduler, requestLib)
+            linkLibrary(BlockScheduler, mathLib)
+            return BlockScheduler.new(requestFactory.address, _)
+        })
+        .then(instance => {
+            blockScheduler = instance
+            linkLibrary(TimestampScheduler, schedulerLib)
+            linkLibrary(TimestampScheduler, requestScheduleLib)
+            linkLibrary(TimestampScheduler, requestLib)
+            linkLibrary(TimestampScheduler, mathLib)
+            return TimestampScheduler.new(requestFactory.address, _)
+        })
+        .then(instance => {
+            timestampScheduler = instance
+            return Promise.resolve()
+        })
+        .then(_ => {
+            const contracts = {
+                requestTracker: requestTracker.address,
+                requestFactory: requestFactory.address,
+                blockScheduler: blockScheduler.address,
+                timestampScheduler: timestampScheduler.address
+            }
+            const fs = require('fs')
+            fs.writeFileSync('./src/assets/tester.json', JSON.stringify(contracts))
+            resolve({
+                // Ganache attached web3
+                web3: web3,
+                // Truffle contracts with methods attached
+                requestTracker: requestTracker,
+                requestFactory: requestFactory,
+                blockScheduler: blockScheduler,
+                timestampScheduler: timestampScheduler
+            })
+        })
+        .catch(err => reject(err))
     })
 }
 
-main()
+module.exports = main
 
+// Some Utils that can be abstracted to another module later
 const linkLibrary = (contract, lib) => {
     const bytecode = contract.bytecode
     const libAddr = lib.address.slice(2) // takes off the '0x'

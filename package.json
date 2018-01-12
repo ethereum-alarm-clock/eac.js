@@ -4,7 +4,7 @@
   "description": "Commnandline tool to interact with the Ethereum Alarm Clock contracts.",
   "main": "cli/eac.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec"
+    "test": "./node_modules/.bin/mocha --reporter spec && rm -f ./src/assets/tester.json"
   },
   "repository": {
     "type": "git",

@@ -1,15 +1,20 @@
 const expect = require('chai').expect
 const BigNumber= require('bignumber.js')
 
-// TODO extract this out to a common config file
-const Web3 = require('web3')
-const Ganache = require('ganache-core')
-const web3 = new Web3(Ganache.provider())
+const Deployer = require('../deploy.js')
 
 const EAC_Scheduler = require('../src/scheduling/eacScheduler.js')
 
 describe('EAC_Scheduler', () => {
+
+    let deployed
+
+    before(async () => {
+        deployed = await Deployer()
+    })
+
     it('Calculates the correct endowment', () => {
+        const web3 = deployed.web3
         const eacScheduler = new EAC_Scheduler(web3, 'tester')
 
         const callGas = new BigNumber(3000000)
