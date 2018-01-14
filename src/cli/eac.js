@@ -231,7 +231,7 @@ const main = async _ => {
         let payment = readlineSync.question(chalk.black.bgBlue('Enter a payment amount:\n'))
 
         if (!payment) {
-            payment = 0
+            payment = 10
         }
 
         let requiredDeposit = readlineSync.question(chalk.black.bgBlue('Enter required claim deposit:\n'))
@@ -279,13 +279,13 @@ Endowment: ${web3.utils.fromWei(endowment.toString())}
         eacScheduler.initSender({
             from: web3.eth.defaultAccount,
             gas: 3000000,
-            value: endowment.toString()
+            value: endowment
         })
 
         console.log('\n')
         const spinner = ora('Sending transaction! Waiting for a response...').start()
 
-        eacScheduler.timestampSchedule(
+        eacScheduler.blockSchedule(
             toAddress,
             callData,
             callGas,

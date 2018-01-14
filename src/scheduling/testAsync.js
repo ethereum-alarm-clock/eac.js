@@ -9,9 +9,9 @@ const main = async (chain, web3) => {
         value: web3.utils.toWei('500', 'finney')
     })
 
-    const windowStart = await web3.eth.getBlockNumber() + 12
+    const windowStart = await web3.eth.getBlockNumber() + 120
     const gasPrice = web3.utils.toWei('100', 'gwei')
-    const requiredDeposit = web3.utils.toWei('50', 'finney')
+    const requiredDeposit = 1//web3.utils.toWei('50', 'finney')
 
     try {
         const receipt = await eacScheduler.blockSchedule(
@@ -25,7 +25,7 @@ const main = async (chain, web3) => {
             windowStart,
             gasPrice,
             12,             //donation
-            24,             //payment
+            2400000000,             //payment
             requiredDeposit 
         )
 

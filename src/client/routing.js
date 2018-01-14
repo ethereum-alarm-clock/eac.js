@@ -11,7 +11,7 @@ const routeTxRequest = async (conf, txRequest) => {
     const web3 = conf.web3 
 
     if (await hasPending(conf, txRequest)) {
-        log.debug(`Ignoring txRequest with pending transaction in the transaction pool.`)
+        log.info(`Ignoring txRequest with pending transaction in the transaction pool.`)
         return
     }
     if (txRequest.isCancelled()) {
@@ -184,6 +184,7 @@ const claim = async (conf, txRequest) => {
 
     if (gasCostToClaim.greaterThan(paymentWhenClaimed)) {
         log.debug(`Not profitable to claim. Returning`)
+        log.debug(`gasCostToClaim: ${web3.utils.fromWei(gasCostToClaim.toString())} | paymentWhenClaimed: ${web3.utils.fromWei(paymentWhenClaimed.toString())}`)
         return Promise.resolve({ status: '0x0' })
     }
 
