@@ -5,12 +5,12 @@ const chalk = require('chalk')
 
 const alarmClient = require('../client/main.js')
 const EAC_Scheduler = require('../scheduling/eacScheduler.js')
-const schedule = require('../scheduler.js')
 
 const createWallet = require('../wallet/createWallet.js')
 const fundAccounts = require('../wallet/fundAccounts.js')
 const drainWallet = require('../wallet/drainWallet.js')
 
+const BigNumber = require('bignumber.js')
 const clear = require('clear')
 const ora = require('ora')       
 const readlineSync = require('readline-sync')
@@ -166,6 +166,7 @@ const main = async _ => {
     else if (program.schedule) {
         if (!checkValidChain(program.chain)) process.exit(1)
         if (!checkForUnlockedAccount(web3)) process.exit(1)
+        const eacScheduler = new EAC_Scheduler(web3, program.chain)
 
         /// Starts the scheduling wizard.
         clear()
@@ -241,6 +242,14 @@ const main = async _ => {
 
         clear()
 
+        const endowment = eacScheduler.calcEndowment(
+            new BigNumber(callGas),
+            new BigNumber(callValue),
+            new BigNumber(gasPrice),
+            new BigNumber(donation),
+            new BigNumber(payment)
+        )
+
 
         log.debug(`
 toAddress       - ${toAddress}
@@ -255,6 +264,7 @@ payment         - ${payment}
 requiredDeposit - ${requiredDeposit}
 
 Sending from ${web3.eth.defaultAccount}
+Endowment: ${web3.utils.fromWei(endowment.toString())}
 `)
 
         const confirm = readlineSync.question('Are all of these variables correct? [Y/n]\n')
@@ -266,12 +276,16 @@ Sending from ${web3.eth.defaultAccount}
             return
         }
 
+        eacScheduler.initSender({
+            from: web3.eth.defaultAccount,
+            gas: 3000000,
+            value: endowment.toString()
+        })
+
         console.log('\n')
         const spinner = ora('Sending transaction! Waiting for a response...').start()
 
-        schedule(
-            web3,
-            program.chain,
+        eacScheduler.timestampSchedule(
             toAddress,
             callData,
             callGas,
@@ -282,17 +296,16 @@ Sending from ${web3.eth.defaultAccount}
             donation,
             payment,
             requiredDeposit
-        ).then(res => {
-            if (res.status != 1) {
-                spinner.fail(`Transaction was mined but something went wrong. Please investigate the transaction at hash ${res.transactionHash} for more information.`)
+        ).then(receipt => {
+            if (receipt.status != 1) {
+                spinner.fail(`Transaction was mined but failed. No transaction scheduled.`)
                 process.exit(1)
             }
-            spinner.succeed(`Transaction mined! Hash: ${res.transactionHash}`)
+            spinner.succeed(`Transaction successful! Hash: ${receipt.transactionHash}`)
         })
         .catch(err => {
-            spinner.fail('Something went wrong! See the error message below.\n')
-            setTimeout(() => console.log(err), 2000)
-        })    
+            spinner.fail(err)
+        })
     }
     
     else {

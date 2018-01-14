@@ -3,8 +3,8 @@
   "abi": [],
   "bytecode": "0x60606040523415600e57600080fd5b603580601b6000396000f3006060604052600080fd00a165627a7a72305820dfb58fa746864bdcbb3a657e287f27b49b9de9e5c34914cacd1feb1e2347fea20029",
   "deployedBytecode": "0x6060604052600080fd00a165627a7a72305820dfb58fa746864bdcbb3a657e287f27b49b9de9e5c34914cacd1feb1e2347fea20029",
-  "sourceMap": "134:516:36:-;;;;;;;;;;;;;;;;;",
-  "deployedSourceMap": "134:516:36:-;;;;;",
+  "sourceMap": "134:516:25:-;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "134:516:25:-;;;;;",
   "source": "pragma solidity ^0.4.18;\n\n/**\n * @title RequestMetaLib\n * @dev Small library holding all the metadata about a TransactionRequest.\n */\nlibrary RequestMetaLib {\n\n    struct RequestMeta {\n        address owner;              /// The address that created this request.\n\n        address createdBy;          /// The address of the RequestFactory which created this request.\n\n        bool isCancelled;           /// Was the TransactionRequest cancelled?\n        \n        bool wasCalled;             /// Was the TransactionRequest called?\n\n        bool wasSuccessful;         /// Was the return value from the TransactionRequest execution successful?\n    }\n\n}\n",
   "sourcePath": "contracts/Library/RequestMetaLib.sol",
   "ast": {
@@ -12,7 +12,7 @@
       "absolutePath": "contracts/Library/RequestMetaLib.sol",
       "exportedSymbols": {
         "RequestMetaLib": [
-          11005
+          8229
         ]
       }
     },
@@ -26,9 +26,9 @@
             ".18"
           ]
         },
-        "id": 10993,
+        "id": 8217,
         "name": "PragmaDirective",
-        "src": "0:24:36"
+        "src": "0:24:25"
       },
       {
         "attributes": {
@@ -42,17 +42,17 @@
           "documentation": "@title RequestMetaLib\n@dev Small library holding all the metadata about a TransactionRequest.",
           "fullyImplemented": true,
           "linearizedBaseContracts": [
-            11005
+            8229
           ],
           "name": "RequestMetaLib",
-          "scope": 11006
+          "scope": 8230
         },
         "children": [
           {
             "attributes": {
               "canonicalName": "RequestMetaLib.RequestMeta",
               "name": "RequestMeta",
-              "scope": 11005,
+              "scope": 8229,
               "visibility": "public"
             },
             "children": [
@@ -60,7 +60,7 @@
                 "attributes": {
                   "constant": false,
                   "name": "owner",
-                  "scope": 11004,
+                  "scope": 8228,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "address",
@@ -73,20 +73,20 @@
                       "name": "address",
                       "type": "address"
                     },
-                    "id": 10994,
+                    "id": 8218,
                     "name": "ElementaryTypeName",
-                    "src": "193:7:36"
+                    "src": "193:7:25"
                   }
                 ],
-                "id": 10995,
+                "id": 8219,
                 "name": "VariableDeclaration",
-                "src": "193:13:36"
+                "src": "193:13:25"
               },
               {
                 "attributes": {
                   "constant": false,
                   "name": "createdBy",
-                  "scope": 11004,
+                  "scope": 8228,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "address",
@@ -99,20 +99,20 @@
                       "name": "address",
                       "type": "address"
                     },
-                    "id": 10996,
+                    "id": 8220,
                     "name": "ElementaryTypeName",
-                    "src": "273:7:36"
+                    "src": "273:7:25"
                   }
                 ],
-                "id": 10997,
+                "id": 8221,
                 "name": "VariableDeclaration",
-                "src": "273:17:36"
+                "src": "273:17:25"
               },
               {
                 "attributes": {
                   "constant": false,
                   "name": "isCancelled",
-                  "scope": 11004,
+                  "scope": 8228,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "bool",
@@ -125,20 +125,20 @@
                       "name": "bool",
                       "type": "bool"
                     },
-                    "id": 10998,
+                    "id": 8222,
                     "name": "ElementaryTypeName",
-                    "src": "376:4:36"
+                    "src": "376:4:25"
                   }
                 ],
-                "id": 10999,
+                "id": 8223,
                 "name": "VariableDeclaration",
-                "src": "376:16:36"
+                "src": "376:16:25"
               },
               {
                 "attributes": {
                   "constant": false,
                   "name": "wasCalled",
-                  "scope": 11004,
+                  "scope": 8228,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "bool",
@@ -151,20 +151,20 @@
                       "name": "bool",
                       "type": "bool"
                     },
-                    "id": 11000,
+                    "id": 8224,
                     "name": "ElementaryTypeName",
-                    "src": "463:4:36"
+                    "src": "463:4:25"
                   }
                 ],
-                "id": 11001,
+                "id": 8225,
                 "name": "VariableDeclaration",
-                "src": "463:14:36"
+                "src": "463:14:25"
               },
               {
                 "attributes": {
                   "constant": false,
                   "name": "wasSuccessful",
-                  "scope": 11004,
+                  "scope": 8228,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "bool",
@@ -177,35 +177,46 @@
                       "name": "bool",
                       "type": "bool"
                     },
-                    "id": 11002,
+                    "id": 8226,
                     "name": "ElementaryTypeName",
-                    "src": "539:4:36"
+                    "src": "539:4:25"
                   }
                 ],
-                "id": 11003,
+                "id": 8227,
                 "name": "VariableDeclaration",
-                "src": "539:18:36"
+                "src": "539:18:25"
               }
             ],
-            "id": 11004,
+            "id": 8228,
             "name": "StructDefinition",
-            "src": "164:483:36"
+            "src": "164:483:25"
           }
         ],
-        "id": 11005,
+        "id": 8229,
         "name": "ContractDefinition",
-        "src": "134:516:36"
+        "src": "134:516:25"
       }
     ],
-    "id": 11006,
+    "id": 8230,
     "name": "SourceUnit",
-    "src": "0:651:36"
+    "src": "0:651:25"
   },
   "compiler": {
     "name": "solc",
     "version": "0.4.18+commit.9cf6e910.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "3": {
+      "events": {},
+      "links": {},
+      "address": "0x0d853623ade2b8db28263929b0bdc4048236657a"
+    },
+    "4": {
+      "events": {},
+      "links": {},
+      "address": "0x59e6f502615b5b1477f28083a04e8fbb668064e0"
+    }
+  },
   "schemaVersion": "1.0.1",
-  "updatedAt": "2018-01-06T02:43:01.757Z"
+  "updatedAt": "2018-01-14T21:26:13.979Z"
 }
