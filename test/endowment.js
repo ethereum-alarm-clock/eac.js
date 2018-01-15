@@ -3,7 +3,7 @@ const BigNumber= require('bignumber.js')
 
 const Deployer = require('../deploy.js')
 
-const EAC_Scheduler = require('../src/scheduling/eacScheduler.js')
+const EAC_Scheduler = require('../src/scheduling/index.js')
 
 describe('EAC_Scheduler', () => {
 

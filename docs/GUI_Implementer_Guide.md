@@ -57,4 +57,11 @@ The `toAddress` cannot be a null address `0x000000000000000000000000000000000000
 
 For a full list of `ValidationError` see [this page](https://ethereum-alarm-clock.readthedocs.io/en/latest/request_factory.html#validation) of the docs.
 
+## Necessary Options
+You will need to present an option for the user to switch between block-based
+scheduling and timestamp-based scheduling. This could be accomplished by the
+implementation of a switch or checkbox, since it is only two options you
+may treat it as if it were a simple boolean. 
+
+
 _To be continued..._
