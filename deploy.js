@@ -124,6 +124,7 @@ async function main() {
         })
         .then(instance => {
             requestFactory = instance
+            linkLibrary(BlockScheduler, paymentLib)
             linkLibrary(BlockScheduler, schedulerLib)
             linkLibrary(BlockScheduler, requestScheduleLib)
             linkLibrary(BlockScheduler, requestLib)
@@ -132,6 +133,7 @@ async function main() {
         })
         .then(instance => {
             blockScheduler = instance
+            linkLibrary(TimestampScheduler, paymentLib)
             linkLibrary(TimestampScheduler, schedulerLib)
             linkLibrary(TimestampScheduler, requestScheduleLib)
             linkLibrary(TimestampScheduler, requestLib)

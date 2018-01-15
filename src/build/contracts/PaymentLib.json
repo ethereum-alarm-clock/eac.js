@@ -43,20 +43,59 @@
       "payable": false,
       "stateMutability": "pure",
       "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_payment",
+          "type": "uint256"
+        },
+        {
+          "name": "_donation",
+          "type": "uint256"
+        },
+        {
+          "name": "_callGas",
+          "type": "uint256"
+        },
+        {
+          "name": "_callValue",
+          "type": "uint256"
+        },
+        {
+          "name": "_gasPrice",
+          "type": "uint256"
+        },
+        {
+          "name": "_gasOverhead",
+          "type": "uint256"
+        }
+      ],
+      "name": "computeEndowment",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "pure",
+      "type": "function"
     }
   ],
-  "bytecode": "0x6060604052341561000f57600080fd5b6101f58061001e6000396000f300606060405260043610610041576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806327960c5f14610046575b600080fd5b61009260048080359060200190919080359060200190919080359060200190919080359060200190919080359060200190919080359060200190919080359060200190919050506100ac565b604051808215151515815260200191505060405180910390f35b60006100bc8787878787876100cc565b8810159050979650505050505050565b60006101116100dd8686858761011d565b61010360026100f58a8c61017290919063ffffffff16565b61019390919063ffffffff16565b61017290919063ffffffff16565b90509695505050505050565b60006101688461015a610139858761019390919063ffffffff16565b61014c868a61019390919063ffffffff16565b61017290919063ffffffff16565b61017290919063ffffffff16565b9050949350505050565b600080828401905083811015151561018957600080fd5b8091505092915050565b600080828402905060008414806101b457508284828115156101b157fe5b04145b15156101bf57600080fd5b80915050929150505600a165627a7a72305820630fd7299da2ed4abb8f38cf9b0d766cb75a66189d4f4bbd9e7943f2cb908cd00029",
-  "deployedBytecode": "0x606060405260043610610041576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806327960c5f14610046575b600080fd5b61009260048080359060200190919080359060200190919080359060200190919080359060200190919080359060200190919080359060200190919080359060200190919050506100ac565b604051808215151515815260200191505060405180910390f35b60006100bc8787878787876100cc565b8810159050979650505050505050565b60006101116100dd8686858761011d565b61010360026100f58a8c61017290919063ffffffff16565b61019390919063ffffffff16565b61017290919063ffffffff16565b90509695505050505050565b60006101688461015a610139858761019390919063ffffffff16565b61014c868a61019390919063ffffffff16565b61017290919063ffffffff16565b61017290919063ffffffff16565b9050949350505050565b600080828401905083811015151561018957600080fd5b8091505092915050565b600080828402905060008414806101b457508284828115156101b157fe5b04145b15156101bf57600080fd5b80915050929150505600a165627a7a72305820630fd7299da2ed4abb8f38cf9b0d766cb75a66189d4f4bbd9e7943f2cb908cd00029",
-  "sourceMap": "154:4858:34:-;;;;;;;;;;;;;;;;;",
-  "deployedSourceMap": "154:4858:34:-;;;;;;;;;;;;;;;;;;;;;;;;4439:571;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;4796:4;4837:166;4867:8;4889:9;4912:8;4934:10;4958:9;4981:12;4837:16;:166::i;:::-;4823:10;:180;;4816:187;;4439:571;;;;;;;;;:::o;3279:375::-;3489:4;3516:131;3585:61;3600:8;3610:10;3622:12;3636:9;3585:14;:61::i;:::-;3516:47;3561:1;3516:40;3546:9;3516:8;:29;;:40;;;;:::i;:::-;:44;;:47;;;;:::i;:::-;:68;;:131;;;;:::i;:::-;3509:138;;3279:375;;;;;;;;:::o;3915:316::-;4075:4;4102:122;4213:10;4102:81;4155:27;4172:9;4155:12;:16;;:27;;;;:::i;:::-;4102:23;4115:9;4102:8;:12;;:23;;;;:::i;:::-;:52;;:81;;;;:::i;:::-;:110;;:122;;;;:::i;:::-;4095:129;;3915:316;;;;;;:::o;672:130:41:-;730:7;745:9;761:1;757;:5;745:17;;781:1;776;:6;;768:15;;;;;;;;796:1;789:8;;672:130;;;;;:::o;138:144::-;196:7;211:9;227:1;223;:5;211:17;;247:1;242;:6;:20;;;;261:1;256;252;:5;;;;;;;;:10;242:20;234:29;;;;;;;;276:1;269:8;;138:144;;;;;:::o",
-  "source": "pragma solidity ^0.4.18;\n\nimport \"contracts/Library/ExecutionLib.sol\";\nimport \"contracts/Library/MathLib.sol\";\nimport \"contracts/zeppelin/SafeMath.sol\";\n\nlibrary PaymentLib {\n    using SafeMath for uint;\n\n    struct PaymentData {\n        uint payment;               /// The amount in wei to be paid to the executor of this TransactionRequest.\n\n        address paymentBenefactor;  /// The address that the payment should be sent to.\n\n        uint paymentOwed;           /// The amount that is owed to the paymentBenefactor.\n\n        uint donation;              /// The amount in wei that will be paid to the donationBenefactor address.\n\n        address donationBenefactor; /// The address that the donation should be sent to.\n\n        uint donationOwed;          /// The amount that is owed to the donationBenefactor.\n    }\n\n    ///---------------\n    /// GETTERS\n    ///---------------\n\n    /**\n     * @dev Getter function that returns true if a request has a benefactor.\n     */\n    function hasBenefactor(PaymentData storage self)\n        internal view returns (bool)\n    {\n        return self.donationBenefactor != 0x0;\n    }\n\n    /**\n     * @dev Computes the amount to send to the donationBenefactor. \n     */\n    function getDonation(PaymentData storage self) \n        internal view returns (uint)\n    {\n        return self.donation;\n    }\n\n    /**\n     * @dev Computes the amount to send to the address that fulfilled the request.\n     */\n    function getPayment(PaymentData storage self)\n        internal view returns (uint)\n    {\n        return self.payment;\n    }\n \n    /**\n     * @dev Computes the amount to send to the address that fulfilled the request\n     *       with an additional modifier. This is used when the call was claimed.\n     */\n    function getPaymentWithModifier(PaymentData storage self,\n                                    uint8 _paymentModifier)\n        internal view returns (uint)\n    {\n        return getPayment(self).mul(_paymentModifier).div(100);\n    }\n\n    ///---------------\n    /// SENDERS\n    ///---------------\n\n    /**\n     * @dev Send the donationOwed amount to the donationBenefactor.\n     * Note: The send is allowed to fail.\n     */\n    function sendDonation(PaymentData storage self) \n        internal returns (bool)\n    {\n        uint donationAmount = self.donationOwed;\n        if (donationAmount > 0) {\n            // re-entrance protection.\n            self.donationOwed = 0;\n            return self.donationBenefactor.send(donationAmount);\n        }\n        return true;\n    }\n\n    /**\n     * @dev Send the paymentOwed amount to the paymentBenefactor.\n     * Note: The send is allowed to fail.\n     */\n    function sendPayment(PaymentData storage self)\n        internal returns (bool)\n    {\n        uint paymentAmount = self.paymentOwed;\n        if (paymentAmount > 0) {\n            // re-entrance protection.\n            self.paymentOwed = 0;\n            return self.paymentBenefactor.send(paymentAmount);\n        }\n        return true;\n    }\n\n    ///---------------\n    /// HELPERS\n    ///---------------\n\n    /**\n     * @dev Compute the endowment value for the given TransactionRequest parameters.\n     * See request_factory.rst in docs folder under Check #1 for more information about\n     * this calculation.\n     */\n    function computeEndowment(\n        uint _payment,\n        uint _donation,\n        uint _callGas,\n        uint _callValue,\n        uint _gasPrice,\n        uint _gasOverhead\n    ) \n        internal pure returns (uint)\n    {\n        return _payment\n                .add(_donation).mul(2)\n                .add(_computeHelper(_callGas, _callValue, _gasOverhead, _gasPrice));\n    }\n\n    /// Was getting a stack depth error after replacing old MathLib with Zeppelin's SafeMath.\n    ///  Added this function to fix it.\n    ///  See for context: https://ethereum.stackexchange.com/questions/7325/stack-too-deep-try-removing-local-variables \n    function _computeHelper(\n        uint _callGas,\n        uint _callValue,\n        uint _gasOverhead,\n        uint _gasPrice\n    )\n        internal pure returns (uint)\n    {\n        return _callGas.mul(_gasPrice)\n                        .add(_gasOverhead.mul(_gasPrice))\n                        .add(_callValue);\n    }\n    /*\n     * Validation: ensure that the request endowment is sufficient to cover.\n     * - payment * maxMultiplier\n     * - donation * maxMultiplier\n     * - gasReimbursment\n     * - callValue\n     */\n    function validateEndowment(uint _endowment,\n                               uint _payment,\n                               uint _donation,\n                               uint _callGas,\n                               uint _callValue,\n                               uint _gasPrice,\n                               uint _gasOverhead)\n        public pure returns (bool)\n    {\n        return _endowment >= computeEndowment(\n            _payment,\n            _donation,\n            _callGas,\n            _callValue,\n            _gasPrice,\n            _gasOverhead\n        );\n    }\n}\n",
+  "bytecode": "0x6060604052341561000f57600080fd5b6102418061001e6000396000f30060606040526004361061004c576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806327960c5f146100515780635ee345e4146100b7575b600080fd5b61009d6004808035906020019091908035906020019091908035906020019091908035906020019091908035906020019091908035906020019091908035906020019091905050610110565b604051808215151515815260200191505060405180910390f35b6100fa6004808035906020019091908035906020019091908035906020019091908035906020019091908035906020019091908035906020019091905050610130565b6040518082815260200191505060405180910390f35b6000610120878787878787610130565b8810159050979650505050505050565b60006101b2846101a461014c86866101be90919063ffffffff16565b610196610162888b6101be90919063ffffffff16565b61018861017960028e6101be90919063ffffffff16565b8e6101f490919063ffffffff16565b6101f490919063ffffffff16565b6101f490919063ffffffff16565b6101f490919063ffffffff16565b90509695505050505050565b600080828402905060008414806101df57508284828115156101dc57fe5b04145b15156101ea57600080fd5b8091505092915050565b600080828401905083811015151561020b57600080fd5b80915050929150505600a165627a7a7230582007c9e2192c3109c49bdd376996bfb7eafe12b2b548916843c9e0a37caa471c560029",
+  "deployedBytecode": "0x60606040526004361061004c576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806327960c5f146100515780635ee345e4146100b7575b600080fd5b61009d6004808035906020019091908035906020019091908035906020019091908035906020019091908035906020019091908035906020019091908035906020019091905050610110565b604051808215151515815260200191505060405180910390f35b6100fa6004808035906020019091908035906020019091908035906020019091908035906020019091908035906020019091908035906020019091905050610130565b6040518082815260200191505060405180910390f35b6000610120878787878787610130565b8810159050979650505050505050565b60006101b2846101a461014c86866101be90919063ffffffff16565b610196610162888b6101be90919063ffffffff16565b61018861017960028e6101be90919063ffffffff16565b8e6101f490919063ffffffff16565b6101f490919063ffffffff16565b6101f490919063ffffffff16565b6101f490919063ffffffff16565b90509695505050505050565b600080828402905060008414806101df57508284828115156101dc57fe5b04145b15156101ea57600080fd5b8091505092915050565b600080828401905083811015151561020b57600080fd5b80915050929150505600a165627a7a7230582007c9e2192c3109c49bdd376996bfb7eafe12b2b548916843c9e0a37caa471c560029",
+  "sourceMap": "154:4327:23:-;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "154:4327:23:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;3908:571;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;3281:418;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;3908:571;4265:4;4306:166;4336:8;4358:9;4381:8;4403:10;4427:9;4450:12;4306:16;:166::i;:::-;4292:10;:180;;4285:187;;3908:571;;;;;;;;;:::o;3281:418::-;3489:4;3516:176;3681:10;3516:143;3631:27;3648:9;3631:12;:16;;:27;;;;:::i;:::-;3516:93;3585:23;3598:9;3585:8;:12;;:23;;;;:::i;:::-;3516:47;3546:16;3560:1;3546:9;:13;;:16;;;;:::i;:::-;3516:8;:29;;:47;;;;:::i;:::-;:68;;:93;;;;:::i;:::-;:114;;:143;;;;:::i;:::-;:164;;:176;;;;:::i;:::-;3509:183;;3281:418;;;;;;;;:::o;138:144:28:-;196:7;211:9;227:1;223;:5;211:17;;247:1;242;:6;:20;;;;261:1;256;252;:5;;;;;;;;:10;242:20;234:29;;;;;;;;276:1;269:8;;138:144;;;;;:::o;672:130::-;730:7;745:9;761:1;757;:5;745:17;;781:1;776;:6;;768:15;;;;;;;;796:1;789:8;;672:130;;;;;:::o",
+  "source": "pragma solidity ^0.4.18;\n\nimport \"contracts/Library/ExecutionLib.sol\";\nimport \"contracts/Library/MathLib.sol\";\nimport \"contracts/zeppelin/SafeMath.sol\";\n\nlibrary PaymentLib {\n    using SafeMath for uint;\n\n    struct PaymentData {\n        uint payment;               /// The amount in wei to be paid to the executor of this TransactionRequest.\n\n        address paymentBenefactor;  /// The address that the payment should be sent to.\n\n        uint paymentOwed;           /// The amount that is owed to the paymentBenefactor.\n\n        uint donation;              /// The amount in wei that will be paid to the donationBenefactor address.\n\n        address donationBenefactor; /// The address that the donation should be sent to.\n\n        uint donationOwed;          /// The amount that is owed to the donationBenefactor.\n    }\n\n    ///---------------\n    /// GETTERS\n    ///---------------\n\n    /**\n     * @dev Getter function that returns true if a request has a benefactor.\n     */\n    function hasBenefactor(PaymentData storage self)\n        internal view returns (bool)\n    {\n        return self.donationBenefactor != 0x0;\n    }\n\n    /**\n     * @dev Computes the amount to send to the donationBenefactor. \n     */\n    function getDonation(PaymentData storage self) \n        internal view returns (uint)\n    {\n        return self.donation;\n    }\n\n    /**\n     * @dev Computes the amount to send to the address that fulfilled the request.\n     */\n    function getPayment(PaymentData storage self)\n        internal view returns (uint)\n    {\n        return self.payment;\n    }\n \n    /**\n     * @dev Computes the amount to send to the address that fulfilled the request\n     *       with an additional modifier. This is used when the call was claimed.\n     */\n    function getPaymentWithModifier(PaymentData storage self,\n                                    uint8 _paymentModifier)\n        internal view returns (uint)\n    {\n        return getPayment(self).mul(_paymentModifier).div(100);\n    }\n\n    ///---------------\n    /// SENDERS\n    ///---------------\n\n    /**\n     * @dev Send the donationOwed amount to the donationBenefactor.\n     * Note: The send is allowed to fail.\n     */\n    function sendDonation(PaymentData storage self) \n        internal returns (bool)\n    {\n        uint donationAmount = self.donationOwed;\n        if (donationAmount > 0) {\n            // re-entrance protection.\n            self.donationOwed = 0;\n            return self.donationBenefactor.send(donationAmount);\n        }\n        return true;\n    }\n\n    /**\n     * @dev Send the paymentOwed amount to the paymentBenefactor.\n     * Note: The send is allowed to fail.\n     */\n    function sendPayment(PaymentData storage self)\n        internal returns (bool)\n    {\n        uint paymentAmount = self.paymentOwed;\n        if (paymentAmount > 0) {\n            // re-entrance protection.\n            self.paymentOwed = 0;\n            return self.paymentBenefactor.send(paymentAmount);\n        }\n        return true;\n    }\n\n    ///---------------\n    /// Endowment\n    ///---------------\n\n    /**\n     * @dev Compute the endowment value for the given TransactionRequest parameters.\n     * See request_factory.rst in docs folder under Check #1 for more information about\n     * this calculation.\n     */\n    function computeEndowment(\n        uint _payment,\n        uint _donation,\n        uint _callGas,\n        uint _callValue,\n        uint _gasPrice,\n        uint _gasOverhead\n    ) \n        public pure returns (uint)\n    {\n        return _payment\n                .add(_donation.mul(2))\n                .add(_callGas.mul(_gasPrice))\n                .add(_gasOverhead.mul(_gasPrice))\n                .add(_callValue);\n    }\n\n    /*\n     * Validation: ensure that the request endowment is sufficient to cover.\n     * - payment * maxMultiplier\n     * - donation * maxMultiplier\n     * - gasReimbursment\n     * - callValue\n     */\n    function validateEndowment(uint _endowment,\n                               uint _payment,\n                               uint _donation,\n                               uint _callGas,\n                               uint _callValue,\n                               uint _gasPrice,\n                               uint _gasOverhead)\n        public pure returns (bool)\n    {\n        return _endowment >= computeEndowment(\n            _payment,\n            _donation,\n            _callGas,\n            _callValue,\n            _gasPrice,\n            _gasOverhead\n        );\n    }\n}\n",
   "sourcePath": "contracts/Library/PaymentLib.sol",
   "ast": {
     "attributes": {
       "absolutePath": "contracts/Library/PaymentLib.sol",
       "exportedSymbols": {
         "PaymentLib": [
-          9080
+          6304
         ]
       }
     },
@@ -70,54 +109,54 @@
             ".18"
           ]
         },
-        "id": 8848,
+        "id": 6093,
         "name": "PragmaDirective",
-        "src": "0:24:34"
+        "src": "0:24:23"
       },
       {
         "attributes": {
-          "SourceUnit": 7032,
+          "SourceUnit": 6028,
           "absolutePath": "contracts/Library/ExecutionLib.sol",
           "file": "contracts/Library/ExecutionLib.sol",
-          "scope": 9081,
+          "scope": 6305,
           "symbolAliases": [
             null
           ],
           "unitAlias": ""
         },
-        "id": 8849,
+        "id": 6094,
         "name": "ImportDirective",
-        "src": "26:44:34"
+        "src": "26:44:23"
       },
       {
         "attributes": {
-          "SourceUnit": 8847,
+          "SourceUnit": 6092,
           "absolutePath": "contracts/Library/MathLib.sol",
           "file": "contracts/Library/MathLib.sol",
-          "scope": 9081,
+          "scope": 6305,
           "symbolAliases": [
             null
           ],
           "unitAlias": ""
         },
-        "id": 8850,
+        "id": 6095,
         "name": "ImportDirective",
-        "src": "71:39:34"
+        "src": "71:39:23"
       },
       {
         "attributes": {
-          "SourceUnit": 12227,
+          "SourceUnit": 9116,
           "absolutePath": "contracts/zeppelin/SafeMath.sol",
           "file": "contracts/zeppelin/SafeMath.sol",
-          "scope": 9081,
+          "scope": 6305,
           "symbolAliases": [
             null
           ],
           "unitAlias": ""
         },
-        "id": 8851,
+        "id": 6096,
         "name": "ImportDirective",
-        "src": "111:41:34"
+        "src": "111:41:23"
       },
       {
         "attributes": {
@@ -131,10 +170,10 @@
           "documentation": null,
           "fullyImplemented": true,
           "linearizedBaseContracts": [
-            9080
+            6304
           ],
           "name": "PaymentLib",
-          "scope": 9081
+          "scope": 6305
         },
         "children": [
           {
@@ -143,32 +182,32 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "SafeMath",
-                  "referencedDeclaration": 12226,
+                  "referencedDeclaration": 9115,
                   "type": "library SafeMath"
                 },
-                "id": 8852,
+                "id": 6097,
                 "name": "UserDefinedTypeName",
-                "src": "185:8:34"
+                "src": "185:8:23"
               },
               {
                 "attributes": {
                   "name": "uint",
                   "type": "uint256"
                 },
-                "id": 8853,
+                "id": 6098,
                 "name": "ElementaryTypeName",
-                "src": "198:4:34"
+                "src": "198:4:23"
               }
             ],
-            "id": 8854,
+            "id": 6099,
             "name": "UsingForDirective",
-            "src": "179:24:34"
+            "src": "179:24:23"
           },
           {
             "attributes": {
               "canonicalName": "PaymentLib.PaymentData",
               "name": "PaymentData",
-              "scope": 9080,
+              "scope": 6304,
               "visibility": "public"
             },
             "children": [
@@ -176,7 +215,7 @@
                 "attributes": {
                   "constant": false,
                   "name": "payment",
-                  "scope": 8867,
+                  "scope": 6112,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "uint256",
@@ -189,20 +228,20 @@
                       "name": "uint",
                       "type": "uint256"
                     },
-                    "id": 8855,
+                    "id": 6100,
                     "name": "ElementaryTypeName",
-                    "src": "238:4:34"
+                    "src": "238:4:23"
                   }
                 ],
-                "id": 8856,
+                "id": 6101,
                 "name": "VariableDeclaration",
-                "src": "238:12:34"
+                "src": "238:12:23"
               },
               {
                 "attributes": {
                   "constant": false,
                   "name": "paymentBenefactor",
-                  "scope": 8867,
+                  "scope": 6112,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "address",
@@ -215,20 +254,20 @@
                       "name": "address",
                       "type": "address"
                     },
-                    "id": 8857,
+                    "id": 6102,
                     "name": "ElementaryTypeName",
-                    "src": "352:7:34"
+                    "src": "352:7:23"
                   }
                 ],
-                "id": 8858,
+                "id": 6103,
                 "name": "VariableDeclaration",
-                "src": "352:25:34"
+                "src": "352:25:23"
               },
               {
                 "attributes": {
                   "constant": false,
                   "name": "paymentOwed",
-                  "scope": 8867,
+                  "scope": 6112,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "uint256",
@@ -241,20 +280,20 @@
                       "name": "uint",
                       "type": "uint256"
                     },
-                    "id": 8859,
+                    "id": 6104,
                     "name": "ElementaryTypeName",
-                    "src": "441:4:34"
+                    "src": "441:4:23"
                   }
                 ],
-                "id": 8860,
+                "id": 6105,
                 "name": "VariableDeclaration",
-                "src": "441:16:34"
+                "src": "441:16:23"
               },
               {
                 "attributes": {
                   "constant": false,
                   "name": "donation",
-                  "scope": 8867,
+                  "scope": 6112,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "uint256",
@@ -267,20 +306,20 @@
                       "name": "uint",
                       "type": "uint256"
                     },
-                    "id": 8861,
+                    "id": 6106,
                     "name": "ElementaryTypeName",
-                    "src": "532:4:34"
+                    "src": "532:4:23"
                   }
                 ],
-                "id": 8862,
+                "id": 6107,
                 "name": "VariableDeclaration",
-                "src": "532:13:34"
+                "src": "532:13:23"
               },
               {
                 "attributes": {
                   "constant": false,
                   "name": "donationBenefactor",
-                  "scope": 8867,
+                  "scope": 6112,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "address",
@@ -293,20 +332,20 @@
                       "name": "address",
                       "type": "address"
                     },
-                    "id": 8863,
+                    "id": 6108,
                     "name": "ElementaryTypeName",
-                    "src": "644:7:34"
+                    "src": "644:7:23"
                   }
                 ],
-                "id": 8864,
+                "id": 6109,
                 "name": "VariableDeclaration",
-                "src": "644:26:34"
+                "src": "644:26:23"
               },
               {
                 "attributes": {
                   "constant": false,
                   "name": "donationOwed",
-                  "scope": 8867,
+                  "scope": 6112,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "uint256",
@@ -319,19 +358,19 @@
                       "name": "uint",
                       "type": "uint256"
                     },
-                    "id": 8865,
+                    "id": 6110,
                     "name": "ElementaryTypeName",
-                    "src": "734:4:34"
+                    "src": "734:4:23"
                   }
                 ],
-                "id": 8866,
+                "id": 6111,
                 "name": "VariableDeclaration",
-                "src": "734:17:34"
+                "src": "734:17:23"
               }
             ],
-            "id": 8867,
+            "id": 6112,
             "name": "StructDefinition",
-            "src": "209:613:34"
+            "src": "209:613:23"
           },
           {
             "attributes": {
@@ -343,7 +382,7 @@
               ],
               "name": "hasBenefactor",
               "payable": false,
-              "scope": 9080,
+              "scope": 6304,
               "stateMutability": "view",
               "superFunction": null,
               "visibility": "internal"
@@ -355,7 +394,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "self",
-                      "scope": 8880,
+                      "scope": 6125,
                       "stateVariable": false,
                       "storageLocation": "storage",
                       "type": "struct PaymentLib.PaymentData storage pointer",
@@ -367,22 +406,22 @@
                         "attributes": {
                           "contractScope": null,
                           "name": "PaymentData",
-                          "referencedDeclaration": 8867,
+                          "referencedDeclaration": 6112,
                           "type": "struct PaymentLib.PaymentData storage pointer"
                         },
-                        "id": 8868,
+                        "id": 6113,
                         "name": "UserDefinedTypeName",
-                        "src": "1007:11:34"
+                        "src": "1007:11:23"
                       }
                     ],
-                    "id": 8869,
+                    "id": 6114,
                     "name": "VariableDeclaration",
-                    "src": "1007:24:34"
+                    "src": "1007:24:23"
                   }
                 ],
-                "id": 8870,
+                "id": 6115,
                 "name": "ParameterList",
-                "src": "1006:26:34"
+                "src": "1006:26:23"
               },
               {
                 "children": [
@@ -390,7 +429,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 8880,
+                      "scope": 6125,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bool",
@@ -403,25 +442,25 @@
                           "name": "bool",
                           "type": "bool"
                         },
-                        "id": 8871,
+                        "id": 6116,
                         "name": "ElementaryTypeName",
-                        "src": "1064:4:34"
+                        "src": "1064:4:23"
                       }
                     ],
-                    "id": 8872,
+                    "id": 6117,
                     "name": "VariableDeclaration",
-                    "src": "1064:4:34"
+                    "src": "1064:4:23"
                   }
                 ],
-                "id": 8873,
+                "id": 6118,
                 "name": "ParameterList",
-                "src": "1063:6:34"
+                "src": "1063:6:23"
               },
               {
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 8873
+                      "functionReturnParameters": 6118
                     },
                     "children": [
                       {
@@ -447,7 +486,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "donationBenefactor",
-                              "referencedDeclaration": 8864,
+                              "referencedDeclaration": 6109,
                               "type": "address"
                             },
                             "children": [
@@ -457,18 +496,18 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 8869,
+                                  "referencedDeclaration": 6114,
                                   "type": "struct PaymentLib.PaymentData storage pointer",
                                   "value": "self"
                                 },
-                                "id": 8874,
+                                "id": 6119,
                                 "name": "Identifier",
-                                "src": "1091:4:34"
+                                "src": "1091:4:23"
                               }
                             ],
-                            "id": 8875,
+                            "id": 6120,
                             "name": "MemberAccess",
-                            "src": "1091:23:34"
+                            "src": "1091:23:23"
                           },
                           {
                             "attributes": {
@@ -483,29 +522,29 @@
                               "type": "int_const 0",
                               "value": "0x0"
                             },
-                            "id": 8876,
+                            "id": 6121,
                             "name": "Literal",
-                            "src": "1118:3:34"
+                            "src": "1118:3:23"
                           }
                         ],
-                        "id": 8877,
+                        "id": 6122,
                         "name": "BinaryOperation",
-                        "src": "1091:30:34"
+                        "src": "1091:30:23"
                       }
                     ],
-                    "id": 8878,
+                    "id": 6123,
                     "name": "Return",
-                    "src": "1084:37:34"
+                    "src": "1084:37:23"
                   }
                 ],
-                "id": 8879,
+                "id": 6124,
                 "name": "Block",
-                "src": "1074:54:34"
+                "src": "1074:54:23"
               }
             ],
-            "id": 8880,
+            "id": 6125,
             "name": "FunctionDefinition",
-            "src": "984:144:34"
+            "src": "984:144:23"
           },
           {
             "attributes": {
@@ -517,7 +556,7 @@
               ],
               "name": "getDonation",
               "payable": false,
-              "scope": 9080,
+              "scope": 6304,
               "stateMutability": "view",
               "superFunction": null,
               "visibility": "internal"
@@ -529,7 +568,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "self",
-                      "scope": 8891,
+                      "scope": 6136,
                       "stateVariable": false,
                       "storageLocation": "storage",
                       "type": "struct PaymentLib.PaymentData storage pointer",
@@ -541,22 +580,22 @@
                         "attributes": {
                           "contractScope": null,
                           "name": "PaymentData",
-                          "referencedDeclaration": 8867,
+                          "referencedDeclaration": 6112,
                           "type": "struct PaymentLib.PaymentData storage pointer"
                         },
-                        "id": 8881,
+                        "id": 6126,
                         "name": "UserDefinedTypeName",
-                        "src": "1239:11:34"
+                        "src": "1239:11:23"
                       }
                     ],
-                    "id": 8882,
+                    "id": 6127,
                     "name": "VariableDeclaration",
-                    "src": "1239:24:34"
+                    "src": "1239:24:23"
                   }
                 ],
-                "id": 8883,
+                "id": 6128,
                 "name": "ParameterList",
-                "src": "1238:26:34"
+                "src": "1238:26:23"
               },
               {
                 "children": [
@@ -564,7 +603,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 8891,
+                      "scope": 6136,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -577,25 +616,25 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 8884,
+                        "id": 6129,
                         "name": "ElementaryTypeName",
-                        "src": "1297:4:34"
+                        "src": "1297:4:23"
                       }
                     ],
-                    "id": 8885,
+                    "id": 6130,
                     "name": "VariableDeclaration",
-                    "src": "1297:4:34"
+                    "src": "1297:4:23"
                   }
                 ],
-                "id": 8886,
+                "id": 6131,
                 "name": "ParameterList",
-                "src": "1296:6:34"
+                "src": "1296:6:23"
               },
               {
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 8886
+                      "functionReturnParameters": 6131
                     },
                     "children": [
                       {
@@ -606,7 +645,7 @@
                           "isPure": false,
                           "lValueRequested": false,
                           "member_name": "donation",
-                          "referencedDeclaration": 8862,
+                          "referencedDeclaration": 6107,
                           "type": "uint256"
                         },
                         "children": [
@@ -616,33 +655,33 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 8882,
+                              "referencedDeclaration": 6127,
                               "type": "struct PaymentLib.PaymentData storage pointer",
                               "value": "self"
                             },
-                            "id": 8887,
+                            "id": 6132,
                             "name": "Identifier",
-                            "src": "1324:4:34"
+                            "src": "1324:4:23"
                           }
                         ],
-                        "id": 8888,
+                        "id": 6133,
                         "name": "MemberAccess",
-                        "src": "1324:13:34"
+                        "src": "1324:13:23"
                       }
                     ],
-                    "id": 8889,
+                    "id": 6134,
                     "name": "Return",
-                    "src": "1317:20:34"
+                    "src": "1317:20:23"
                   }
                 ],
-                "id": 8890,
+                "id": 6135,
                 "name": "Block",
-                "src": "1307:37:34"
+                "src": "1307:37:23"
               }
             ],
-            "id": 8891,
+            "id": 6136,
             "name": "FunctionDefinition",
-            "src": "1218:126:34"
+            "src": "1218:126:23"
           },
           {
             "attributes": {
@@ -654,7 +693,7 @@
               ],
               "name": "getPayment",
               "payable": false,
-              "scope": 9080,
+              "scope": 6304,
               "stateMutability": "view",
               "superFunction": null,
               "visibility": "internal"
@@ -666,7 +705,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "self",
-                      "scope": 8902,
+                      "scope": 6147,
                       "stateVariable": false,
                       "storageLocation": "storage",
                       "type": "struct PaymentLib.PaymentData storage pointer",
@@ -678,22 +717,22 @@
                         "attributes": {
                           "contractScope": null,
                           "name": "PaymentData",
-                          "referencedDeclaration": 8867,
+                          "referencedDeclaration": 6112,
                           "type": "struct PaymentLib.PaymentData storage pointer"
                         },
-                        "id": 8892,
+                        "id": 6137,
                         "name": "UserDefinedTypeName",
-                        "src": "1469:11:34"
+                        "src": "1469:11:23"
                       }
                     ],
-                    "id": 8893,
+                    "id": 6138,
                     "name": "VariableDeclaration",
-                    "src": "1469:24:34"
+                    "src": "1469:24:23"
                   }
                 ],
-                "id": 8894,
+                "id": 6139,
                 "name": "ParameterList",
-                "src": "1468:26:34"
+                "src": "1468:26:23"
               },
               {
                 "children": [
@@ -701,7 +740,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 8902,
+                      "scope": 6147,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -714,25 +753,25 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 8895,
+                        "id": 6140,
                         "name": "ElementaryTypeName",
-                        "src": "1526:4:34"
+                        "src": "1526:4:23"
                       }
                     ],
-                    "id": 8896,
+                    "id": 6141,
                     "name": "VariableDeclaration",
-                    "src": "1526:4:34"
+                    "src": "1526:4:23"
                   }
                 ],
-                "id": 8897,
+                "id": 6142,
                 "name": "ParameterList",
-                "src": "1525:6:34"
+                "src": "1525:6:23"
               },
               {
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 8897
+                      "functionReturnParameters": 6142
                     },
                     "children": [
                       {
@@ -743,7 +782,7 @@
                           "isPure": false,
                           "lValueRequested": false,
                           "member_name": "payment",
-                          "referencedDeclaration": 8856,
+                          "referencedDeclaration": 6101,
                           "type": "uint256"
                         },
                         "children": [
@@ -753,33 +792,33 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 8893,
+                              "referencedDeclaration": 6138,
                               "type": "struct PaymentLib.PaymentData storage pointer",
                               "value": "self"
                             },
-                            "id": 8898,
+                            "id": 6143,
                             "name": "Identifier",
-                            "src": "1553:4:34"
+                            "src": "1553:4:23"
                           }
                         ],
-                        "id": 8899,
+                        "id": 6144,
                         "name": "MemberAccess",
-                        "src": "1553:12:34"
+                        "src": "1553:12:23"
                       }
                     ],
-                    "id": 8900,
+                    "id": 6145,
                     "name": "Return",
-                    "src": "1546:19:34"
+                    "src": "1546:19:23"
                   }
                 ],
-                "id": 8901,
+                "id": 6146,
                 "name": "Block",
-                "src": "1536:36:34"
+                "src": "1536:36:23"
               }
             ],
-            "id": 8902,
+            "id": 6147,
             "name": "FunctionDefinition",
-            "src": "1449:123:34"
+            "src": "1449:123:23"
           },
           {
             "attributes": {
@@ -791,7 +830,7 @@
               ],
               "name": "getPaymentWithModifier",
               "payable": false,
-              "scope": 9080,
+              "scope": 6304,
               "stateMutability": "view",
               "superFunction": null,
               "visibility": "internal"
@@ -803,7 +842,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "self",
-                      "scope": 8922,
+                      "scope": 6167,
                       "stateVariable": false,
                       "storageLocation": "storage",
                       "type": "struct PaymentLib.PaymentData storage pointer",
@@ -815,23 +854,23 @@
                         "attributes": {
                           "contractScope": null,
                           "name": "PaymentData",
-                          "referencedDeclaration": 8867,
+                          "referencedDeclaration": 6112,
                           "type": "struct PaymentLib.PaymentData storage pointer"
                         },
-                        "id": 8903,
+                        "id": 6148,
                         "name": "UserDefinedTypeName",
-                        "src": "1791:11:34"
+                        "src": "1791:11:23"
                       }
                     ],
-                    "id": 8904,
+                    "id": 6149,
                     "name": "VariableDeclaration",
-                    "src": "1791:24:34"
+                    "src": "1791:24:23"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_paymentModifier",
-                      "scope": 8922,
+                      "scope": 6167,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint8",
@@ -844,19 +883,19 @@
                           "name": "uint8",
                           "type": "uint8"
                         },
-                        "id": 8905,
+                        "id": 6150,
                         "name": "ElementaryTypeName",
-                        "src": "1853:5:34"
+                        "src": "1853:5:23"
                       }
                     ],
-                    "id": 8906,
+                    "id": 6151,
                     "name": "VariableDeclaration",
-                    "src": "1853:22:34"
+                    "src": "1853:22:23"
                   }
                 ],
-                "id": 8907,
+                "id": 6152,
                 "name": "ParameterList",
-                "src": "1790:86:34"
+                "src": "1790:86:23"
               },
               {
                 "children": [
@@ -864,7 +903,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 8922,
+                      "scope": 6167,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -877,25 +916,25 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 8908,
+                        "id": 6153,
                         "name": "ElementaryTypeName",
-                        "src": "1908:4:34"
+                        "src": "1908:4:23"
                       }
                     ],
-                    "id": 8909,
+                    "id": 6154,
                     "name": "VariableDeclaration",
-                    "src": "1908:4:34"
+                    "src": "1908:4:23"
                   }
                 ],
-                "id": 8910,
+                "id": 6155,
                 "name": "ParameterList",
-                "src": "1907:6:34"
+                "src": "1907:6:23"
               },
               {
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 8910
+                      "functionReturnParameters": 6155
                     },
                     "children": [
                       {
@@ -926,7 +965,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "div",
-                              "referencedDeclaration": 12181,
+                              "referencedDeclaration": 9070,
                               "type": "function (uint256,uint256) pure returns (uint256)"
                             },
                             "children": [
@@ -958,7 +997,7 @@
                                       "isPure": false,
                                       "lValueRequested": false,
                                       "member_name": "mul",
-                                      "referencedDeclaration": 12163,
+                                      "referencedDeclaration": 9052,
                                       "type": "function (uint256,uint256) pure returns (uint256)"
                                     },
                                     "children": [
@@ -981,20 +1020,20 @@
                                             "attributes": {
                                               "argumentTypes": [
                                                 {
-                                                  "typeIdentifier": "t_struct$_PaymentData_$8867_storage_ptr",
+                                                  "typeIdentifier": "t_struct$_PaymentData_$6112_storage_ptr",
                                                   "typeString": "struct PaymentLib.PaymentData storage pointer"
                                                 }
                                               ],
                                               "overloadedDeclarations": [
                                                 null
                                               ],
-                                              "referencedDeclaration": 8902,
+                                              "referencedDeclaration": 6147,
                                               "type": "function (struct PaymentLib.PaymentData storage pointer) view returns (uint256)",
                                               "value": "getPayment"
                                             },
-                                            "id": 8911,
+                                            "id": 6156,
                                             "name": "Identifier",
-                                            "src": "1935:10:34"
+                                            "src": "1935:10:23"
                                           },
                                           {
                                             "attributes": {
@@ -1002,23 +1041,23 @@
                                               "overloadedDeclarations": [
                                                 null
                                               ],
-                                              "referencedDeclaration": 8904,
+                                              "referencedDeclaration": 6149,
                                               "type": "struct PaymentLib.PaymentData storage pointer",
                                               "value": "self"
                                             },
-                                            "id": 8912,
+                                            "id": 6157,
                                             "name": "Identifier",
-                                            "src": "1946:4:34"
+                                            "src": "1946:4:23"
                                           }
                                         ],
-                                        "id": 8913,
+                                        "id": 6158,
                                         "name": "FunctionCall",
-                                        "src": "1935:16:34"
+                                        "src": "1935:16:23"
                                       }
                                     ],
-                                    "id": 8914,
+                                    "id": 6159,
                                     "name": "MemberAccess",
-                                    "src": "1935:20:34"
+                                    "src": "1935:20:23"
                                   },
                                   {
                                     "attributes": {
@@ -1026,23 +1065,23 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 8906,
+                                      "referencedDeclaration": 6151,
                                       "type": "uint8",
                                       "value": "_paymentModifier"
                                     },
-                                    "id": 8915,
+                                    "id": 6160,
                                     "name": "Identifier",
-                                    "src": "1956:16:34"
+                                    "src": "1956:16:23"
                                   }
                                 ],
-                                "id": 8916,
+                                "id": 6161,
                                 "name": "FunctionCall",
-                                "src": "1935:38:34"
+                                "src": "1935:38:23"
                               }
                             ],
-                            "id": 8917,
+                            "id": 6162,
                             "name": "MemberAccess",
-                            "src": "1935:42:34"
+                            "src": "1935:42:23"
                           },
                           {
                             "attributes": {
@@ -1057,29 +1096,29 @@
                               "type": "int_const 100",
                               "value": "100"
                             },
-                            "id": 8918,
+                            "id": 6163,
                             "name": "Literal",
-                            "src": "1978:3:34"
+                            "src": "1978:3:23"
                           }
                         ],
-                        "id": 8919,
+                        "id": 6164,
                         "name": "FunctionCall",
-                        "src": "1935:47:34"
+                        "src": "1935:47:23"
                       }
                     ],
-                    "id": 8920,
+                    "id": 6165,
                     "name": "Return",
-                    "src": "1928:54:34"
+                    "src": "1928:54:23"
                   }
                 ],
-                "id": 8921,
+                "id": 6166,
                 "name": "Block",
-                "src": "1918:71:34"
+                "src": "1918:71:23"
               }
             ],
-            "id": 8922,
+            "id": 6167,
             "name": "FunctionDefinition",
-            "src": "1759:230:34"
+            "src": "1759:230:23"
           },
           {
             "attributes": {
@@ -1091,7 +1130,7 @@
               ],
               "name": "sendDonation",
               "payable": false,
-              "scope": 9080,
+              "scope": 6304,
               "stateMutability": "nonpayable",
               "superFunction": null,
               "visibility": "internal"
@@ -1103,7 +1142,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "self",
-                      "scope": 8954,
+                      "scope": 6199,
                       "stateVariable": false,
                       "storageLocation": "storage",
                       "type": "struct PaymentLib.PaymentData storage pointer",
@@ -1115,22 +1154,22 @@
                         "attributes": {
                           "contractScope": null,
                           "name": "PaymentData",
-                          "referencedDeclaration": 8867,
+                          "referencedDeclaration": 6112,
                           "type": "struct PaymentLib.PaymentData storage pointer"
                         },
-                        "id": 8923,
+                        "id": 6168,
                         "name": "UserDefinedTypeName",
-                        "src": "2206:11:34"
+                        "src": "2206:11:23"
                       }
                     ],
-                    "id": 8924,
+                    "id": 6169,
                     "name": "VariableDeclaration",
-                    "src": "2206:24:34"
+                    "src": "2206:24:23"
                   }
                 ],
-                "id": 8925,
+                "id": 6170,
                 "name": "ParameterList",
-                "src": "2205:26:34"
+                "src": "2205:26:23"
               },
               {
                 "children": [
@@ -1138,7 +1177,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 8954,
+                      "scope": 6199,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bool",
@@ -1151,26 +1190,26 @@
                           "name": "bool",
                           "type": "bool"
                         },
-                        "id": 8926,
+                        "id": 6171,
                         "name": "ElementaryTypeName",
-                        "src": "2259:4:34"
+                        "src": "2259:4:23"
                       }
                     ],
-                    "id": 8927,
+                    "id": 6172,
                     "name": "VariableDeclaration",
-                    "src": "2259:4:34"
+                    "src": "2259:4:23"
                   }
                 ],
-                "id": 8928,
+                "id": 6173,
                 "name": "ParameterList",
-                "src": "2258:6:34"
+                "src": "2258:6:23"
               },
               {
                 "children": [
                   {
                     "attributes": {
                       "assignments": [
-                        8930
+                        6175
                       ]
                     },
                     "children": [
@@ -1178,7 +1217,7 @@
                         "attributes": {
                           "constant": false,
                           "name": "donationAmount",
-                          "scope": 8954,
+                          "scope": 6199,
                           "stateVariable": false,
                           "storageLocation": "default",
                           "type": "uint256",
@@ -1191,14 +1230,14 @@
                               "name": "uint",
                               "type": "uint256"
                             },
-                            "id": 8929,
+                            "id": 6174,
                             "name": "ElementaryTypeName",
-                            "src": "2279:4:34"
+                            "src": "2279:4:23"
                           }
                         ],
-                        "id": 8930,
+                        "id": 6175,
                         "name": "VariableDeclaration",
-                        "src": "2279:19:34"
+                        "src": "2279:19:23"
                       },
                       {
                         "attributes": {
@@ -1208,7 +1247,7 @@
                           "isPure": false,
                           "lValueRequested": false,
                           "member_name": "donationOwed",
-                          "referencedDeclaration": 8866,
+                          "referencedDeclaration": 6111,
                           "type": "uint256"
                         },
                         "children": [
@@ -1218,23 +1257,23 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 8924,
+                              "referencedDeclaration": 6169,
                               "type": "struct PaymentLib.PaymentData storage pointer",
                               "value": "self"
                             },
-                            "id": 8931,
+                            "id": 6176,
                             "name": "Identifier",
-                            "src": "2301:4:34"
+                            "src": "2301:4:23"
                           }
                         ],
-                        "id": 8932,
+                        "id": 6177,
                         "name": "MemberAccess",
-                        "src": "2301:17:34"
+                        "src": "2301:17:23"
                       }
                     ],
-                    "id": 8933,
+                    "id": 6178,
                     "name": "VariableDeclarationStatement",
-                    "src": "2279:39:34"
+                    "src": "2279:39:23"
                   },
                   {
                     "attributes": {
@@ -1262,13 +1301,13 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 8930,
+                              "referencedDeclaration": 6175,
                               "type": "uint256",
                               "value": "donationAmount"
                             },
-                            "id": 8934,
+                            "id": 6179,
                             "name": "Identifier",
-                            "src": "2332:14:34"
+                            "src": "2332:14:23"
                           },
                           {
                             "attributes": {
@@ -1283,14 +1322,14 @@
                               "type": "int_const 0",
                               "value": "0"
                             },
-                            "id": 8935,
+                            "id": 6180,
                             "name": "Literal",
-                            "src": "2349:1:34"
+                            "src": "2349:1:23"
                           }
                         ],
-                        "id": 8936,
+                        "id": 6181,
                         "name": "BinaryOperation",
-                        "src": "2332:18:34"
+                        "src": "2332:18:23"
                       },
                       {
                         "children": [
@@ -1315,7 +1354,7 @@
                                       "isPure": false,
                                       "lValueRequested": true,
                                       "member_name": "donationOwed",
-                                      "referencedDeclaration": 8866,
+                                      "referencedDeclaration": 6111,
                                       "type": "uint256"
                                     },
                                     "children": [
@@ -1325,18 +1364,18 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 8924,
+                                          "referencedDeclaration": 6169,
                                           "type": "struct PaymentLib.PaymentData storage pointer",
                                           "value": "self"
                                         },
-                                        "id": 8937,
+                                        "id": 6182,
                                         "name": "Identifier",
-                                        "src": "2405:4:34"
+                                        "src": "2405:4:23"
                                       }
                                     ],
-                                    "id": 8939,
+                                    "id": 6184,
                                     "name": "MemberAccess",
-                                    "src": "2405:17:34"
+                                    "src": "2405:17:23"
                                   },
                                   {
                                     "attributes": {
@@ -1351,23 +1390,23 @@
                                       "type": "int_const 0",
                                       "value": "0"
                                     },
-                                    "id": 8940,
+                                    "id": 6185,
                                     "name": "Literal",
-                                    "src": "2425:1:34"
+                                    "src": "2425:1:23"
                                   }
                                 ],
-                                "id": 8941,
+                                "id": 6186,
                                 "name": "Assignment",
-                                "src": "2405:21:34"
+                                "src": "2405:21:23"
                               }
                             ],
-                            "id": 8942,
+                            "id": 6187,
                             "name": "ExpressionStatement",
-                            "src": "2405:21:34"
+                            "src": "2405:21:23"
                           },
                           {
                             "attributes": {
-                              "functionReturnParameters": 8928
+                              "functionReturnParameters": 6173
                             },
                             "children": [
                               {
@@ -1410,7 +1449,7 @@
                                           "isPure": false,
                                           "lValueRequested": false,
                                           "member_name": "donationBenefactor",
-                                          "referencedDeclaration": 8864,
+                                          "referencedDeclaration": 6109,
                                           "type": "address"
                                         },
                                         "children": [
@@ -1420,23 +1459,23 @@
                                               "overloadedDeclarations": [
                                                 null
                                               ],
-                                              "referencedDeclaration": 8924,
+                                              "referencedDeclaration": 6169,
                                               "type": "struct PaymentLib.PaymentData storage pointer",
                                               "value": "self"
                                             },
-                                            "id": 8943,
+                                            "id": 6188,
                                             "name": "Identifier",
-                                            "src": "2447:4:34"
+                                            "src": "2447:4:23"
                                           }
                                         ],
-                                        "id": 8944,
+                                        "id": 6189,
                                         "name": "MemberAccess",
-                                        "src": "2447:23:34"
+                                        "src": "2447:23:23"
                                       }
                                     ],
-                                    "id": 8945,
+                                    "id": 6190,
                                     "name": "MemberAccess",
-                                    "src": "2447:28:34"
+                                    "src": "2447:28:23"
                                   },
                                   {
                                     "attributes": {
@@ -1444,37 +1483,37 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 8930,
+                                      "referencedDeclaration": 6175,
                                       "type": "uint256",
                                       "value": "donationAmount"
                                     },
-                                    "id": 8946,
+                                    "id": 6191,
                                     "name": "Identifier",
-                                    "src": "2476:14:34"
+                                    "src": "2476:14:23"
                                   }
                                 ],
-                                "id": 8947,
+                                "id": 6192,
                                 "name": "FunctionCall",
-                                "src": "2447:44:34"
+                                "src": "2447:44:23"
                               }
                             ],
-                            "id": 8948,
+                            "id": 6193,
                             "name": "Return",
-                            "src": "2440:51:34"
+                            "src": "2440:51:23"
                           }
                         ],
-                        "id": 8949,
+                        "id": 6194,
                         "name": "Block",
-                        "src": "2352:150:34"
+                        "src": "2352:150:23"
                       }
                     ],
-                    "id": 8950,
+                    "id": 6195,
                     "name": "IfStatement",
-                    "src": "2328:174:34"
+                    "src": "2328:174:23"
                   },
                   {
                     "attributes": {
-                      "functionReturnParameters": 8928
+                      "functionReturnParameters": 6173
                     },
                     "children": [
                       {
@@ -1490,24 +1529,24 @@
                           "type": "bool",
                           "value": "true"
                         },
-                        "id": 8951,
+                        "id": 6196,
                         "name": "Literal",
-                        "src": "2518:4:34"
+                        "src": "2518:4:23"
                       }
                     ],
-                    "id": 8952,
+                    "id": 6197,
                     "name": "Return",
-                    "src": "2511:11:34"
+                    "src": "2511:11:23"
                   }
                 ],
-                "id": 8953,
+                "id": 6198,
                 "name": "Block",
-                "src": "2269:260:34"
+                "src": "2269:260:23"
               }
             ],
-            "id": 8954,
+            "id": 6199,
             "name": "FunctionDefinition",
-            "src": "2184:345:34"
+            "src": "2184:345:23"
           },
           {
             "attributes": {
@@ -1519,7 +1558,7 @@
               ],
               "name": "sendPayment",
               "payable": false,
-              "scope": 9080,
+              "scope": 6304,
               "stateMutability": "nonpayable",
               "superFunction": null,
               "visibility": "internal"
@@ -1531,7 +1570,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "self",
-                      "scope": 8986,
+                      "scope": 6231,
                       "stateVariable": false,
                       "storageLocation": "storage",
                       "type": "struct PaymentLib.PaymentData storage pointer",
@@ -1543,22 +1582,22 @@
                         "attributes": {
                           "contractScope": null,
                           "name": "PaymentData",
-                          "referencedDeclaration": 8867,
+                          "referencedDeclaration": 6112,
                           "type": "struct PaymentLib.PaymentData storage pointer"
                         },
-                        "id": 8955,
+                        "id": 6200,
                         "name": "UserDefinedTypeName",
-                        "src": "2680:11:34"
+                        "src": "2680:11:23"
                       }
                     ],
-                    "id": 8956,
+                    "id": 6201,
                     "name": "VariableDeclaration",
-                    "src": "2680:24:34"
+                    "src": "2680:24:23"
                   }
                 ],
-                "id": 8957,
+                "id": 6202,
                 "name": "ParameterList",
-                "src": "2679:26:34"
+                "src": "2679:26:23"
               },
               {
                 "children": [
@@ -1566,7 +1605,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 8986,
+                      "scope": 6231,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bool",
@@ -1579,26 +1618,26 @@
                           "name": "bool",
                           "type": "bool"
                         },
-                        "id": 8958,
+                        "id": 6203,
                         "name": "ElementaryTypeName",
-                        "src": "2732:4:34"
+                        "src": "2732:4:23"
                       }
                     ],
-                    "id": 8959,
+                    "id": 6204,
                     "name": "VariableDeclaration",
-                    "src": "2732:4:34"
+                    "src": "2732:4:23"
                   }
                 ],
-                "id": 8960,
+                "id": 6205,
                 "name": "ParameterList",
-                "src": "2731:6:34"
+                "src": "2731:6:23"
               },
               {
                 "children": [
                   {
                     "attributes": {
                       "assignments": [
-                        8962
+                        6207
                       ]
                     },
                     "children": [
@@ -1606,7 +1645,7 @@
                         "attributes": {
                           "constant": false,
                           "name": "paymentAmount",
-                          "scope": 8986,
+                          "scope": 6231,
                           "stateVariable": false,
                           "storageLocation": "default",
                           "type": "uint256",
@@ -1619,14 +1658,14 @@
                               "name": "uint",
                               "type": "uint256"
                             },
-                            "id": 8961,
+                            "id": 6206,
                             "name": "ElementaryTypeName",
-                            "src": "2752:4:34"
+                            "src": "2752:4:23"
                           }
                         ],
-                        "id": 8962,
+                        "id": 6207,
                         "name": "VariableDeclaration",
-                        "src": "2752:18:34"
+                        "src": "2752:18:23"
                       },
                       {
                         "attributes": {
@@ -1636,7 +1675,7 @@
                           "isPure": false,
                           "lValueRequested": false,
                           "member_name": "paymentOwed",
-                          "referencedDeclaration": 8860,
+                          "referencedDeclaration": 6105,
                           "type": "uint256"
                         },
                         "children": [
@@ -1646,23 +1685,23 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 8956,
+                              "referencedDeclaration": 6201,
                               "type": "struct PaymentLib.PaymentData storage pointer",
                               "value": "self"
                             },
-                            "id": 8963,
+                            "id": 6208,
                             "name": "Identifier",
-                            "src": "2773:4:34"
+                            "src": "2773:4:23"
                           }
                         ],
-                        "id": 8964,
+                        "id": 6209,
                         "name": "MemberAccess",
-                        "src": "2773:16:34"
+                        "src": "2773:16:23"
                       }
                     ],
-                    "id": 8965,
+                    "id": 6210,
                     "name": "VariableDeclarationStatement",
-                    "src": "2752:37:34"
+                    "src": "2752:37:23"
                   },
                   {
                     "attributes": {
@@ -1690,13 +1729,13 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 8962,
+                              "referencedDeclaration": 6207,
                               "type": "uint256",
                               "value": "paymentAmount"
                             },
-                            "id": 8966,
+                            "id": 6211,
                             "name": "Identifier",
-                            "src": "2803:13:34"
+                            "src": "2803:13:23"
                           },
                           {
                             "attributes": {
@@ -1711,14 +1750,14 @@
                               "type": "int_const 0",
                               "value": "0"
                             },
-                            "id": 8967,
+                            "id": 6212,
                             "name": "Literal",
-                            "src": "2819:1:34"
+                            "src": "2819:1:23"
                           }
                         ],
-                        "id": 8968,
+                        "id": 6213,
                         "name": "BinaryOperation",
-                        "src": "2803:17:34"
+                        "src": "2803:17:23"
                       },
                       {
                         "children": [
@@ -1743,7 +1782,7 @@
                                       "isPure": false,
                                       "lValueRequested": true,
                                       "member_name": "paymentOwed",
-                                      "referencedDeclaration": 8860,
+                                      "referencedDeclaration": 6105,
                                       "type": "uint256"
                                     },
                                     "children": [
@@ -1753,18 +1792,18 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 8956,
+                                          "referencedDeclaration": 6201,
                                           "type": "struct PaymentLib.PaymentData storage pointer",
                                           "value": "self"
                                         },
-                                        "id": 8969,
+                                        "id": 6214,
                                         "name": "Identifier",
-                                        "src": "2875:4:34"
+                                        "src": "2875:4:23"
                                       }
                                     ],
-                                    "id": 8971,
+                                    "id": 6216,
                                     "name": "MemberAccess",
-                                    "src": "2875:16:34"
+                                    "src": "2875:16:23"
                                   },
                                   {
                                     "attributes": {
@@ -1779,23 +1818,23 @@
                                       "type": "int_const 0",
                                       "value": "0"
                                     },
-                                    "id": 8972,
+                                    "id": 6217,
                                     "name": "Literal",
-                                    "src": "2894:1:34"
+                                    "src": "2894:1:23"
                                   }
                                 ],
-                                "id": 8973,
+                                "id": 6218,
                                 "name": "Assignment",
-                                "src": "2875:20:34"
+                                "src": "2875:20:23"
                               }
                             ],
-                            "id": 8974,
+                            "id": 6219,
                             "name": "ExpressionStatement",
-                            "src": "2875:20:34"
+                            "src": "2875:20:23"
                           },
                           {
                             "attributes": {
-                              "functionReturnParameters": 8960
+                              "functionReturnParameters": 6205
                             },
                             "children": [
                               {
@@ -1838,7 +1877,7 @@
                                           "isPure": false,
                                           "lValueRequested": false,
                                           "member_name": "paymentBenefactor",
-                                          "referencedDeclaration": 8858,
+                                          "referencedDeclaration": 6103,
                                           "type": "address"
                                         },
                                         "children": [
@@ -1848,23 +1887,23 @@
                                               "overloadedDeclarations": [
                                                 null
                                               ],
-                                              "referencedDeclaration": 8956,
+                                              "referencedDeclaration": 6201,
                                               "type": "struct PaymentLib.PaymentData storage pointer",
                                               "value": "self"
                                             },
-                                            "id": 8975,
+                                            "id": 6220,
                                             "name": "Identifier",
-                                            "src": "2916:4:34"
+                                            "src": "2916:4:23"
                                           }
                                         ],
-                                        "id": 8976,
+                                        "id": 6221,
                                         "name": "MemberAccess",
-                                        "src": "2916:22:34"
+                                        "src": "2916:22:23"
                                       }
                                     ],
-                                    "id": 8977,
+                                    "id": 6222,
                                     "name": "MemberAccess",
-                                    "src": "2916:27:34"
+                                    "src": "2916:27:23"
                                   },
                                   {
                                     "attributes": {
@@ -1872,37 +1911,37 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 8962,
+                                      "referencedDeclaration": 6207,
                                       "type": "uint256",
                                       "value": "paymentAmount"
                                     },
-                                    "id": 8978,
+                                    "id": 6223,
                                     "name": "Identifier",
-                                    "src": "2944:13:34"
+                                    "src": "2944:13:23"
                                   }
                                 ],
-                                "id": 8979,
+                                "id": 6224,
                                 "name": "FunctionCall",
-                                "src": "2916:42:34"
+                                "src": "2916:42:23"
                               }
                             ],
-                            "id": 8980,
+                            "id": 6225,
                             "name": "Return",
-                            "src": "2909:49:34"
+                            "src": "2909:49:23"
                           }
                         ],
-                        "id": 8981,
+                        "id": 6226,
                         "name": "Block",
-                        "src": "2822:147:34"
+                        "src": "2822:147:23"
                       }
                     ],
-                    "id": 8982,
+                    "id": 6227,
                     "name": "IfStatement",
-                    "src": "2799:170:34"
+                    "src": "2799:170:23"
                   },
                   {
                     "attributes": {
-                      "functionReturnParameters": 8960
+                      "functionReturnParameters": 6205
                     },
                     "children": [
                       {
@@ -1918,24 +1957,24 @@
                           "type": "bool",
                           "value": "true"
                         },
-                        "id": 8983,
+                        "id": 6228,
                         "name": "Literal",
-                        "src": "2985:4:34"
+                        "src": "2985:4:23"
                       }
                     ],
-                    "id": 8984,
+                    "id": 6229,
                     "name": "Return",
-                    "src": "2978:11:34"
+                    "src": "2978:11:23"
                   }
                 ],
-                "id": 8985,
+                "id": 6230,
                 "name": "Block",
-                "src": "2742:254:34"
+                "src": "2742:254:23"
               }
             ],
-            "id": 8986,
+            "id": 6231,
             "name": "FunctionDefinition",
-            "src": "2659:337:34"
+            "src": "2659:337:23"
           },
           {
             "attributes": {
@@ -1947,10 +1986,10 @@
               ],
               "name": "computeEndowment",
               "payable": false,
-              "scope": 9080,
+              "scope": 6304,
               "stateMutability": "pure",
               "superFunction": null,
-              "visibility": "internal"
+              "visibility": "public"
             },
             "children": [
               {
@@ -1959,7 +1998,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_payment",
-                      "scope": 9020,
+                      "scope": 6272,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -1972,20 +2011,20 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 8987,
+                        "id": 6232,
                         "name": "ElementaryTypeName",
-                        "src": "3314:4:34"
+                        "src": "3316:4:23"
                       }
                     ],
-                    "id": 8988,
+                    "id": 6233,
                     "name": "VariableDeclaration",
-                    "src": "3314:13:34"
+                    "src": "3316:13:23"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_donation",
-                      "scope": 9020,
+                      "scope": 6272,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -1998,20 +2037,20 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 8989,
+                        "id": 6234,
                         "name": "ElementaryTypeName",
-                        "src": "3337:4:34"
+                        "src": "3339:4:23"
                       }
                     ],
-                    "id": 8990,
+                    "id": 6235,
                     "name": "VariableDeclaration",
-                    "src": "3337:14:34"
+                    "src": "3339:14:23"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_callGas",
-                      "scope": 9020,
+                      "scope": 6272,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2024,20 +2063,20 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 8991,
+                        "id": 6236,
                         "name": "ElementaryTypeName",
-                        "src": "3361:4:34"
+                        "src": "3363:4:23"
                       }
                     ],
-                    "id": 8992,
+                    "id": 6237,
                     "name": "VariableDeclaration",
-                    "src": "3361:13:34"
+                    "src": "3363:13:23"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_callValue",
-                      "scope": 9020,
+                      "scope": 6272,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2050,20 +2089,20 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 8993,
+                        "id": 6238,
                         "name": "ElementaryTypeName",
-                        "src": "3384:4:34"
+                        "src": "3386:4:23"
                       }
                     ],
-                    "id": 8994,
+                    "id": 6239,
                     "name": "VariableDeclaration",
-                    "src": "3384:15:34"
+                    "src": "3386:15:23"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_gasPrice",
-                      "scope": 9020,
+                      "scope": 6272,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2076,20 +2115,20 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 8995,
+                        "id": 6240,
                         "name": "ElementaryTypeName",
-                        "src": "3409:4:34"
+                        "src": "3411:4:23"
                       }
                     ],
-                    "id": 8996,
+                    "id": 6241,
                     "name": "VariableDeclaration",
-                    "src": "3409:14:34"
+                    "src": "3411:14:23"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_gasOverhead",
-                      "scope": 9020,
+                      "scope": 6272,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2102,19 +2141,19 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 8997,
+                        "id": 6242,
                         "name": "ElementaryTypeName",
-                        "src": "3433:4:34"
+                        "src": "3435:4:23"
                       }
                     ],
-                    "id": 8998,
+                    "id": 6243,
                     "name": "VariableDeclaration",
-                    "src": "3433:17:34"
+                    "src": "3435:17:23"
                   }
                 ],
-                "id": 8999,
+                "id": 6244,
                 "name": "ParameterList",
-                "src": "3304:152:34"
+                "src": "3306:152:23"
               },
               {
                 "children": [
@@ -2122,7 +2161,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 9020,
+                      "scope": 6272,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2135,25 +2174,25 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 9000,
+                        "id": 6245,
                         "name": "ElementaryTypeName",
-                        "src": "3489:4:34"
+                        "src": "3489:4:23"
                       }
                     ],
-                    "id": 9001,
+                    "id": 6246,
                     "name": "VariableDeclaration",
-                    "src": "3489:4:34"
+                    "src": "3489:4:23"
                   }
                 ],
-                "id": 9002,
+                "id": 6247,
                 "name": "ParameterList",
-                "src": "3488:6:34"
+                "src": "3488:6:23"
               },
               {
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 9002
+                      "functionReturnParameters": 6247
                     },
                     "children": [
                       {
@@ -2184,467 +2223,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "add",
-                              "referencedDeclaration": 12225,
-                              "type": "function (uint256,uint256) pure returns (uint256)"
-                            },
-                            "children": [
-                              {
-                                "attributes": {
-                                  "argumentTypes": null,
-                                  "isConstant": false,
-                                  "isLValue": false,
-                                  "isPure": false,
-                                  "isStructConstructorCall": false,
-                                  "lValueRequested": false,
-                                  "names": [
-                                    null
-                                  ],
-                                  "type": "uint256",
-                                  "type_conversion": false
-                                },
-                                "children": [
-                                  {
-                                    "attributes": {
-                                      "argumentTypes": [
-                                        {
-                                          "typeIdentifier": "t_rational_2_by_1",
-                                          "typeString": "int_const 2"
-                                        }
-                                      ],
-                                      "isConstant": false,
-                                      "isLValue": false,
-                                      "isPure": false,
-                                      "lValueRequested": false,
-                                      "member_name": "mul",
-                                      "referencedDeclaration": 12163,
-                                      "type": "function (uint256,uint256) pure returns (uint256)"
-                                    },
-                                    "children": [
-                                      {
-                                        "attributes": {
-                                          "argumentTypes": null,
-                                          "isConstant": false,
-                                          "isLValue": false,
-                                          "isPure": false,
-                                          "isStructConstructorCall": false,
-                                          "lValueRequested": false,
-                                          "names": [
-                                            null
-                                          ],
-                                          "type": "uint256",
-                                          "type_conversion": false
-                                        },
-                                        "children": [
-                                          {
-                                            "attributes": {
-                                              "argumentTypes": [
-                                                {
-                                                  "typeIdentifier": "t_uint256",
-                                                  "typeString": "uint256"
-                                                }
-                                              ],
-                                              "isConstant": false,
-                                              "isLValue": false,
-                                              "isPure": false,
-                                              "lValueRequested": false,
-                                              "member_name": "add",
-                                              "referencedDeclaration": 12225,
-                                              "type": "function (uint256,uint256) pure returns (uint256)"
-                                            },
-                                            "children": [
-                                              {
-                                                "attributes": {
-                                                  "argumentTypes": null,
-                                                  "overloadedDeclarations": [
-                                                    null
-                                                  ],
-                                                  "referencedDeclaration": 8988,
-                                                  "type": "uint256",
-                                                  "value": "_payment"
-                                                },
-                                                "id": 9003,
-                                                "name": "Identifier",
-                                                "src": "3516:8:34"
-                                              }
-                                            ],
-                                            "id": 9004,
-                                            "name": "MemberAccess",
-                                            "src": "3516:29:34"
-                                          },
-                                          {
-                                            "attributes": {
-                                              "argumentTypes": null,
-                                              "overloadedDeclarations": [
-                                                null
-                                              ],
-                                              "referencedDeclaration": 8990,
-                                              "type": "uint256",
-                                              "value": "_donation"
-                                            },
-                                            "id": 9005,
-                                            "name": "Identifier",
-                                            "src": "3546:9:34"
-                                          }
-                                        ],
-                                        "id": 9006,
-                                        "name": "FunctionCall",
-                                        "src": "3516:40:34"
-                                      }
-                                    ],
-                                    "id": 9007,
-                                    "name": "MemberAccess",
-                                    "src": "3516:44:34"
-                                  },
-                                  {
-                                    "attributes": {
-                                      "argumentTypes": null,
-                                      "hexvalue": "32",
-                                      "isConstant": false,
-                                      "isLValue": false,
-                                      "isPure": true,
-                                      "lValueRequested": false,
-                                      "subdenomination": null,
-                                      "token": "number",
-                                      "type": "int_const 2",
-                                      "value": "2"
-                                    },
-                                    "id": 9008,
-                                    "name": "Literal",
-                                    "src": "3561:1:34"
-                                  }
-                                ],
-                                "id": 9009,
-                                "name": "FunctionCall",
-                                "src": "3516:47:34"
-                              }
-                            ],
-                            "id": 9010,
-                            "name": "MemberAccess",
-                            "src": "3516:68:34"
-                          },
-                          {
-                            "attributes": {
-                              "argumentTypes": null,
-                              "isConstant": false,
-                              "isLValue": false,
-                              "isPure": false,
-                              "isStructConstructorCall": false,
-                              "lValueRequested": false,
-                              "names": [
-                                null
-                              ],
-                              "type": "uint256",
-                              "type_conversion": false
-                            },
-                            "children": [
-                              {
-                                "attributes": {
-                                  "argumentTypes": [
-                                    {
-                                      "typeIdentifier": "t_uint256",
-                                      "typeString": "uint256"
-                                    },
-                                    {
-                                      "typeIdentifier": "t_uint256",
-                                      "typeString": "uint256"
-                                    },
-                                    {
-                                      "typeIdentifier": "t_uint256",
-                                      "typeString": "uint256"
-                                    },
-                                    {
-                                      "typeIdentifier": "t_uint256",
-                                      "typeString": "uint256"
-                                    }
-                                  ],
-                                  "overloadedDeclarations": [
-                                    null
-                                  ],
-                                  "referencedDeclaration": 9048,
-                                  "type": "function (uint256,uint256,uint256,uint256) pure returns (uint256)",
-                                  "value": "_computeHelper"
-                                },
-                                "id": 9011,
-                                "name": "Identifier",
-                                "src": "3585:14:34"
-                              },
-                              {
-                                "attributes": {
-                                  "argumentTypes": null,
-                                  "overloadedDeclarations": [
-                                    null
-                                  ],
-                                  "referencedDeclaration": 8992,
-                                  "type": "uint256",
-                                  "value": "_callGas"
-                                },
-                                "id": 9012,
-                                "name": "Identifier",
-                                "src": "3600:8:34"
-                              },
-                              {
-                                "attributes": {
-                                  "argumentTypes": null,
-                                  "overloadedDeclarations": [
-                                    null
-                                  ],
-                                  "referencedDeclaration": 8994,
-                                  "type": "uint256",
-                                  "value": "_callValue"
-                                },
-                                "id": 9013,
-                                "name": "Identifier",
-                                "src": "3610:10:34"
-                              },
-                              {
-                                "attributes": {
-                                  "argumentTypes": null,
-                                  "overloadedDeclarations": [
-                                    null
-                                  ],
-                                  "referencedDeclaration": 8998,
-                                  "type": "uint256",
-                                  "value": "_gasOverhead"
-                                },
-                                "id": 9014,
-                                "name": "Identifier",
-                                "src": "3622:12:34"
-                              },
-                              {
-                                "attributes": {
-                                  "argumentTypes": null,
-                                  "overloadedDeclarations": [
-                                    null
-                                  ],
-                                  "referencedDeclaration": 8996,
-                                  "type": "uint256",
-                                  "value": "_gasPrice"
-                                },
-                                "id": 9015,
-                                "name": "Identifier",
-                                "src": "3636:9:34"
-                              }
-                            ],
-                            "id": 9016,
-                            "name": "FunctionCall",
-                            "src": "3585:61:34"
-                          }
-                        ],
-                        "id": 9017,
-                        "name": "FunctionCall",
-                        "src": "3516:131:34"
-                      }
-                    ],
-                    "id": 9018,
-                    "name": "Return",
-                    "src": "3509:138:34"
-                  }
-                ],
-                "id": 9019,
-                "name": "Block",
-                "src": "3499:155:34"
-              }
-            ],
-            "id": 9020,
-            "name": "FunctionDefinition",
-            "src": "3279:375:34"
-          },
-          {
-            "attributes": {
-              "constant": true,
-              "implemented": true,
-              "isConstructor": false,
-              "modifiers": [
-                null
-              ],
-              "name": "_computeHelper",
-              "payable": false,
-              "scope": 9080,
-              "stateMutability": "pure",
-              "superFunction": null,
-              "visibility": "internal"
-            },
-            "children": [
-              {
-                "children": [
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "name": "_callGas",
-                      "scope": 9048,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "uint256",
-                      "value": null,
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "uint",
-                          "type": "uint256"
-                        },
-                        "id": 9021,
-                        "name": "ElementaryTypeName",
-                        "src": "3948:4:34"
-                      }
-                    ],
-                    "id": 9022,
-                    "name": "VariableDeclaration",
-                    "src": "3948:13:34"
-                  },
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "name": "_callValue",
-                      "scope": 9048,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "uint256",
-                      "value": null,
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "uint",
-                          "type": "uint256"
-                        },
-                        "id": 9023,
-                        "name": "ElementaryTypeName",
-                        "src": "3971:4:34"
-                      }
-                    ],
-                    "id": 9024,
-                    "name": "VariableDeclaration",
-                    "src": "3971:15:34"
-                  },
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "name": "_gasOverhead",
-                      "scope": 9048,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "uint256",
-                      "value": null,
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "uint",
-                          "type": "uint256"
-                        },
-                        "id": 9025,
-                        "name": "ElementaryTypeName",
-                        "src": "3996:4:34"
-                      }
-                    ],
-                    "id": 9026,
-                    "name": "VariableDeclaration",
-                    "src": "3996:17:34"
-                  },
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "name": "_gasPrice",
-                      "scope": 9048,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "uint256",
-                      "value": null,
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "uint",
-                          "type": "uint256"
-                        },
-                        "id": 9027,
-                        "name": "ElementaryTypeName",
-                        "src": "4023:4:34"
-                      }
-                    ],
-                    "id": 9028,
-                    "name": "VariableDeclaration",
-                    "src": "4023:14:34"
-                  }
-                ],
-                "id": 9029,
-                "name": "ParameterList",
-                "src": "3938:105:34"
-              },
-              {
-                "children": [
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "name": "",
-                      "scope": 9048,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "uint256",
-                      "value": null,
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "uint",
-                          "type": "uint256"
-                        },
-                        "id": 9030,
-                        "name": "ElementaryTypeName",
-                        "src": "4075:4:34"
-                      }
-                    ],
-                    "id": 9031,
-                    "name": "VariableDeclaration",
-                    "src": "4075:4:34"
-                  }
-                ],
-                "id": 9032,
-                "name": "ParameterList",
-                "src": "4074:6:34"
-              },
-              {
-                "children": [
-                  {
-                    "attributes": {
-                      "functionReturnParameters": 9032
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "argumentTypes": null,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": false,
-                          "isStructConstructorCall": false,
-                          "lValueRequested": false,
-                          "names": [
-                            null
-                          ],
-                          "type": "uint256",
-                          "type_conversion": false
-                        },
-                        "children": [
-                          {
-                            "attributes": {
-                              "argumentTypes": [
-                                {
-                                  "typeIdentifier": "t_uint256",
-                                  "typeString": "uint256"
-                                }
-                              ],
-                              "isConstant": false,
-                              "isLValue": false,
-                              "isPure": false,
-                              "lValueRequested": false,
-                              "member_name": "add",
-                              "referencedDeclaration": 12225,
+                              "referencedDeclaration": 9114,
                               "type": "function (uint256,uint256) pure returns (uint256)"
                             },
                             "children": [
@@ -2676,7 +2255,7 @@
                                       "isPure": false,
                                       "lValueRequested": false,
                                       "member_name": "add",
-                                      "referencedDeclaration": 12225,
+                                      "referencedDeclaration": 9114,
                                       "type": "function (uint256,uint256) pure returns (uint256)"
                                     },
                                     "children": [
@@ -2707,53 +2286,224 @@
                                               "isLValue": false,
                                               "isPure": false,
                                               "lValueRequested": false,
-                                              "member_name": "mul",
-                                              "referencedDeclaration": 12163,
+                                              "member_name": "add",
+                                              "referencedDeclaration": 9114,
                                               "type": "function (uint256,uint256) pure returns (uint256)"
                                             },
                                             "children": [
                                               {
                                                 "attributes": {
                                                   "argumentTypes": null,
-                                                  "overloadedDeclarations": [
+                                                  "isConstant": false,
+                                                  "isLValue": false,
+                                                  "isPure": false,
+                                                  "isStructConstructorCall": false,
+                                                  "lValueRequested": false,
+                                                  "names": [
                                                     null
                                                   ],
-                                                  "referencedDeclaration": 9022,
                                                   "type": "uint256",
-                                                  "value": "_callGas"
+                                                  "type_conversion": false
                                                 },
-                                                "id": 9033,
-                                                "name": "Identifier",
-                                                "src": "4102:8:34"
+                                                "children": [
+                                                  {
+                                                    "attributes": {
+                                                      "argumentTypes": [
+                                                        {
+                                                          "typeIdentifier": "t_uint256",
+                                                          "typeString": "uint256"
+                                                        }
+                                                      ],
+                                                      "isConstant": false,
+                                                      "isLValue": false,
+                                                      "isPure": false,
+                                                      "lValueRequested": false,
+                                                      "member_name": "add",
+                                                      "referencedDeclaration": 9114,
+                                                      "type": "function (uint256,uint256) pure returns (uint256)"
+                                                    },
+                                                    "children": [
+                                                      {
+                                                        "attributes": {
+                                                          "argumentTypes": null,
+                                                          "overloadedDeclarations": [
+                                                            null
+                                                          ],
+                                                          "referencedDeclaration": 6233,
+                                                          "type": "uint256",
+                                                          "value": "_payment"
+                                                        },
+                                                        "id": 6248,
+                                                        "name": "Identifier",
+                                                        "src": "3516:8:23"
+                                                      }
+                                                    ],
+                                                    "id": 6249,
+                                                    "name": "MemberAccess",
+                                                    "src": "3516:29:23"
+                                                  },
+                                                  {
+                                                    "attributes": {
+                                                      "argumentTypes": null,
+                                                      "isConstant": false,
+                                                      "isLValue": false,
+                                                      "isPure": false,
+                                                      "isStructConstructorCall": false,
+                                                      "lValueRequested": false,
+                                                      "names": [
+                                                        null
+                                                      ],
+                                                      "type": "uint256",
+                                                      "type_conversion": false
+                                                    },
+                                                    "children": [
+                                                      {
+                                                        "attributes": {
+                                                          "argumentTypes": [
+                                                            {
+                                                              "typeIdentifier": "t_rational_2_by_1",
+                                                              "typeString": "int_const 2"
+                                                            }
+                                                          ],
+                                                          "isConstant": false,
+                                                          "isLValue": false,
+                                                          "isPure": false,
+                                                          "lValueRequested": false,
+                                                          "member_name": "mul",
+                                                          "referencedDeclaration": 9052,
+                                                          "type": "function (uint256,uint256) pure returns (uint256)"
+                                                        },
+                                                        "children": [
+                                                          {
+                                                            "attributes": {
+                                                              "argumentTypes": null,
+                                                              "overloadedDeclarations": [
+                                                                null
+                                                              ],
+                                                              "referencedDeclaration": 6235,
+                                                              "type": "uint256",
+                                                              "value": "_donation"
+                                                            },
+                                                            "id": 6250,
+                                                            "name": "Identifier",
+                                                            "src": "3546:9:23"
+                                                          }
+                                                        ],
+                                                        "id": 6251,
+                                                        "name": "MemberAccess",
+                                                        "src": "3546:13:23"
+                                                      },
+                                                      {
+                                                        "attributes": {
+                                                          "argumentTypes": null,
+                                                          "hexvalue": "32",
+                                                          "isConstant": false,
+                                                          "isLValue": false,
+                                                          "isPure": true,
+                                                          "lValueRequested": false,
+                                                          "subdenomination": null,
+                                                          "token": "number",
+                                                          "type": "int_const 2",
+                                                          "value": "2"
+                                                        },
+                                                        "id": 6252,
+                                                        "name": "Literal",
+                                                        "src": "3560:1:23"
+                                                      }
+                                                    ],
+                                                    "id": 6253,
+                                                    "name": "FunctionCall",
+                                                    "src": "3546:16:23"
+                                                  }
+                                                ],
+                                                "id": 6254,
+                                                "name": "FunctionCall",
+                                                "src": "3516:47:23"
                                               }
                                             ],
-                                            "id": 9034,
+                                            "id": 6255,
                                             "name": "MemberAccess",
-                                            "src": "4102:12:34"
+                                            "src": "3516:68:23"
                                           },
                                           {
                                             "attributes": {
                                               "argumentTypes": null,
-                                              "overloadedDeclarations": [
+                                              "isConstant": false,
+                                              "isLValue": false,
+                                              "isPure": false,
+                                              "isStructConstructorCall": false,
+                                              "lValueRequested": false,
+                                              "names": [
                                                 null
                                               ],
-                                              "referencedDeclaration": 9028,
                                               "type": "uint256",
-                                              "value": "_gasPrice"
+                                              "type_conversion": false
                                             },
-                                            "id": 9035,
-                                            "name": "Identifier",
-                                            "src": "4115:9:34"
+                                            "children": [
+                                              {
+                                                "attributes": {
+                                                  "argumentTypes": [
+                                                    {
+                                                      "typeIdentifier": "t_uint256",
+                                                      "typeString": "uint256"
+                                                    }
+                                                  ],
+                                                  "isConstant": false,
+                                                  "isLValue": false,
+                                                  "isPure": false,
+                                                  "lValueRequested": false,
+                                                  "member_name": "mul",
+                                                  "referencedDeclaration": 9052,
+                                                  "type": "function (uint256,uint256) pure returns (uint256)"
+                                                },
+                                                "children": [
+                                                  {
+                                                    "attributes": {
+                                                      "argumentTypes": null,
+                                                      "overloadedDeclarations": [
+                                                        null
+                                                      ],
+                                                      "referencedDeclaration": 6237,
+                                                      "type": "uint256",
+                                                      "value": "_callGas"
+                                                    },
+                                                    "id": 6256,
+                                                    "name": "Identifier",
+                                                    "src": "3585:8:23"
+                                                  }
+                                                ],
+                                                "id": 6257,
+                                                "name": "MemberAccess",
+                                                "src": "3585:12:23"
+                                              },
+                                              {
+                                                "attributes": {
+                                                  "argumentTypes": null,
+                                                  "overloadedDeclarations": [
+                                                    null
+                                                  ],
+                                                  "referencedDeclaration": 6241,
+                                                  "type": "uint256",
+                                                  "value": "_gasPrice"
+                                                },
+                                                "id": 6258,
+                                                "name": "Identifier",
+                                                "src": "3598:9:23"
+                                              }
+                                            ],
+                                            "id": 6259,
+                                            "name": "FunctionCall",
+                                            "src": "3585:23:23"
                                           }
                                         ],
-                                        "id": 9036,
+                                        "id": 6260,
                                         "name": "FunctionCall",
-                                        "src": "4102:23:34"
+                                        "src": "3516:93:23"
                                       }
                                     ],
-                                    "id": 9037,
+                                    "id": 6261,
                                     "name": "MemberAccess",
-                                    "src": "4102:52:34"
+                                    "src": "3516:114:23"
                                   },
                                   {
                                     "attributes": {
@@ -2783,7 +2533,7 @@
                                           "isPure": false,
                                           "lValueRequested": false,
                                           "member_name": "mul",
-                                          "referencedDeclaration": 12163,
+                                          "referencedDeclaration": 9052,
                                           "type": "function (uint256,uint256) pure returns (uint256)"
                                         },
                                         "children": [
@@ -2793,18 +2543,18 @@
                                               "overloadedDeclarations": [
                                                 null
                                               ],
-                                              "referencedDeclaration": 9026,
+                                              "referencedDeclaration": 6243,
                                               "type": "uint256",
                                               "value": "_gasOverhead"
                                             },
-                                            "id": 9038,
+                                            "id": 6262,
                                             "name": "Identifier",
-                                            "src": "4155:12:34"
+                                            "src": "3631:12:23"
                                           }
                                         ],
-                                        "id": 9039,
+                                        "id": 6263,
                                         "name": "MemberAccess",
-                                        "src": "4155:16:34"
+                                        "src": "3631:16:23"
                                       },
                                       {
                                         "attributes": {
@@ -2812,28 +2562,28 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 9028,
+                                          "referencedDeclaration": 6241,
                                           "type": "uint256",
                                           "value": "_gasPrice"
                                         },
-                                        "id": 9040,
+                                        "id": 6264,
                                         "name": "Identifier",
-                                        "src": "4172:9:34"
+                                        "src": "3648:9:23"
                                       }
                                     ],
-                                    "id": 9041,
+                                    "id": 6265,
                                     "name": "FunctionCall",
-                                    "src": "4155:27:34"
+                                    "src": "3631:27:23"
                                   }
                                 ],
-                                "id": 9042,
+                                "id": 6266,
                                 "name": "FunctionCall",
-                                "src": "4102:81:34"
+                                "src": "3516:143:23"
                               }
                             ],
-                            "id": 9043,
+                            "id": 6267,
                             "name": "MemberAccess",
-                            "src": "4102:110:34"
+                            "src": "3516:164:23"
                           },
                           {
                             "attributes": {
@@ -2841,33 +2591,33 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 9024,
+                              "referencedDeclaration": 6239,
                               "type": "uint256",
                               "value": "_callValue"
                             },
-                            "id": 9044,
+                            "id": 6268,
                             "name": "Identifier",
-                            "src": "4213:10:34"
+                            "src": "3681:10:23"
                           }
                         ],
-                        "id": 9045,
+                        "id": 6269,
                         "name": "FunctionCall",
-                        "src": "4102:122:34"
+                        "src": "3516:176:23"
                       }
                     ],
-                    "id": 9046,
+                    "id": 6270,
                     "name": "Return",
-                    "src": "4095:129:34"
+                    "src": "3509:183:23"
                   }
                 ],
-                "id": 9047,
+                "id": 6271,
                 "name": "Block",
-                "src": "4085:146:34"
+                "src": "3499:200:23"
               }
             ],
-            "id": 9048,
+            "id": 6272,
             "name": "FunctionDefinition",
-            "src": "3915:316:34"
+            "src": "3281:418:23"
           },
           {
             "attributes": {
@@ -2879,7 +2629,7 @@
               ],
               "name": "validateEndowment",
               "payable": false,
-              "scope": 9080,
+              "scope": 6304,
               "stateMutability": "pure",
               "superFunction": null,
               "visibility": "public"
@@ -2891,7 +2641,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_endowment",
-                      "scope": 9079,
+                      "scope": 6303,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2904,20 +2654,20 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 9049,
+                        "id": 6273,
                         "name": "ElementaryTypeName",
-                        "src": "4466:4:34"
+                        "src": "3935:4:23"
                       }
                     ],
-                    "id": 9050,
+                    "id": 6274,
                     "name": "VariableDeclaration",
-                    "src": "4466:15:34"
+                    "src": "3935:15:23"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_payment",
-                      "scope": 9079,
+                      "scope": 6303,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2930,20 +2680,20 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 9051,
+                        "id": 6275,
                         "name": "ElementaryTypeName",
-                        "src": "4514:4:34"
+                        "src": "3983:4:23"
                       }
                     ],
-                    "id": 9052,
+                    "id": 6276,
                     "name": "VariableDeclaration",
-                    "src": "4514:13:34"
+                    "src": "3983:13:23"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_donation",
-                      "scope": 9079,
+                      "scope": 6303,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2956,20 +2706,20 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 9053,
+                        "id": 6277,
                         "name": "ElementaryTypeName",
-                        "src": "4560:4:34"
+                        "src": "4029:4:23"
                       }
                     ],
-                    "id": 9054,
+                    "id": 6278,
                     "name": "VariableDeclaration",
-                    "src": "4560:14:34"
+                    "src": "4029:14:23"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_callGas",
-                      "scope": 9079,
+                      "scope": 6303,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2982,20 +2732,20 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 9055,
+                        "id": 6279,
                         "name": "ElementaryTypeName",
-                        "src": "4607:4:34"
+                        "src": "4076:4:23"
                       }
                     ],
-                    "id": 9056,
+                    "id": 6280,
                     "name": "VariableDeclaration",
-                    "src": "4607:13:34"
+                    "src": "4076:13:23"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_callValue",
-                      "scope": 9079,
+                      "scope": 6303,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -3008,20 +2758,20 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 9057,
+                        "id": 6281,
                         "name": "ElementaryTypeName",
-                        "src": "4653:4:34"
+                        "src": "4122:4:23"
                       }
                     ],
-                    "id": 9058,
+                    "id": 6282,
                     "name": "VariableDeclaration",
-                    "src": "4653:15:34"
+                    "src": "4122:15:23"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_gasPrice",
-                      "scope": 9079,
+                      "scope": 6303,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -3034,20 +2784,20 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 9059,
+                        "id": 6283,
                         "name": "ElementaryTypeName",
-                        "src": "4701:4:34"
+                        "src": "4170:4:23"
                       }
                     ],
-                    "id": 9060,
+                    "id": 6284,
                     "name": "VariableDeclaration",
-                    "src": "4701:14:34"
+                    "src": "4170:14:23"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_gasOverhead",
-                      "scope": 9079,
+                      "scope": 6303,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -3060,19 +2810,19 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 9061,
+                        "id": 6285,
                         "name": "ElementaryTypeName",
-                        "src": "4748:4:34"
+                        "src": "4217:4:23"
                       }
                     ],
-                    "id": 9062,
+                    "id": 6286,
                     "name": "VariableDeclaration",
-                    "src": "4748:17:34"
+                    "src": "4217:17:23"
                   }
                 ],
-                "id": 9063,
+                "id": 6287,
                 "name": "ParameterList",
-                "src": "4465:301:34"
+                "src": "3934:301:23"
               },
               {
                 "children": [
@@ -3080,7 +2830,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 9079,
+                      "scope": 6303,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bool",
@@ -3093,25 +2843,25 @@
                           "name": "bool",
                           "type": "bool"
                         },
-                        "id": 9064,
+                        "id": 6288,
                         "name": "ElementaryTypeName",
-                        "src": "4796:4:34"
+                        "src": "4265:4:23"
                       }
                     ],
-                    "id": 9065,
+                    "id": 6289,
                     "name": "VariableDeclaration",
-                    "src": "4796:4:34"
+                    "src": "4265:4:23"
                   }
                 ],
-                "id": 9066,
+                "id": 6290,
                 "name": "ParameterList",
-                "src": "4795:6:34"
+                "src": "4264:6:23"
               },
               {
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 9066
+                      "functionReturnParameters": 6290
                     },
                     "children": [
                       {
@@ -3135,13 +2885,13 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 9050,
+                              "referencedDeclaration": 6274,
                               "type": "uint256",
                               "value": "_endowment"
                             },
-                            "id": 9067,
+                            "id": 6291,
                             "name": "Identifier",
-                            "src": "4823:10:34"
+                            "src": "4292:10:23"
                           },
                           {
                             "attributes": {
@@ -3189,13 +2939,13 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 9020,
+                                  "referencedDeclaration": 6272,
                                   "type": "function (uint256,uint256,uint256,uint256,uint256,uint256) pure returns (uint256)",
                                   "value": "computeEndowment"
                                 },
-                                "id": 9068,
+                                "id": 6292,
                                 "name": "Identifier",
-                                "src": "4837:16:34"
+                                "src": "4306:16:23"
                               },
                               {
                                 "attributes": {
@@ -3203,13 +2953,13 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 9052,
+                                  "referencedDeclaration": 6276,
                                   "type": "uint256",
                                   "value": "_payment"
                                 },
-                                "id": 9069,
+                                "id": 6293,
                                 "name": "Identifier",
-                                "src": "4867:8:34"
+                                "src": "4336:8:23"
                               },
                               {
                                 "attributes": {
@@ -3217,13 +2967,13 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 9054,
+                                  "referencedDeclaration": 6278,
                                   "type": "uint256",
                                   "value": "_donation"
                                 },
-                                "id": 9070,
+                                "id": 6294,
                                 "name": "Identifier",
-                                "src": "4889:9:34"
+                                "src": "4358:9:23"
                               },
                               {
                                 "attributes": {
@@ -3231,13 +2981,13 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 9056,
+                                  "referencedDeclaration": 6280,
                                   "type": "uint256",
                                   "value": "_callGas"
                                 },
-                                "id": 9071,
+                                "id": 6295,
                                 "name": "Identifier",
-                                "src": "4912:8:34"
+                                "src": "4381:8:23"
                               },
                               {
                                 "attributes": {
@@ -3245,13 +2995,13 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 9058,
+                                  "referencedDeclaration": 6282,
                                   "type": "uint256",
                                   "value": "_callValue"
                                 },
-                                "id": 9072,
+                                "id": 6296,
                                 "name": "Identifier",
-                                "src": "4934:10:34"
+                                "src": "4403:10:23"
                               },
                               {
                                 "attributes": {
@@ -3259,13 +3009,13 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 9060,
+                                  "referencedDeclaration": 6284,
                                   "type": "uint256",
                                   "value": "_gasPrice"
                                 },
-                                "id": 9073,
+                                "id": 6297,
                                 "name": "Identifier",
-                                "src": "4958:9:34"
+                                "src": "4427:9:23"
                               },
                               {
                                 "attributes": {
@@ -3273,54 +3023,65 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 9062,
+                                  "referencedDeclaration": 6286,
                                   "type": "uint256",
                                   "value": "_gasOverhead"
                                 },
-                                "id": 9074,
+                                "id": 6298,
                                 "name": "Identifier",
-                                "src": "4981:12:34"
+                                "src": "4450:12:23"
                               }
                             ],
-                            "id": 9075,
+                            "id": 6299,
                             "name": "FunctionCall",
-                            "src": "4837:166:34"
+                            "src": "4306:166:23"
                           }
                         ],
-                        "id": 9076,
+                        "id": 6300,
                         "name": "BinaryOperation",
-                        "src": "4823:180:34"
+                        "src": "4292:180:23"
                       }
                     ],
-                    "id": 9077,
+                    "id": 6301,
                     "name": "Return",
-                    "src": "4816:187:34"
+                    "src": "4285:187:23"
                   }
                 ],
-                "id": 9078,
+                "id": 6302,
                 "name": "Block",
-                "src": "4806:204:34"
+                "src": "4275:204:23"
               }
             ],
-            "id": 9079,
+            "id": 6303,
             "name": "FunctionDefinition",
-            "src": "4439:571:34"
+            "src": "3908:571:23"
           }
         ],
-        "id": 9080,
+        "id": 6304,
         "name": "ContractDefinition",
-        "src": "154:4858:34"
+        "src": "154:4327:23"
       }
     ],
-    "id": 9081,
+    "id": 6305,
     "name": "SourceUnit",
-    "src": "0:5013:34"
+    "src": "0:4482:23"
   },
   "compiler": {
     "name": "solc",
     "version": "0.4.18+commit.9cf6e910.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "3": {
+      "events": {},
+      "links": {},
+      "address": "0x77b69f499720b605fb7ae08f7a0ade057cf9e9f6"
+    },
+    "4": {
+      "events": {},
+      "links": {},
+      "address": "0x639da3a1ed49b310b8ca2533d863e315f8383bad"
+    }
+  },
   "schemaVersion": "1.0.1",
-  "updatedAt": "2018-01-06T02:43:01.752Z"
+  "updatedAt": "2018-01-14T21:26:13.810Z"
 }

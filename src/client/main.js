@@ -156,6 +156,16 @@ const startRepl = (conf, ms) => {
             }
         }
     })
+    replServer.defineCommand('logLevel', {
+        help: 'Defines the level to log, 1 - debug/cache, 2 - info, 3- error',
+        action (level) {
+            if (level < 0 || level > 3) {
+                console.log('Please define 1 for debug, 2 for info, 3 for error')
+                return
+            }
+            conf.logger.logLevel = level
+        }
+    })
     replServer.defineCommand('start', {
         help: 'Starts the execution client',
         action () {
@@ -177,8 +187,18 @@ const startRepl = (conf, ms) => {
     replServer.defineCommand('testTx', {
         help: 'Send a test transaction to the network (requires unlocked local account)',
         action () {
-            const testScheduler = require('../scheduling/testAsync.js')
+            const ora = require('ora')
+            const spinner = ora('Sending test transaction to network...').start()
+            const testScheduler = require('../scheduling/testTx')
             testScheduler(conf.chain, web3)
+            .then(receipt => {
+                if (receipt.status != 1) {
+                    spinner.fail('Transaction failed.')
+                    return
+                }
+                spinner.succeed(`Transaction mined! Hash ${receipt.transactionHash}`)
+            })
+            .catch(err => spinner.fail(err))
         }
     })
     replServer.defineCommand('getStats', {
