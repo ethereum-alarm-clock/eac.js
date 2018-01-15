@@ -3,14 +3,15 @@
 const React = require('react')
 const Eac = require('eac')
 const Web3 = require('web3')
+const BigNumber = require('bignumber.js')
 
 class App extends React.Component {
   constructor (props) {
-    super(props)
-    this.state = {
+    	super(props)
+    	this.state = {
 			account: '',
 			eac: {}
-    }
+    	}
 	}
 
 	componentDidMount () {
@@ -20,6 +21,7 @@ class App extends React.Component {
 			web3.eth.getAccounts((err, res) => {
 				if (!err) {
 					this.setState({account: res[0]})
+					web3.eth.defaultAccount = res[0]
 				}
 			})
 			window.eac = new Eac(web3, 'ropsten')
@@ -32,7 +34,7 @@ class App extends React.Component {
 		const callData = document.getElementById('callData').value
 		const callGas = document.getElementById('callGas').value
 		const callValue = document.getElementById('callValue').value
-		const windowSize = document.getElementById('windowSize')
+		const windowSize = document.getElementById('windowSize').value
 		const windowStart = document.getElementById('windowStart').value
 		const gasPrice = document.getElementById('gasPrice').value
 		const donation = document.getElementById('donation').value
@@ -40,6 +42,44 @@ class App extends React.Component {
 		const requiredDeposit = document.getElementById('requiredDeposit').value
 		console.log('submit pressed!')
 		console.log(toAddress)
+
+		const endowment = eac.calcEndowment(
+			new BigNumber(callGas),
+			new BigNumber(callValue),
+			new BigNumber(gasPrice),
+			new BigNumber(donation),
+			new BigNumber(payment)
+		)
+		// console.log(endowment)
+		eac.initSender({
+			from: web3.eth.defaultAccount,
+			gas: 3000000,
+			value: endowment
+		})
+
+		console.log(toAddress,
+			web3.utils.utf8ToHex(callData),
+			callGas,
+			callValue,
+			windowSize,
+			windowStart,
+			gasPrice,
+			donation,
+			payment,
+			requiredDeposit)
+
+		eac.blockSchedule(
+			toAddress,
+			web3.utils.utf8ToHex(callData),
+			callGas,
+			callValue,
+			windowSize,
+			windowStart,
+			gasPrice,
+			donation,
+			payment,
+			requiredDeposit
+		)
 	}
 
   render () {
@@ -66,7 +106,7 @@ class App extends React.Component {
 				<input className='input' type='text' id='callData' />
 
 				<label className='label' for='callGas'>Call Gas:</label>
-				<input className='input' type='text' id='callData' />
+				<input className='input' type='text' id='callGas' />
 
 				<label className='label' for='callValue'>Call Value</label>
 				<input className='input' type='text' id='callValue' />

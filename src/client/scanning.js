@@ -18,7 +18,7 @@ const scanBlockchain = async conf => {
     const web3 = conf.web3
 
     const left = await web3.eth.getBlockNumber() - 45
-    const right = left + 250
+    const right = left + 2500
     log.debug(`Scanning bounds from ${left} to ${right}`)
 
     const requestTracker = conf.tracker 
