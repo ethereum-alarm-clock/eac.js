@@ -4,3 +4,4 @@ getLogs.js
 wallet/*
 src/hasPendingGeth.js
 src/testStatsDb.js
+docs/Instructions.md

@@ -309,7 +309,7 @@ Endowment: ${web3.utils.fromWei(endowment.toString())}
     }
     
     else {
-        console.log('\n  error: please start the client in either client `-c` or sheduling `-s` mode')
+        console.log('\n  error: please start eac in either client `-c` or sheduling `-s` mode')
         process.exit(1)
     }
 }
