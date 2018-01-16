@@ -1,8 +1,8 @@
 {
-  "name": "eac",
+  "name": "eac.js",
   "version": "0.9.0-beta",
   "description": "Commnandline tool to interact with the Ethereum Alarm Clock contracts.",
-  "main": "cli/eac.js",
+  "main": "./src/scheduling/index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec && rm -f ./src/assets/tester.json"
   },

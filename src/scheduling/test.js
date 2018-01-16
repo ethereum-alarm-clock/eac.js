@@ -1,4 +1,4 @@
-const Scheduler = require('./eacScheduler.js')
+const Scheduler = require('./index.js')
 
 const main = (chain, web3) => {
     const eacScheduler = new Scheduler(web3, chain)

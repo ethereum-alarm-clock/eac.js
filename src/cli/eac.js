@@ -4,7 +4,7 @@ const program = require('commander')
 const chalk = require('chalk')
 
 const alarmClient = require('../client/main.js')
-const EAC_Scheduler = require('../scheduling/eacScheduler.js')
+const EAC_Scheduler = require('../scheduling/index.js')
 
 const createWallet = require('../wallet/createWallet.js')
 const fundAccounts = require('../wallet/fundAccounts.js')
@@ -12,7 +12,7 @@ const drainWallet = require('../wallet/drainWallet.js')
 
 const BigNumber = require('bignumber.js')
 const clear = require('clear')
-const ora = require('ora')       
+const ora = require('ora')
 const readlineSync = require('readline-sync')
 
 const ethUtil = require('ethereumjs-util')
@@ -25,7 +25,7 @@ const log = {
     fatal: msg => console.log(`[FATAL] ${msg}`)
 }
 
-program 
+program
     .version('0.9.0-beta')
     .option('--createWallet', 'guides you through creating a new wallet.')
     .option('--fundWallet <eth>', 'funds the accounts in wallet with amount "eth"')

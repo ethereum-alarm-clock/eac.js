@@ -3,13 +3,14 @@ _Note: `eac.js` is operational but still considered alpha software, released to 
 # Ethereum Alarm Clock CLI
 
 The Ethereum Alarm Clock CLI, otherwise known as eac.js, is a tool to help
-users of the [Ethereum Alarm Clock]() protocol. It allows you to either run
+users of the [Ethereum Alarm Clock](https://github.com/ethereum-alarm-clock/ethereum-alarm-clock) protocol. It allows you to either run
 an execution server or schedule a transaction with the terminal wizard. It may
 seem daunting at first but its actually a very simple tool to learn how to use.
 
 ## How to install
 
-For now, you must install from source. Begin by cloning this repository to your 
+### From Source
+If you want to install from source, begin by cloning this repository to your 
 local directory and downloading [nvm](https://github.com/creationix/nvm). Nvm is
 an awesome tool to help manage your node.js versions. We use it since the eac.js
 codebase runs best on node v8.0.0. You can tell your environment to use node v8.0.0
@@ -30,20 +31,21 @@ environment.
     $ npm link
 ```
 
-You now will have the `eac` executable available.
+### From NPM
+You can also download the executable from NPM. 
 
 ```
-    $ eac
-
-      error: please start eac in either client `-c` or sheduling `-s` mode
+npm i -g eac.js
 ```
+
+This should work on most node versions.
 
 ## Running
 
 You can run eac with the help flag to see the options for starting the client.
 
 ```
-    $ eac --help
+    $ eac.js --help
 
     Usage: eac [options]
 
@@ -63,6 +65,9 @@ You can run eac with the help flag to see the options for starting the client.
         -p, --password [string]     the password to unlock your keystore file
         -s, --schedule              schedules a transactions
 ```
+
+Please see the [docs](docs/) directory for detailed guides on how to run an execution server
+or to schedule a transaction.
 
 ## Questions or Concerns?
 

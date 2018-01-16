@@ -1,4 +1,4 @@
-const Scheduler = require('./eacScheduler.js')
+const Scheduler = require('./index.js')
 const BigNumber = require('bignumber.js')
 
 const main = async (chain, web3) => {
