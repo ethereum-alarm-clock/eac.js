@@ -5,6 +5,7 @@ const chalk = require('chalk')
 
 const alarmClient = require('../client/main.js')
 const EAC_Scheduler = require('../scheduling/index.js')
+const Util = require('../util.js')
 
 const createWallet = require('../wallet/createWallet.js')
 const fundAccounts = require('../wallet/fundAccounts.js')
@@ -34,7 +35,6 @@ program
     .option('-m, --milliseconds <ms>', 'tells the client to scan every <ms> seconds', 4000)
     .option('--logfile [path]', 'specifies the output logifle', 'default')
     .option('--logLevel [0,1,2,3]', 'sets the log level', 2)
-    .option('--chain [ropsten, rinkeby]', 'selects the chain to use')
     .option('--provider <string>', 'set the HttpProvider to use', 'http://localhost:8545')
     .option('-w, --wallet [path]', 'specify the path to the keyfile you would like to unlock')
     .option('-p, --password [string]', 'the password to unlock your keystore file')
@@ -58,30 +58,33 @@ const checkForUnlockedAccount = async web3 => {
     }
 }
 
-const checkValidChain = chain => {
-    if (chain != 'ropsten'
-        && chain != 'rinkeby') {
-        console.log('\n  error: must supply `--chain <chain>` option with either ropsten or rinkeby')
-        return false
-    }
-    return true
+const checkNetworkID = web3 => {
+    return new Promise((resolve, reject) => {
+        web3.eth.net.getId()
+        .then(id => {
+            if (id == 1) resolve(true)      // mainnet
+            else if (id == 3) resolve(true) // ropsten
+            else if (id == 4) resolve(true) // rinkeby
+            else resolve(false)
+        })
+        .catch(err => reject(err))
+    })
 }
 
 const main = async _ => {
     if (program.createWallet) {
-        clear()
-    
-        const numAccounts = readlineSync.question(chalk.blue('How many accounts would you like in your wallet?\n> '))
+  
+        const numAccounts = readlineSync.question('How many accounts would you like in your wallet? [1 - 10]\n> ')
     
         function isNumber(n) { return !isNaN(parseFloat(n)) && !isNaN(n - 0) }
     
         if (!isNumber(numAccounts) || numAccounts > 10 || numAccounts <= 0) {
-            log.error('Must specify a number between 1 - 10 for number of accounts.')
+            console.error('  error: must specify a number between 1 - 10 for number of accounts')
             process.exit(1)
         }
     
-        const file = readlineSync.question(chalk.blue('Where would you like to save the encrypted keys? Please provide a valid filename or path.\n> '))
-        const password = readlineSync.question(chalk.blue("Please enter a password for the keyfile. Write this down!\n> "))
+        const file = readlineSync.question('Where would you like to save the encrypted keys? Please provide a valid filename or path.\n> ')
+        const password = readlineSync.question("Please enter a password for the keyfile. Write this down!\n> ")
 
         createWallet(web3, numAccounts, file, password)
     }
@@ -110,9 +113,6 @@ const main = async _ => {
     }
 
     else if (program.drainWallet) {
-        // console.log('\n  error: not yet implemented')
-        // process.exit(1)
-
         if (!program.wallet 
             || !program.password)
         {
@@ -142,7 +142,10 @@ const main = async _ => {
         clear()
         console.log(chalk.green('⏰⏰⏰ Welcome to the Ethereum Alarm Clock client ⏰⏰⏰\n'))
 
-        if (!checkValidChain(program.chain)) process.exit(1)
+        if (!await checkNetworkID(web3)) {
+            console.log('  error: must be running a local node on the Ropsten or Rinkeby networks')
+            process.exit(1)
+        }
     
         alarmClient(
             web3,
@@ -150,7 +153,6 @@ const main = async _ => {
             program.milliseconds,
             program.logfile,
             program.logLevel, // 1 = debug, 2 = info, 3 = error
-            program.chain,
             program.wallet,
             program.password
         ).catch(err => {
@@ -164,8 +166,14 @@ const main = async _ => {
     }
     
     else if (program.schedule) {
-        if (!checkValidChain(program.chain)) process.exit(1)
+        if (!await checkNetworkID(web3)) {
+            console.log('  error: must be running a localnode on the Ropsten or Rinkeby networks')
+            process.exit(1)
+        }
         if (!checkForUnlockedAccount(web3)) process.exit(1)
+
+        const chain = await Util.getChainName(web3)
+
         const eacScheduler = new EAC_Scheduler(web3, program.chain)
 
         /// Starts the scheduling wizard.
