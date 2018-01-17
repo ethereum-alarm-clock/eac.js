@@ -60,8 +60,7 @@ For a full list of `ValidationError` see [this page](https://ethereum-alarm-cloc
 ## Necessary Options
 You will need to present an option for the user to switch between block-based
 scheduling and timestamp-based scheduling. This could be accomplished by the
-implementation of a switch or checkbox, since it is only two options you
-may treat it as if it were a simple boolean. 
+implementation of a switch or checkbox, or perhaps a drop-down menu.
 
 
 _To be continued..._

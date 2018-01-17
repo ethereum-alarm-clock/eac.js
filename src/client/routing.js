@@ -189,7 +189,7 @@ const claim = async (conf, txRequest) => {
     }
 
     // The dice roll was originally implemented in the Python client, which I followed
-    // for inspiration here. It's to add an element of chance to the claiming procedure.
+    // for inspiration here.
     const diceroll = Math.floor(Math.random() * 100)
     
     if (diceroll >= await txRequest.claimPaymentModifier()) {
@@ -341,7 +341,7 @@ const cleanup = async (conf, txRequest) => {
                 }
                 txRequest.instance.methods.cancel().send({
                     from: web3.eth.defaultAccount,
-                    value:0,
+                    value: 0,
                     gas: gasToCancel + 21000,
                     gasPrice: await web3.eth.getGasPrice()
                 })
