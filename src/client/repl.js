@@ -39,35 +39,35 @@ const start = (conf, ms) => {
         }
     })
     replServer.defineCommand('logLevel', {
-        help: 'Defines the level to log, 1 - debug/cache, 2 - info, 3- error',
+        help: 'Defines the level to log, 1 - debug/cache, 2 - info, 3- error.',
         action (level) {
             if (level < 0 || level > 3) {
-                console.log('Please define 1 for debug, 2 for info, 3 for error')
+                console.log('Please define 1 for debug, 2 for info, 3 for error.')
                 return
             }
             conf.logger.logLevel = level
         }
     })
     replServer.defineCommand('start', {
-        help: 'Starts the execution client',
+        help: 'Starts the execution client.',
         action () {
             conf.scanning = true
         }
     })
     replServer.defineCommand('stop', {
-        help: 'Stops the execution client',
+        help: 'Stops the execution client.',
         action () {
             conf.scanning = false
         }
     })
     replServer.defineCommand('sweepCache', {
-        help: 'Sweeps your cache of expired txRequests',
+        help: 'Sweeps your cache of expired txRequests.',
         action () {
             conf.cache.sweepExpired()
         }
     })
     replServer.defineCommand('testTx', {
-        help: 'Send a test transaction to the network (requires unlocked local account)',
+        help: 'Send a test transaction to the network (requires unlocked local account).',
         action () {
             const ora = require('ora')
             const spinner = ora('Sending test transaction to network...').start()
