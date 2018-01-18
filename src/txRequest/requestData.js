@@ -51,18 +51,14 @@ class RequestData {
         }
     }
 
-    static from(txRequest) {
-        return async (txRequest) => {
-            const data = await txRequest.methods.requestData().call()
-            return new RequestData(data, txRequest)
-        }
+    static async from(txRequest) {
+        const data = await txRequest.methods.requestData().call()
+        return new RequestData(data, txRequest)
     }
 
-    refresh () {
-        return async () => {
-            const data = await this.txRequest.methods.requestData().call()
-            this.fill(data)
-        }
+    async refresh () {
+        const data = await this.txRequest.methods.requestData().call()
+        this.fill(data)
     }
 }
 

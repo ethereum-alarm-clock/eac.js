@@ -18,7 +18,7 @@ class TxRequest {
     }
 
     get address () {
-        return this.instance.address
+        return this.instance.options.address
     }
 
     /**
@@ -77,63 +77,49 @@ class TxRequest {
      * Dynamic getters
      */
 
-    now () {
-        return async () => {
-            if (this.temporalUnit == 1) {
-                return this.web3.eth.getBlockNumber()
-            } else if (this.temporalUnit == 2) {
-                const block = await this.web3.eth.getBlock('latest')
-                return block.timestamp
-            } else {
-                throw new Error(`Unrecognized temporal unit: ${this.temporalUnit}`)
-            }
+    async now () {
+        if (this.temporalUnit == 1) {
+            return this.web3.eth.getBlockNumber()
+        } else if (this.temporalUnit == 2) {
+            const block = await this.web3.eth.getBlock('latest')
+            return block.timestamp
+        } else {
+            throw new Error(`Unrecognized temporal unit: ${this.temporalUnit}`)
         }
     }
 
-    beforeClaimWindow () {
-        return async () => {
-            const now = await this.now()
-            return this.claimWindowStart.greaterThan(now)
-        }
+    async beforeClaimWindow () {
+        const now = await this.now()
+        return this.claimWindowStart.greaterThan(now)
     }
 
-    inClaimWindow () {
-        return async () => {
-            const now = await this.now()
-            return this.claimWindowStart.lessThanOrEqualTo(now) &&
-                    this.claimWindowEnd.greaterThan(now)
-        }
+    async inClaimWindow () {
+        const now = await this.now()
+        return this.claimWindowStart.lessThanOrEqualTo(now) &&
+                this.claimWindowEnd.greaterThan(now)
     }
 
-    inFreezePeriod () {
-        return async () => {
-            const now = await this.now()
-            return this.claimWindowEnd.lessThanOrEqualTo(now) &&
-                    this.freezePeriodEnd.greaterThan(now)
-        }
+    async inFreezePeriod () {
+        const now = await this.now()
+        return this.claimWindowEnd.lessThanOrEqualTo(now) &&
+                this.freezePeriodEnd.greaterThan(now)
     }
 
-    inExecutionWindow () {
-        return async () => {
-            const now = await this.now()
-            return this.windowStart.lessThanOrEqualTo(now) &&
-                    this.executionWindowEnd.greaterThanOrEqualTo(now)
-        }
+    async inExecutionWindow () {
+        const now = await this.now()
+        return this.windowStart.lessThanOrEqualTo(now) &&
+                this.executionWindowEnd.greaterThanOrEqualTo(now)
     }
 
-    inReservedWindow () {
-        return async () => {
-            const now = await this.now()
-            return this.windowStart.lessThanOrEqualTo(now) &&
-                    this.reservedWindowEnd.greaterThan(now)
-        }
+    async inReservedWindow () {
+        const now = await this.now()
+        return this.windowStart.lessThanOrEqualTo(now) &&
+                this.reservedWindowEnd.greaterThan(now)
     }
 
-    afterExecutionWindow () {
-        return async () => {
-            const now = await this.now()
-            return this.executionWindowEnd.lessThan(now)
-        }
+    async afterExecutionWindow () {
+        const now = await this.now()
+        return this.executionWindowEnd.lessThan(now)
     }
 
     /**
@@ -156,12 +142,10 @@ class TxRequest {
         return this.data.claimData.requiredDeposit
     }
 
-    claimPaymentModifier () {
-        return async () => {
-            const now = await this.now()
-            const elapsed = now.minus(this.claimWindowStart)
-            return elapsed.times(100).divideToIntegerBy(this.claimWindowSize).toNumber()
-        }
+    async claimPaymentModifier () {
+        const now = await this.now()
+        const elapsed = now.minus(this.claimWindowStart)
+        return elapsed.times(100).divideToIntegerBy(this.claimWindowSize).toNumber()
     }
 
     /**
@@ -184,6 +168,10 @@ class TxRequest {
      * TxData
      */
 
+    get toAddress () {
+        return this.data.txData.toAddress
+    }
+
     get callGas () {
         return this.data.txData.callGas
     }
@@ -192,29 +180,37 @@ class TxRequest {
         return this.data.txData.gasPrice
     }
 
+    get donation () {
+        return this.data.paymentData.donation
+    }
+
     get payment () {
         return this.data.paymentData.payment
+    }
+
+    /**
+     * Call Data
+     */
+
+    callData () {
+        return this.instance.methods.callData().call()
     }
 
     /**
      * Data management
      */
 
-    fillData () {
-        return async () => {
-            const requestData = await RequestData.from(this.instance)
-            this.data = requestData
-            return true
-        }
+    async fillData () {
+        const requestData = await RequestData.from(this.instance)
+        this.data = requestData
+        return true
     }
 
-    refreshData () {
-        return async () => {
-            if (!this.data) {
-                return this.fillData()
-            }
-            return this.data.refresh()
+    async refreshData () {
+        if (!this.data) {
+            return this.fillData()
         }
+        return this.data.refresh()
     }
 }
 
