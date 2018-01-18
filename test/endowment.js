@@ -3,7 +3,7 @@ const BigNumber= require('bignumber.js')
 
 const Deployer = require('../deploy.js')
 
-const EAC_Scheduler = require('../src/scheduling/index.js')
+const eac = require('../src')
 
 describe('EAC_Scheduler', () => {
 
@@ -13,7 +13,7 @@ describe('EAC_Scheduler', () => {
     before(async () => {
         const deployed = await Deployer()
         web3 = deployed.web3
-        eacScheduler = new EAC_Scheduler(web3, 'tester')
+        eacScheduler = new eac.Scheduler(web3, 'tester')
     })
 
     it('Calculates the expected endowment', () => {

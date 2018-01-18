@@ -1,13 +1,15 @@
-const BigNumber = require('bignumber.js')
+const { BigNumber } = require('bignumber.js')
 
-/// Request Data wrapper for web3 v1.0.0 
 class RequestData {
     constructor(data, txRequest) {
         if (typeof data === 'undefined' || typeof txRequest === 'undefined') {
-            throw new Error('Can not call the constructor!')
+            throw new Error('Cannot call the constructor directly.')
         }
-        
         this.txRequest = txRequest
+        this.fill(data)
+    }
+
+    fill (data) {
         this.claimData = {
             "claimedBy": data[0][0],
             "claimDeposit": new BigNumber(data[2][0]),
@@ -53,6 +55,11 @@ class RequestData {
         const data = await txRequest.methods.requestData().call()
         return new RequestData(data, txRequest)
     }
+
+    async refresh () {
+        const data = await this.txRequest.methods.requestData().call()
+        this.fill(data)
+    }
 }
 
-module.exports.RequestData = RequestData
+module.exports = RequestData
