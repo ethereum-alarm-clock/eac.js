@@ -10,7 +10,7 @@ const store = (conf, txRequest) => {
         return
     }
     log.info(`Storing found txRequest at address ${txRequest.address}`)
-    conf.cache.set(txRequest.address, txRequest.getWindowStart())
+    conf.cache.set(txRequest.address, txRequest.windowStart)
 }
 
 const scanBlockchain = async conf => {
@@ -54,10 +54,10 @@ const scanBlockchain = async conf => {
         const txRequest = new TxRequest(nextRequestAddress, web3)
         await txRequest.fillData()
 
-        if (!txRequest.getWindowStart().equals(trackerWindowStart)) {
+        if (!txRequest.windowStart.equals(trackerWindowStart)) {
             // The data between the txRequest we have and from the requestTracker do not match.
             log.error(`Data mismatch between txRequest and requestTracker. Double check contract addresses.`)
-        } else if (txRequest.getWindowStart().lessThanOrEqualTo(right)) {
+        } else if (txRequest.windowStart.lessThanOrEqualTo(right)) {
             // This request is within bounds, store it.
             store(conf, txRequest)
         } else {
@@ -84,7 +84,7 @@ const scanCache = async conf => {
 
     allTxRequests.forEach(txRequest => {
         // console.log(txRequest)
-        txRequest.fillData()
+        txRequest.refreshData()
         .then(_ => routeTxRequest(conf, txRequest))
     })
 }

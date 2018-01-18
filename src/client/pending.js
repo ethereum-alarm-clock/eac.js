@@ -18,18 +18,16 @@ const hasPending = (conf, txRequest) => {
  * @param {TransactionRequest} txRequest 
  * @returns {Promise<boolean>} True if a pending transaction to this address exists.  
  */
-const hasPendingParity = (conf, txRequest) => {
+const hasPendingParity = async (conf, txRequest) => {
     /// Only available if using parity locally.
-    return async function(conf, txRequest) {
-        const pApi = require('@parity/api')
-        const provider = new pApi.Provider.Http(`${conf.provider}`)
-        const api = new pApi(provider)
+    const pApi = require('@parity/api')
+    const provider = new pApi.Provider.Http(`${conf.provider}`)
+    const api = new pApi(provider)
 
-        const transactions = await api.parity.pendingTransactions()
-        const recips = transactions.map(tx => tx.to)
-        if (recips.indexOf(txRequest.getAddress()) !== -1) return true 
-        return false
-    }
+    const transactions = await api.parity.pendingTransactions()
+    const recips = transactions.map(tx => tx.to)
+    if (recips.indexOf(txRequest.address) !== -1) return true 
+    return false
 }
 
 /**
@@ -53,7 +51,7 @@ const hasPendingGeth = (conf, txRequest) => {
             if (err) reject(err)
             for (let account in res.result.pending) {
                 for (let nonce in res.result.pending[account]) {
-                    if (res.result.pending[account][nonce].to === txRequest.getAddress()) {
+                    if (res.result.pending[account][nonce].to === txRequest.address) {
                         resolve(true)
                     }
                 }

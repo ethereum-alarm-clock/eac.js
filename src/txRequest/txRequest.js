@@ -79,10 +79,10 @@ class TxRequest {
 
     async now () {
         if (this.temporalUnit == 1) {
-            return this.web3.eth.getBlockNumber()
+            return new BigNumber(await this.web3.eth.getBlockNumber())
         } else if (this.temporalUnit == 2) {
             const block = await this.web3.eth.getBlock('latest')
-            return block.timestamp
+            return new BigNumber(block.timestamp)
         } else {
             throw new Error(`Unrecognized temporal unit: ${this.temporalUnit}`)
         }
@@ -145,7 +145,7 @@ class TxRequest {
     async claimPaymentModifier () {
         const now = await this.now()
         const elapsed = now.minus(this.claimWindowStart)
-        return elapsed.times(100).divideToIntegerBy(this.claimWindowSize).toNumber()
+        return elapsed.times(100).dividedToIntegerBy(this.claimWindowSize)
     }
 
     /**
@@ -211,6 +211,47 @@ class TxRequest {
             return this.fillData()
         }
         return this.data.refresh()
+    }
+
+    /**
+     * ABI convenience functions
+     */
+
+    get claimData () {
+        return this.instance.methods.claim().encodeABI()
+    }
+
+    get executeData () {
+        return this.instance.methods.execute().encodeABI()
+    }
+
+    get cancelData () {
+        return this.instance.methods.cancel().encodeABI()
+    }
+
+    /**
+     * Action Wrappers
+     */
+
+    claim () {
+        return this.instance.methods.claim()
+    }
+
+    execute () {
+        return this.instance.methods.execute()
+    }
+
+    cancel () {
+        return this.instance.methods.cancel()
+    }
+
+    /**
+     * Misc.
+     */
+
+    async getBalance () {
+        const bal = await this.web3.eth.getBalance(txRequest.address)
+        return new BigNumber(bal)
     }
 }
 

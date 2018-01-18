@@ -5,7 +5,7 @@ const hasPending = require('./pending.js')
  * Takes in a txRequest object and routes it to the thread that will act on it,
  * or returns if no action can be taken.
  * @param {Config} conf 
- * @param {TransactionRequest} txRequest 
+ * @param {TxRequest} txRequest 
  */
 const routeTxRequest = async (conf, txRequest) => {
     const log = conf.logger 
@@ -15,7 +15,7 @@ const routeTxRequest = async (conf, txRequest) => {
         log.info(`Ignoring txRequest with pending transaction in the transaction pool.`)
         return
     }
-    if (txRequest.isCancelled()) {
+    if (txRequest.isCancelled) {
         log.debug(`Ignorning already cancelled txRequest.`)
         // TODO Should route this to delete the cache
         return
@@ -32,7 +32,7 @@ const routeTxRequest = async (conf, txRequest) => {
             // Already set in cache as having a claim request.
             return
         }
-        if (txRequest.isClaimed()) {
+        if (txRequest.isClaimed) {
             // Already claimed, do not attempt to claim it again.
             log.debug(`TxRequest in claimWindow but is already claimed!`)
             // Set it to the cache number so it won't do this again.
@@ -59,7 +59,7 @@ const routeTxRequest = async (conf, txRequest) => {
     }
 
     if (await txRequest.inFreezePeriod()) {
-        log.debug(`Ignoring frozen txRequest. Now ${await txRequest.now()} | Window start: ${txRequest.getWindowStart()}`)
+        log.debug(`Ignoring frozen txRequest. Now ${await txRequest.now()} | Window start: ${txRequest.windowStart}`)
         return
     }
 
@@ -111,14 +111,14 @@ const claim = async (conf, txRequest) => {
     const web3 = conf.web3
 
     // All the checks have been done in routing, now we follow through on the actions.
-    const claimPaymentModifier = await txRequest.claimPaymentModifier() / 100
-    const paymentWhenClaimed = txRequest.getPayment().times(claimPaymentModifier).floor()
-    const claimDeposit = txRequest.getRequiredDeposit()
-    const data = txRequest.instance.methods.claim().encodeABI()
+    const claimPaymentModifier = (await txRequest.claimPaymentModifier()).dividedToIntegerBy(100)
+    const paymentWhenClaimed = txRequest.payment.times(claimPaymentModifier).floor()
+    const claimDeposit = txRequest.requiredDeposit
+    const data = txRequest.claimData
     const sender = conf.wallet ? conf.wallet.getAccounts()[0] : web3.eth.defaultAccount
     const gasToClaim = await web3.eth.estimateGas({
         from: sender,
-        to: txRequest.getAddress(),
+        to: txRequest.address,
         value: claimDeposit.toString(),
         data: data
     })
@@ -154,7 +154,7 @@ const claim = async (conf, txRequest) => {
         )
     } else {
         // Wallet disabled, claim from default account
-        return txRequest.instance.methods.claim().send({
+        return txRequest.claim().send({
             from: web3.eth.defaultAccount,
             value: claimDeposit,
             gas: gasToClaim + 21000,
@@ -168,10 +168,10 @@ const execute = async (conf, txRequest) => {
     const log = conf.logger
     const web3 = conf.web3
 
-    const executeGas = txRequest.callGas().add(180000)
+    const executeGas = txRequest.callGas.add(180000)
     const gasLimit = (await web3.eth.getBlock('latest')).gasLimit 
 
-    const gasPrice = txRequest.gasPrice()
+    const gasPrice = txRequest.gasPrice
 
     if (executeGas > gasLimit) {
         // TODO
@@ -182,8 +182,8 @@ const execute = async (conf, txRequest) => {
     log.info(`Attempting the execution of txRequest at address ${txRequest.address}`)
     conf.cache.set(txRequest.address, -1)
     if (conf.wallet) {
-        const executeData = txRequest.instance.methods.execute().encodeABI()
-        const walletClaimIndex =  conf.wallet.getAccounts().indexOf(txRequest.claimedBy())
+        const executeData = txRequest.executeData
+        const walletClaimIndex =  conf.wallet.getAccounts().indexOf(txRequest.claimedBy)
         
         if (walletClaimIndex !== -1) {
             return conf.wallet.sendFromIndex(
@@ -204,7 +204,7 @@ const execute = async (conf, txRequest) => {
             )
         }
     } else {
-        return txRequest.instance.methods.execute().send({
+        return txRequest.execute().send({
             from: web3.eth.defaultAccount,
             value: 0,
             gas: executeGas,
@@ -217,7 +217,7 @@ const cleanup = async (conf, txRequest) => {
     const log = conf.logger
     const web3 = conf.web3
 
-    const txRequestBalance = new BigNumber(await web3.eth.getBalance(txRequest.address))
+    const txRequestBalance = await txRequest.getBalance()
 
     // If a transaction request has been executed it will route into this option.
     if (txRequestBalance.equals(0)) {
@@ -226,12 +226,12 @@ const cleanup = async (conf, txRequest) => {
         return
     }
 
-    if (!txRequest.isCancelled()) {
-        const cancelData = txRequest.instance.methods.cancel().encodeABI()
+    if (!txRequest.isCancelled) {
+        const cancelData = txRequest.cancelData
         const sender = conf.wallet ? conf.wallet.getAccounts()[0] : web3.eth.defaultAccount
-        const gasToCancel = await txRequest.instance.methods.cancel().estimateGas({
+        const gasToCancel = await txRequest.cancel().estimateGas({
             from: sender,
-            to: txRequest.getAddress(),
+            to: txRequest.address,
             value: '0',
             data: cancelData
         })
@@ -273,7 +273,7 @@ const cleanup = async (conf, txRequest) => {
         } else {
             // Wallet disabled try from the deafult account.
             if (txRequest.isClaimedBy(web3.eth.defaultAccount)) {
-                txRequest.instance.methods.cancel().send({
+                txRequest.cancel().send({
                     from: web3.eth.defaultAccount,
                     value: 0,
                     gas: gasToCancel + 21000,
@@ -283,7 +283,7 @@ const cleanup = async (conf, txRequest) => {
                 if (gasCostToCancel.greaterThan(txRequestBalance)) {
                     return
                 }
-                txRequest.instance.methods.cancel().send({
+                txRequest.cancel().send({
                     from: web3.eth.defaultAccount,
                     value: 0,
                     gas: gasToCancel + 21000,
