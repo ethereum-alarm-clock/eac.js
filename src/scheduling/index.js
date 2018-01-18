@@ -1,7 +1,7 @@
 const { getABI } = require('../util.js')
 const BigNumber = require('bignumber.js')
 
-class EAC_Scheduler {
+class Scheduler {
 
     constructor(web3, chain) {
         this.web3 = web3
@@ -124,4 +124,4 @@ class EAC_Scheduler {
     }
 }
 
-module.exports = EAC_Scheduler
+module.exports = Scheduler

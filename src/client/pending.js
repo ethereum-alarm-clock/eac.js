@@ -27,7 +27,7 @@ const hasPendingParity = (conf, txRequest) => {
 
         const transactions = await api.parity.pendingTransactions()
         const recips = transactions.map(tx => tx.to)
-        if (recips.indexOf(txRequest.address) !== -1) return true 
+        if (recips.indexOf(txRequest.getAddress()) !== -1) return true 
         return false
     }
 }
@@ -53,7 +53,7 @@ const hasPendingGeth = (conf, txRequest) => {
             if (err) reject(err)
             for (let account in res.result.pending) {
                 for (let nonce in res.result.pending[account]) {
-                    if (res.result.pending[account][nonce].to === txRequest.address) {
+                    if (res.result.pending[account][nonce].to === txRequest.getAddress()) {
                         resolve(true)
                     }
                 }

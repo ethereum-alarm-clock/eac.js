@@ -5,3 +5,5 @@ wallet/*
 src/hasPendingGeth.js
 src/testStatsDb.js
 docs/Instructions.md
+old-*
+new-*

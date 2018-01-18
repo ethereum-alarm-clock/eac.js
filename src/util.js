@@ -1,3 +1,10 @@
+const Constants = require('./constants.js')
+
+const checkNotNullAddress = address => {
+    if (address === Constants.NULL_ADDRESS) return false
+    return true
+}
+
 /// Requires a case sensitive name of the contract and will return the ABI if found.
 const getABI = name => {
     const json = require(`${__dirname}/build/contracts/${name}.json`)
@@ -24,7 +31,7 @@ const getChainName = async web3 => {
 }
 
 module.exports = {
+    checkNotNullAddress,
     getABI,
     getChainName
-
 }

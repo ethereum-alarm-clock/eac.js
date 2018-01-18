@@ -1,6 +1,6 @@
 const { BigNumber } = require('bignumber.js');
 const { GTE_HEX, NULL_ADDRESS } = require('../constants.js')
-const { TxRequest } = require('../contracts/txRequest.js')
+const { TxRequest } = require('../index.js')
 
 const store = (conf, txRequest) => {
     const log = conf.logger
