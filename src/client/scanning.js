@@ -24,11 +24,9 @@ const scanBlockchain = async conf => {
     const requestTracker = conf.tracker 
     const requestFactory = conf.factory
 
-    let nextRequestAddress = await requestTracker.methods.query(
-        requestFactory.options.address,
-        GTE_HEX,
-        left
-    ).call()
+    requestTracker.setFactory(requestFactory.address)
+
+    let nextRequestAddress = await requestTracker.nextFromLeft(left)
 
     if (nextRequestAddress === NULL_ADDRESS) {
         log.info(`No new requests.`)
@@ -39,17 +37,12 @@ const scanBlockchain = async conf => {
         log.debug(`Found request - ${nextRequestAddress}`)
 
         // Verify that the request is known to the factory we are validating with.
-        if (!await requestFactory.methods.isKnownRequest(nextRequestAddress).call()) {
-            log.error(`Encountered unknown request~ factory: ${requestFactory.options.address} | query: ">=" | value ${left} | address: ${nextRequestAddress}`)
+        if (!await requestFactory.isKnownRequest(nextRequestAddress)) {
+            log.error(`Encountered unknown request~ factory: ${requestFactory.address} | query: ">=" | value ${left} | address: ${nextRequestAddress}`)
             throw new Error(`Encountered unknown address! Please check that you are using the correct contracts JSON file.`)
         }
         
-        const trackerWindowStart = new BigNumber(
-            await requestTracker.methods.getWindowStart(
-                requestFactory.options.address,
-                nextRequestAddress
-            ).call()
-        )
+        const trackerWindowStart = await requestTracker.windowStartFor(nextRequestAddress)
         
         const txRequest = new TxRequest(nextRequestAddress, web3)
         await txRequest.fillData()
@@ -65,10 +58,7 @@ const scanBlockchain = async conf => {
             break
         }
 
-        nextRequestAddress = await requestTracker.methods.getNextRequest(
-            requestFactory.options.address,
-            txRequest.address
-        ).call()
+        nextRequestAddress = await requestTracker.nextRequest(txRequest.address)
 
         // Hearbeat
         if (nextRequestAddress === NULL_ADDRESS) { log.info('No new requests.') }

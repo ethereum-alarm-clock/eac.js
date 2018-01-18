@@ -5,7 +5,7 @@ const main = async (chain, web3) => {
     const eacScheduler = new Scheduler(web3, chain)
     const me = (await web3.eth.getAccounts())[0]
 
-    const windowStart = await web3.eth.getBlockNumber() + 50
+    const windowStart = await web3.eth.getBlockNumber() + 15
     const gasPrice = web3.utils.toWei('100', 'gwei')
     const requiredDeposit = 1
 

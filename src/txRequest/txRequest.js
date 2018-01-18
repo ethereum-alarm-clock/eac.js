@@ -250,7 +250,7 @@ class TxRequest {
      */
 
     async getBalance () {
-        const bal = await this.web3.eth.getBalance(txRequest.address)
+        const bal = await this.web3.eth.getBalance(this.address)
         return new BigNumber(bal)
     }
 }

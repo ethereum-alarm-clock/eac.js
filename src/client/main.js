@@ -4,13 +4,15 @@ const Scanner = require('./scanning.js')
 const StatsDB = require('./statsdb.js')
 const Util = require('../util.js')
 
+const { RequestFactory, RequestTracker } = require('../index')
+
 const ethUtil = require('ethereumjs-util')
 
 const startScanning = (ms, conf) => {
     const log = conf.logger
 
-    log.info(`Scanning request tracker at ${conf.tracker.options.address}`)
-    log.info(`Validating results with factory at ${conf.factory.options.address}`)
+    log.info(`Scanning request tracker at ${conf.tracker.address}`)
+    log.info(`Validating results with factory at ${conf.factory.address}`)
     log.info(`Scanning every ${ms / 1000} seconds.`)
 
     setInterval(_ => {
@@ -47,16 +49,13 @@ const main = async (web3, provider, ms, logfile, logLevel, walletFile, pw) => {
 
     const chain = await Util.getChainName(web3)
 
-    // Parses the chain argument
-    const contracts = require(`../assets/${chain}.json`)
-
-    const { getABI } = require('../util.js')
-    const RequestFactoryABI = getABI('RequestFactory')
-    const RequestTrackerABI = getABI('RequestTracker')
-
     // Loads the contracts
-    const requestFactory = new web3.eth.Contract(RequestFactoryABI, contracts.requestFactory)
-    const requestTracker = new web3.eth.Contract(RequestTrackerABI, contracts.requestTracker)
+    const requestFactory = chain === 'ropsten' ? 
+                            RequestFactory.initRopsten(web3) : 
+                            new Error(`Not implemented for chain ${chain}`)
+    const requestTracker = chain === 'ropsten' ?
+                            RequestTracker.initRopsten(web3) :
+                            new Error(`Not implemented for chain ${chain}`)
 
     // Parses the logfile
     if (logfile === 'console') {
