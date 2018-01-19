@@ -1,5 +1,6 @@
 wallet/keyfile
 node_modules
+example/webpack/node_modules
 getLogs.js
 wallet/*
 src/hasPendingGeth.js
