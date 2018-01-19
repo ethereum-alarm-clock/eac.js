@@ -1,6 +1,6 @@
 {
   "name": "eac.js",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "Commnandline tool to interact with the Ethereum Alarm Clock contracts.",
   "main": "./src/scheduling/index.js",
   "scripts": {
