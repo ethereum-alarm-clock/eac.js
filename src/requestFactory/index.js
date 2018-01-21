@@ -15,6 +15,15 @@ class RequestFactory {
         return this.instance.address
     }
 
+    getTrackerAddress () {
+        return new Promise((resolve, reject) => {
+            this.instance.requestTracker.call((err, trackerAddress) => {
+                if (!err) resolve(trackerAddress)
+                else reject(err)
+            })
+        })
+    }
+
     /**
      * Conveinence methods
      */

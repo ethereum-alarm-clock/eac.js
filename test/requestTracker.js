@@ -4,26 +4,24 @@ const expect = require('chai').expect
 
 const eac = require('../src')
 
-describe('Request Factory', () => {
+describe('Request Tracker', () => {
 
-    let rfAddr
+    let rtAddr
     let web3
 
     before(async () => {
         const deployed = await Deployer()
         web3 = deployed.web3
-        rfAddr = deployed.requestFactory.address
+        rtAddr = deployed.requestTracker
     })
 
-    it('Ensures that requestFactory is valid', () => {
-        const requestFactory = new eac.RequestFactory(rfAddr, web3)
-        expect(requestFactory.address)
+    it('Ensures the request tracker is valid', async () => {
+        const requestTracker = new eac.RequestTracker(rtAddr, web3)
+        expect(requestTracker.address)
         .to.exist
     })
 
-    it('tests RequestFactory.isKnownRequest()', async () => {
-        // To test `isKnownRequest()` we have to use the scheduler to deploy a
-        // new instance of a TxRequest.
+    it('tests requestTrackers methods', async () => {
         const eacScheduler = new eac.Scheduler(web3, 'tester')
 
         const toAddress = '0xDacC9C61754a0C4616FC5323dC946e89Eb272302'
@@ -69,16 +67,26 @@ describe('Request Factory', () => {
 
         const newRequestAddress = '0x'.concat(receipt.logs[0].data.slice(-40))
 
-        // This is to get around an issue with the deploy script. It deploys new instances
-        // of the contracts in between each test so it messes up keeping the right
-        // addresses. Need a better solution but for now this is a workaround.
-        const rfAddr2 = await eacScheduler.getFactoryAddress()
-        const requestFactory = new eac.RequestFactory(rfAddr2, web3)
+        const rfAddr = await eacScheduler.getFactoryAddress()
+        const requestFactory = new eac.RequestFactory(rfAddr, web3)
+        const rtAddr2 = await requestFactory.getTrackerAddress()
+        const requestTracker = new eac.RequestTracker(rtAddr2, web3)
+        requestTracker.setFactory(requestFactory.address)
 
-        // Now that we've got the address of our new request, we can check it against
-        // the request factory.
-        const isKnown = await requestFactory.isKnownRequest(newRequestAddress)
-        expect(isKnown)
-        .to.be.true
+        const left = await eac.Util.getBlockNumber(web3) - 10
+        const res = await requestTracker.nextFromLeft(left)
+        const resWS = await requestTracker.windowStartFor(res)
+        console.log(res)   
+        console.log(resWS)
+        const res2 = await requestTracker.nextRequest(res)
+        const res2WS = await requestTracker.windowStartFor(res2)
+        console.log(res2)
+        console.log(res2WS)
+        const res3 = await requestTracker.nextRequest(res2)
+        const res3WS = await requestTracker.windowStartFor(res3)
+        console.log(res3)
+        console.log(res3WS)
+        const res4 = await requestTracker.nextRequest(res3)
+        console.log(res4)
     })
 })

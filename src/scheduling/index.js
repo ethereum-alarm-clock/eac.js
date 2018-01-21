@@ -17,7 +17,7 @@ class Scheduler {
         }
     }
 
-    getFactoryAddr() {
+    getFactoryAddress() {
         return new Promise((resolve, reject) => {
             this.blockScheduler.factoryAddress.call((err, address) => {
                 if (!err) resolve(address)
