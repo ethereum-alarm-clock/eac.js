@@ -57,7 +57,7 @@ class RequestTracker {
             )
         })
     }
-
+    
     nextRequest (txRequestAddress) {
         this.checkFactory()
         return new Promise((resolve, reject) => {

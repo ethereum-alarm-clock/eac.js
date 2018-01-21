@@ -87,11 +87,6 @@ const routeTxRequest = async (conf, txRequest) => {
         if (conf.cache.get(txRequest.address) <= 99) return // waiting to be cleaned
         if (txRequest.wasCalled) { log.debug(`Already called.`); cleanup(conf, txRequest); return }
         if (await txRequest.inReservedWindow() && txRequest.isClaimed) {
-            // if (conf.wallet.getAccounts().indexOf(txRequest.claimedBy) == -1
-            //     && !txRequest.isClaimedBy(web3.eth.defaultAccount)) {
-            //         log.debug(`In reserve window and not claimed by our accounts.`)
-            //         return
-            //     }
             if (!txRequest.isClaimedBy(web3.eth.defaultAccount)) {
                 log.debug(`In reserve window and not claimed by our account.`)
                 return
