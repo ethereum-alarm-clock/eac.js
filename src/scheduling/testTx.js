@@ -3,16 +3,16 @@ const BigNumber = require('bignumber.js')
 
 const main = async (chain, web3) => {
     const eacScheduler = new Scheduler(web3, chain)
-    const me = (await web3.eth.getAccounts())[0]
+    const me = web3.eth.accounts[0]
 
-    const windowStart = await web3.eth.getBlockNumber() + 15
-    const gasPrice = web3.utils.toWei('100', 'gwei')
+    const windowStart = web3.eth.blockNumber + 30
+    const gasPrice = web3.toWei('100', 'gwei')
     const requiredDeposit = 1
 
     const callGas = 1212121
     const callValue = 123454321
     const donation = 50
-    const payment = web3.utils.toWei('500', 'finney')
+    const payment = web3.toWei('500', 'finney')
 
     const endowment = eacScheduler.calcEndowment(
         new BigNumber(callGas),
@@ -30,7 +30,7 @@ const main = async (chain, web3) => {
 
     return eacScheduler.blockSchedule(
         '0x009f7EfeD908c05df5101DA1557b7CaaB38EE4Ce',
-        web3.utils.utf8ToHex('s0x'.repeat(
+        web3.fromAscii('s0x'.repeat(
             Math.floor(Math.random() * 10)
         )),
         callGas,

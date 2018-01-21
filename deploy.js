@@ -17,7 +17,7 @@ const getArtifact = name => {
 }
 
 async function main() {
-    web3.eth.defaultAccount = (await web3.eth.getAccounts())[0]
+    web3.eth.defaultAccount = web3.eth.accounts[0]
 
     // const BaseScheduler = getArtifact('BaseScheduler')
     const BlockScheduler        = getArtifact('BlockScheduler')

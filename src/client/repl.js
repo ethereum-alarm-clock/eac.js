@@ -11,11 +11,11 @@ const start = (conf, ms) => {
         async action () {
             if (conf.wallet) {
                 conf.wallet.getAccounts().forEach(async account => {
-                    console.log(`${account} | Balance: ${web3.utils.fromWei(await web3.eth.getBalance(account))}`)
+                    console.log(`${account} | Balance: ${web3.fromWei(web3.eth.getBalance(account))}`)
                 })
             } else {
                 const account = web3.eth.defaultAccount
-                console.log(`${account} | Balance: ${web3.utils.fromWei(await web3.eth.getBalance(account))}`)
+                console.log(`${account} | Balance: ${web3.fromWei(web3.eth.getBalance(account))}`)
             }
         }  
     })
@@ -89,7 +89,7 @@ const start = (conf, ms) => {
             const stats = conf.statsdb.getStats()
             stats.forEach(accountStats => {
                 let etherGain = accountStats.currentEther.minus(accountStats.startingEther)
-                etherGain = web3.utils.fromWei(etherGain.toString())
+                etherGain = web3.fromWei(etherGain.toString())
                 console.log(`${accountStats.account} | Claimed: ${accountStats.claimed} | Executed: ${accountStats.executed} | Ether gain: ${etherGain}`)
             })
         }

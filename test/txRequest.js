@@ -23,11 +23,11 @@ describe('TxRequest', () => {
         const callGas = 3000000
         const callValue = 123454321
         const windowSize = 255
-        const windowStart = await web3.eth.getBlockNumber() + 25
-        const gasPrice = web3.utils.toWei('55', 'gwei')
-        const donation = web3.utils.toWei('120', 'finney')
-        const payment = web3.utils.toWei('250', 'finney')
-        const requiredDeposit = web3.utils.toWei('50', 'finney')
+        const windowStart = await web3.eth.blockNumber + 25
+        const gasPrice = web3.toWei('55', 'gwei')
+        const donation = web3.toWei('120', 'finney')
+        const payment = web3.toWei('250', 'finney')
+        const requiredDeposit = web3.toWei('50', 'finney')
 
         const endowment = scheduler.calcEndowment(
             new BigNumber(callGas),

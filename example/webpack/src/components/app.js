@@ -58,7 +58,7 @@ class App extends React.Component {
 		})
 
 		console.log(toAddress,
-			web3.utils.utf8ToHex(callData),
+			web3.fromAscii(callData),
 			callGas,
 			callValue,
 			windowSize,
@@ -70,7 +70,7 @@ class App extends React.Component {
 
 		eac.blockSchedule(
 			toAddress,
-			web3.utils.utf8ToHex(callData),
+			web3.fromAscii(callData),
 			callGas,
 			callValue,
 			windowSize,

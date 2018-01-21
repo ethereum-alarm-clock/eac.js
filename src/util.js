@@ -16,8 +16,8 @@ const getABI = name => {
  * passed into eacScheduler.
  * @param {Web3} web3 
  */
-const getChainName = async web3 => {
-    const networkID = await web3.eth.net.getId()
+const getChainName = web3 => {
+    const networkID = web3.version.network
     if (networkID == 1) {
         // return 'mainnet'
         throw new Error('Not implemented for mainnet')
@@ -30,8 +30,30 @@ const getChainName = async web3 => {
     }
 }
 
+const waitForTransactionToBeMined = (web3, txHash, interval) => {
+    interval = interval ? interval : 500
+    const txReceiptAsync = (txHash, resolve, reject) => {
+        try {
+            let receipt = web3.eth.getTransactionReceipt(txHash)
+            if (receipt == null) {
+                setTimeout(() => {
+                    txReceiptAsync(txHash, resolve, reject)
+                }, interval)
+            } else {
+                resolve(receipt)
+            }
+        } catch (err) {
+            reject(err)
+        }
+    }
+    return new Promise((resolve, reject) => {
+        txReceiptAsync(txHash, resolve, reject)
+    })
+}
+
 module.exports = {
     checkNotNullAddress,
     getABI,
-    getChainName
+    getChainName,
+    waitForTransactionToBeMined
 }

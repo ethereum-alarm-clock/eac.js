@@ -11,20 +11,30 @@ const routeTxRequest = async (conf, txRequest) => {
     const log = conf.logger 
     const web3 = conf.web3 
 
+    // Return early the transaction already has a pending transaction
+    // in the transaction pool
     if (await hasPending(conf, txRequest)) {
         log.info(`Ignoring txRequest with pending transaction in the transaction pool.`)
         return
     }
+    // console.log(await hasPending(conf, txRequest))
+
+    // Return early if the transaction request has been cancelled
     if (txRequest.isCancelled) {
         log.debug(`Ignorning already cancelled txRequest.`)
-        // TODO Should route this to delete the cache
         return
     }
-    if (await txRequest.beforeClaimWindow()) {
+
+    // Returne early if the transaction request is before claim window,
+    // and therefore not actionable upon
+    if (txRequest.beforeClaimWindow()) {
         log.debug(`Ignoring txRequest not in claim window.`)
         return
     }
-    if (await txRequest.inClaimWindow()) {
+
+    // If the transaction request is in the claim window, we check if 
+    // it already claimed and if not, we claim it
+    if (txRequest.inClaimWindow()) {
         // The client set the txRequest to `attempted claim` and watch 
         // for the result and either marked successfully `claimed` or not.
         // Using the cache codes is a primitive way to accomplish this.
@@ -46,10 +56,8 @@ const routeTxRequest = async (conf, txRequest) => {
             if (receipt.status == 1) {
                 log.info(`TxRequest at ${txRequest.address} claimed!`)
                 conf.cache.set(txRequest.address, 103)
-                web3.eth.getTransaction(receipt.transactionHash)
-                .then(txObj => {
-                    conf.statsdb.updateClaimed(txObj.from)
-                })
+                const txObj = web3.eth.getTransaction(receipt.transactionHash)
+                conf.statsdb.updateClaimed(txObj.from)
             }
             // Or find the reason why it failed TODO
             else return
@@ -58,21 +66,29 @@ const routeTxRequest = async (conf, txRequest) => {
         return
     }
 
+    // If the transaction request is in the freeze period, it is not
+    // actionable upon and we return early
     if (await txRequest.inFreezePeriod()) {
         log.debug(`Ignoring frozen txRequest. Now ${await txRequest.now()} | Window start: ${txRequest.windowStart}`)
         return
     }
 
+    // If the transaction request is in the execution window, we can
+    // attempt an execution of it
     if (txRequest.inExecutionWindow()) {
         log.debug(``)
         if (conf.cache.get(txRequest.address) <= 99) return // waiting to be cleaned
         if (txRequest.wasCalled) { log.debug(`Already called.`); cleanup(conf, txRequest); return }
         if (await txRequest.inReservedWindow() && txRequest.isClaimed) {
-            if (conf.wallet.getAccounts().indexOf(txRequest.claimedBy) == -1
-                && !txRequest.isClaimedBy(web3.eth.defaultAccount)) {
-                    log.debug(`In reserve window and not claimed by our accounts.`)
-                    return
-                }
+            // if (conf.wallet.getAccounts().indexOf(txRequest.claimedBy) == -1
+            //     && !txRequest.isClaimedBy(web3.eth.defaultAccount)) {
+            //         log.debug(`In reserve window and not claimed by our accounts.`)
+            //         return
+            //     }
+            if (!txRequest.isClaimedBy(web3.eth.defaultAccount)) {
+                log.debug(`In reserve window and not claimed by our account.`)
+                return
+            }
         }
         // This hacks the cache to set all executed requests to store the value
         // of -1 if it has been executed. 
@@ -85,10 +101,8 @@ const routeTxRequest = async (conf, txRequest) => {
             if (receipt.status == 1) {
                 log.info(`TxRequest at ${txRequest.address} executed!`)
                 conf.cache.set(txRequest.address, 100)
-                web3.eth.getTransaction(receipt.transactionHash)
-                .then(txObj => {
-                    conf.statsdb.updateExecuted(txObj.from)
-                })
+                const txObj = web3.eth.getTransaction(receipt.transactionHash)
+                conf.statsdb.updateExecuted(txObj.from)
             }
             // Or find the reason why it failed TODO
             else return
@@ -97,11 +111,10 @@ const routeTxRequest = async (conf, txRequest) => {
         return
     }
 
+    // If the transaction request is expired, we try to clean it
     if (txRequest.afterExecutionWindow()) {
         log.debug(`Cleaning up expired txRequest and removing from cache.`)
-        // TODO
         cleanup(conf, txRequest)
-        // This request should handle returning funds if the transaction was not executed.
         return
     }
 }
@@ -111,24 +124,24 @@ const claim = async (conf, txRequest) => {
     const web3 = conf.web3
 
     // All the checks have been done in routing, now we follow through on the actions.
-    const claimPaymentModifier = (await txRequest.claimPaymentModifier()).dividedToIntegerBy(100)
+    const claimPaymentModifier = txRequest.claimPaymentModifier().dividedToIntegerBy(100)
     const paymentWhenClaimed = txRequest.payment.times(claimPaymentModifier).floor()
     const claimDeposit = txRequest.requiredDeposit
     const data = txRequest.claimData
-    const sender = conf.wallet ? conf.wallet.getAccounts()[0] : web3.eth.defaultAccount
-    const gasToClaim = await web3.eth.estimateGas({
+    const sender = web3.eth.defaultAccount
+    const gasToClaim = web3.eth.estimateGas({
         from: sender,
         to: txRequest.address,
         value: claimDeposit.toString(),
         data: data
     })
-    const currentGasPrice = new BigNumber(await web3.eth.getGasPrice())
+    const currentGasPrice = new BigNumber(web3.eth.gasPrice)
     const gasCostToClaim = currentGasPrice.times(gasToClaim)
 
 
     if (gasCostToClaim.greaterThan(paymentWhenClaimed)) {
         log.debug(`Not profitable to claim. Returning`)
-        log.debug(`gasCostToClaim: ${web3.utils.fromWei(gasCostToClaim.toString())} | paymentWhenClaimed: ${web3.utils.fromWei(paymentWhenClaimed.toString())}`)
+        log.debug(`gasCostToClaim: ${web3.fromWei(gasCostToClaim.toString())} | paymentWhenClaimed: ${web3.fromWei(paymentWhenClaimed.toString())}`)
         return Promise.resolve({ status: '0x0' })
     }
 
@@ -136,32 +149,20 @@ const claim = async (conf, txRequest) => {
     // for inspiration here.
     const diceroll = Math.floor(Math.random() * 100)
     
-    if (diceroll >= await txRequest.claimPaymentModifier()) {
+    if (diceroll >= txRequest.claimPaymentModifier()) {
         log.debug(`Fate insists you wait until later.`)
         return Promise.resolve({ status: '0x0' })
     }
 
     log.info(`Attempting the claim of txRequest at address ${txRequest.address} | Payment: ${paymentWhenClaimed}`)
     conf.cache.set(txRequest.address, 102)
-    if (conf.wallet) {
-        // Wallet is enabled, claim from the next index.
-        return conf.wallet.sendFromNext(
-            txRequest.address,
-            claimDeposit,
-            gasToClaim + 21000,
-            await web3.eth.getGasPrice(),
-            data
-        )
-    } else {
-        // Wallet disabled, claim from default account
-        return txRequest.claim().send({
-            from: web3.eth.defaultAccount,
-            value: claimDeposit,
-            gas: gasToClaim + 21000,
-            gasPrice: await web3.eth.getGasPrice()
-        })
-    }
 
+    return txRequest.claim({
+        from: web3.eth.defaultAccount,
+        value: claimDeposit,
+        gas: gasToClaim + 21000,
+        gasPrice: web3.eth.gasPrice
+    })
 }
 
 const execute = async (conf, txRequest) => {
@@ -169,48 +170,23 @@ const execute = async (conf, txRequest) => {
     const web3 = conf.web3
 
     const executeGas = txRequest.callGas.add(180000)
-    const gasLimit = (await web3.eth.getBlock('latest')).gasLimit 
+    const gasLimit = new BigNumber(web3.eth.getBlock('latest').gasLimit)
 
     const gasPrice = txRequest.gasPrice
 
-    if (executeGas > gasLimit) {
-        // TODO
-        // Set in cache to number `unable to execute`
+    if (executeGas.greaterThan(gasLimit)) {
         return Promise.reject(`Execution gas exceeds the network gas limit.`)
     }
 
     log.info(`Attempting the execution of txRequest at address ${txRequest.address}`)
     conf.cache.set(txRequest.address, -1)
-    if (conf.wallet) {
-        const executeData = txRequest.executeData
-        const walletClaimIndex =  conf.wallet.getAccounts().indexOf(txRequest.claimedBy)
-        
-        if (walletClaimIndex !== -1) {
-            return conf.wallet.sendFromIndex(
-                walletClaimIndex,
-                txRequest.address,
-                0,
-                executeGas,
-                gasPrice,
-                executeData
-            )
-        } else {
-            return conf.wallet.sendFromNext(
-                txRequest.address,
-                0,
-                executeGas,
-                gasPrice,
-                executeData
-            )
-        }
-    } else {
-        return txRequest.execute().send({
-            from: web3.eth.defaultAccount,
-            value: 0,
-            gas: executeGas,
-            gasPrice: gasPrice
-        })
-    }
+
+    return txRequest.execute({
+        from: web3.eth.defaultAccount,
+        value: 0,
+        gas: executeGas,
+        gasPrice: gasPrice
+    })
 }
 
 const cleanup = async (conf, txRequest) => {
@@ -238,58 +214,25 @@ const cleanup = async (conf, txRequest) => {
         const currentGasPrice = new BigNumber(await web3.eth.getGasPrice())
         const gasCostToCancel = currentGasPrice.times(gasToCancel)
 
-        // If the transaction request is expired and still has money in it but is 
-        // not cancelled, cancel it for the reward. The first step is to check if
-        // any accounts are `owners` of the transactions -- as unlikely as this may
-        // be it's a simple enough check.
-        if (conf.wallet) {
-            const ownerIndex = conf.wallet.getAccounts().indexOf(txRequest.getOwner())
-            if (ownerIndex !== -1) {
-                conf.wallet.sendFromIndex(
-                    ownerIndex,
-                    txRequest.address,
-                    0,
-                    gasToCancel + 21000,
-                    await web3.eth.getGasPrice(),
-                    cancelData
-                )
-            } else {
-                // The more likely scenario is that one of our accounts is not the 
-                // owner of the expired transaction in which case, we check to see
-                // if we will not lost money for sending this transaction then send
-                // it from any account.
-                if (gasCostToCancel.greaterThan(txRequestBalance)) {
-                    // The transaction request does not have enough money to compensate.
-                    return
-                }
-                conf.wallet.sendFromNext(
-                    txRequest.address,
-                    0,
-                    gasToCancel + 21000,
-                    await web3.eth.getGasPrice(),
-                    cancelData
-                )
-            }
+
+        // Wallet disabled try from the deafult account.
+        if (txRequest.isClaimedBy(web3.eth.defaultAccount)) {
+            txRequest.cancel({
+                from: web3.eth.defaultAccount,
+                value: 0,
+                gas: gasToCancel + 21000,
+                gasPrice: web3.eth.gasPrice
+            })
         } else {
-            // Wallet disabled try from the deafult account.
-            if (txRequest.isClaimedBy(web3.eth.defaultAccount)) {
-                txRequest.cancel().send({
-                    from: web3.eth.defaultAccount,
-                    value: 0,
-                    gas: gasToCancel + 21000,
-                    gasPrice: await web3.eth.getGasPrice()
-                })
-            } else {
-                if (gasCostToCancel.greaterThan(txRequestBalance)) {
-                    return
-                }
-                txRequest.cancel().send({
-                    from: web3.eth.defaultAccount,
-                    value: 0,
-                    gas: gasToCancel + 21000,
-                    gasPrice: await web3.eth.getGasPrice()
-                })
+            if (gasCostToCancel.greaterThan(txRequestBalance)) {
+                return
             }
+            txRequest.cancel({
+                from: web3.eth.defaultAccount,
+                value: 0,
+                gas: gasToCancel + 21000,
+                gasPrice: web3.eth.gasPrice
+            })
         }
     }
     // Set all requests that make it here ready for deletion.

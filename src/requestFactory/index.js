@@ -7,23 +7,20 @@ class RequestFactory {
             throw new Error('Attempted to instantiate a RequestFactory class from a null address.')
         }
         this.web3 = web3
-        this.instance = new this.web3.eth.Contract(
-            Util.getABI('RequestFactory'),
-            address
-        )
+        this.instance = this.web3.eth.contract(Util.getABI('RequestFactory')).at(address)
+
     }
 
     get address () {
-        return this.instance.options.address
+        return this.instance.address
     }
 
     /**
      * Conveinence methods
      */
 
-    async isKnownRequest (requestAddress) {
-        const isKnown = await this.instance.methods.isKnownRequest(requestAddress).call()
-        return isKnown
+    isKnownRequest (requestAddress) {
+        return this.instance.isKnownRequest.call(requestAddress)
     }
 
     /**

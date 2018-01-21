@@ -19,9 +19,9 @@ describe('EAC_Scheduler', () => {
     it('Calculates the expected endowment', () => {
         const callGas = new BigNumber(3000000)
         const callValue = new BigNumber(123454321)
-        const gasPrice = new BigNumber(web3.utils.toWei('55', 'gwei'))
-        const donation = new BigNumber(web3.utils.toWei('120', 'finney'))
-        const payment = new BigNumber(web3.utils.toWei('250', 'finney'))
+        const gasPrice = new BigNumber(web3.toWei('55', 'gwei'))
+        const donation = new BigNumber(web3.toWei('120', 'finney'))
+        const payment = new BigNumber(web3.toWei('250', 'finney'))
 
         const expectedEndowment = payment
                                   .plus(donation.mul(2))
@@ -48,10 +48,10 @@ describe('EAC_Scheduler', () => {
         const callValue = 123454321
         const windowSize = 255
         const windowStart = await web3.eth.getBlockNumber() + 25
-        const gasPrice = web3.utils.toWei('55', 'gwei')
-        const donation = web3.utils.toWei('120', 'finney')
-        const payment = web3.utils.toWei('250', 'finney')
-        const requiredDeposit = web3.utils.toWei('50', 'finney')
+        const gasPrice = web3.toWei('55', 'gwei')
+        const donation = web3.toWei('120', 'finney')
+        const payment = web3.toWei('250', 'finney')
+        const requiredDeposit = web3.toWei('50', 'finney')
 
         const endowment = eacScheduler.calcEndowment(
             new BigNumber(callGas),

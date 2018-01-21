@@ -8,14 +8,11 @@ class RequestTracker {
             throw new Error('Attempted to instantiate a RequestTracker class from a null address.')
         }
         this.web3 = web3
-        this.instance = new this.web3.eth.Contract(
-            Util.getABI('RequestTracker'),
-            address
-        )
+        this.instance = this.web3.eth.contract(Util.getABI('RequestTracker')).at(address)
     }
 
     get address () {
-        return this.instance.options.address
+        return this.instance.address
     }
 
     setFactory (factoryAddress) {
@@ -32,31 +29,31 @@ class RequestTracker {
      * Convenience methods
      */
 
-    async nextFromLeft (left) {
+    nextFromLeft (left) {
         this.checkFactory()
-        const next = await this.instance.methods.query(
+        const next = this.instance.query.call(
             this.factory,
             Constants.GTE_HEX,
             left
-        ).call()
+        )
         return next
     }
 
-    async windowStartFor (txRequestAddress) {
+    windowStartFor (txRequestAddress) {
         this.checkFactory()
-        const windowStart = await this.instance.methods.getWindowStart(
+        const windowStart = this.instance.getWindowStart.call(
             this.factory,
             txRequestAddress
-        ).call()
-        return new BigNumber(windowStart)
+        )
+        return windowStart
     }
 
-    async nextRequest (txRequestAddress) {
+    nextRequest (txRequestAddress) {
         this.checkFactory()
-        const next = await this.instance.methods.getNextRequest(
+        const next = this.instance.getNextRequest.call(
             this.factory,
             txRequestAddress
-        ).call()
+        )
         return next
     }
 

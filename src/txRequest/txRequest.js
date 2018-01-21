@@ -11,14 +11,11 @@ class TxRequest {
             throw new Error('Attempted to instantiate a TxRequest class from a null address.')
         }
         this.web3 = web3
-        this.instance = new this.web3.eth.Contract(
-            Util.getABI('TransactionRequest'),
-            address
-        )
+        this.instance = this.web3.eth.contract(Util.getABI('TransactionRequest')).at(address)
     }
 
     get address () {
-        return this.instance.options.address
+        return this.instance.address
     }
 
     /**
@@ -77,48 +74,48 @@ class TxRequest {
      * Dynamic getters
      */
 
-    async now () {
+    now () {
         if (this.temporalUnit == 1) {
-            return new BigNumber(await this.web3.eth.getBlockNumber())
+            return new BigNumber(this.web3.eth.blockNumber)
         } else if (this.temporalUnit == 2) {
-            const block = await this.web3.eth.getBlock('latest')
+            const block = this.web3.eth.getBlock('latest')
             return new BigNumber(block.timestamp)
         } else {
             throw new Error(`Unrecognized temporal unit: ${this.temporalUnit}`)
         }
     }
 
-    async beforeClaimWindow () {
-        const now = await this.now()
+    beforeClaimWindow () {
+        const now = this.now()
         return this.claimWindowStart.greaterThan(now)
     }
 
-    async inClaimWindow () {
-        const now = await this.now()
+    inClaimWindow () {
+        const now = this.now()
         return this.claimWindowStart.lessThanOrEqualTo(now) &&
                 this.claimWindowEnd.greaterThan(now)
     }
 
-    async inFreezePeriod () {
-        const now = await this.now()
+    inFreezePeriod () {
+        const now = this.now()
         return this.claimWindowEnd.lessThanOrEqualTo(now) &&
                 this.freezePeriodEnd.greaterThan(now)
     }
 
-    async inExecutionWindow () {
-        const now = await this.now()
+    inExecutionWindow () {
+        const now = this.now()
         return this.windowStart.lessThanOrEqualTo(now) &&
                 this.executionWindowEnd.greaterThanOrEqualTo(now)
     }
 
-    async inReservedWindow () {
-        const now = await this.now()
+    inReservedWindow () {
+        const now = this.now()
         return this.windowStart.lessThanOrEqualTo(now) &&
                 this.reservedWindowEnd.greaterThan(now)
     }
 
-    async afterExecutionWindow () {
-        const now = await this.now()
+    afterExecutionWindow () {
+        const now = this.now()
         return this.executionWindowEnd.lessThan(now)
     }
 
@@ -142,8 +139,8 @@ class TxRequest {
         return this.data.claimData.requiredDeposit
     }
 
-    async claimPaymentModifier () {
-        const now = await this.now()
+    claimPaymentModifier () {
+        const now = this.now()
         const elapsed = now.minus(this.claimWindowStart)
         return elapsed.times(100).dividedToIntegerBy(this.claimWindowSize)
     }
@@ -193,15 +190,15 @@ class TxRequest {
      */
 
     callData () {
-        return this.instance.methods.callData().call()
+        return this.instance.callData()
     }
 
     /**
      * Data management
      */
 
-    async fillData () {
-        const requestData = await RequestData.from(this.instance)
+    fillData () {
+        const requestData = RequestData.from(this.instance)
         this.data = requestData
         return true
     }
@@ -218,39 +215,54 @@ class TxRequest {
      */
 
     get claimData () {
-        return this.instance.methods.claim().encodeABI()
+        return this.instance.claim.getData()
     }
 
     get executeData () {
-        return this.instance.methods.execute().encodeABI()
+        return this.instance.execute.getData()
     }
 
     get cancelData () {
-        return this.instance.methods.cancel().encodeABI()
+        return this.instance.cancel.getData()
     }
 
     /**
      * Action Wrappers
      */
 
-    claim () {
-        return this.instance.methods.claim()
+    claim (params) {
+        return new Promise((resolve, reject) => {
+            const txHash = this.instance.claim(params)
+            Util.waitForTransactionToBeMined(this.web3, txHash)
+            .then(receipt => resolve(receipt))
+            .catch(err => reject(err))
+        })
     }
 
-    execute () {
-        return this.instance.methods.execute()
+    execute (params) {
+        return new Promise((resolve, reject) => {
+            const txHash = this.instance.execute(params)
+            Util.waitForTransactionToBeMined(this.web3, txHash)
+            .then(receipt => resolve(receipt))
+            .catch(err => reject(err))
+        })
     }
 
-    cancel () {
-        return this.instance.methods.cancel()
+    cancel (params) {
+        return new Promise((resolve, reject) => {
+            const txHash = this.instance.cancel(params)
+            Util.waitForTransactionToBeMined(this.web3, txHash)
+            .then(receipt => resolve(receipt))
+            .catch(err => reject(err))
+        })
     }
 
     /**
      * Misc.
      */
 
-    async getBalance () {
-        const bal = await this.web3.eth.getBalance(this.address)
+    getBalance () {
+        const bal = this.web3.eth.getBalance(this.address)
         return new BigNumber(bal)
     }
 }

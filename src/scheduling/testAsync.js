@@ -2,21 +2,21 @@ const Scheduler = require('./index.js')
 
 const main = async (chain, web3) => {
     const eacScheduler = new Scheduler(web3, chain)
-    const me = (await web3.eth.getAccounts())[0]
+    const me = web3.eth.accounts[0]
     eacScheduler.initSender({
         from: me,
         gas: 3000000,
-        value: web3.utils.toWei('500', 'finney')
+        value: web3.toWei('500', 'finney')
     })
 
     const windowStart = await web3.eth.getBlockNumber() + 120
-    const gasPrice = web3.utils.toWei('100', 'gwei')
-    const requiredDeposit = 1//web3.utils.toWei('50', 'finney')
+    const gasPrice = web3.toWei('100', 'gwei')
+    const requiredDeposit = 1//web3.toWei('50', 'finney')
 
     try {
         const receipt = await eacScheduler.blockSchedule(
             '0x009f7EfeD908c05df5101DA1557b7CaaB38EE4Ce',
-            web3.utils.utf8ToHex('s0x'.repeat(
+            web3.fromAscii('s0x'.repeat(
                 Math.floor(Math.random() * 10)
             )),
             1212121,        //callGas

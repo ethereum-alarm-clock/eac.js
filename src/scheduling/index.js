@@ -1,5 +1,6 @@
 const { getABI } = require('../util.js')
 const BigNumber = require('bignumber.js')
+const Util = require('../util')
 
 class Scheduler {
 
@@ -9,8 +10,8 @@ class Scheduler {
             const contracts = require(`../assets/${chain}.json`)
             const BlockSchedulerABI = getABI('BlockScheduler')
             const TimestampSchedulerABI = getABI('TimestampScheduler')
-            this.blockScheduler = new web3.eth.Contract(BlockSchedulerABI, contracts.blockScheduler)
-            this.timestampScheduler = new web3.eth.Contract(TimestampSchedulerABI, contracts.timestampScheduler)
+            this.blockScheduler = web3.eth.contract(BlockSchedulerABI).at(contracts.blockScheduler)
+            this.timestampScheduler = web3.eth.contract(TimestampSchedulerABI).at(contracts.timestampScheduler)
         } catch (err) {
             console.log(err)
         }
@@ -47,23 +48,29 @@ class Scheduler {
         payment,
         requiredDeposit) {
 
-        return this.blockScheduler.methods.schedule(
-            toAddress,
-            callData,
-            [
-                callGas,
-                callValue,
-                windowSize,
-                windowStart,
-                gasPrice,
-                donation,
-                payment,
-                requiredDeposit
-            ]
-        ).send({
-            from: this.sender,
-            gas: this.gasLimit,
-            value: this.sendValue
+        return new Promise((resolve, reject) => {
+                const txHash = this.blockScheduler.schedule(
+                toAddress,
+                callData,
+                [
+                    callGas,
+                    callValue,
+                    windowSize,
+                    windowStart,
+                    gasPrice,
+                    donation,
+                    payment,
+                    requiredDeposit
+                ],
+                {
+                    from: this.sender,
+                    gas: this.gasLimit,
+                    value: this.sendValue
+                }
+            )
+            Util.waitForTransactionToBeMined(this.web3, txHash)
+            .then(res => resolve(res))
+            .catch(err => reject(err))
         })
     }
 
@@ -78,25 +85,30 @@ class Scheduler {
         donation,
         payment,
         requiredDeposit) {
-        
-            /// TODO autmoatically calculate endowmnet
-        return this.timestampScheduler.methods.schedule(
-            toAddress,
-            callData,
-            [
-                callGas,
-                callValue,
-                windowSize,
-                windowStart,
-                gasPrice,
-                donation,
-                payment,
-                requiredDeposit
-            ]
-        ).send({
-            from: this.sender,
-            gas: this.gasLimit,
-            value: this.sendValue
+
+        return new Promise((resolve, reject) => {
+            const txHash = this.timestampScheduler.schedule(
+                toAddress,
+                callData,
+                [
+                    callGas,
+                    callValue,
+                    windowSize,
+                    windowStart,
+                    gasPrice,
+                    donation,
+                    payment,
+                    requiredDeposit
+                ],
+                {
+                    from: this.sender,
+                    gas: this.gasLimit,
+                    value: this.sendValue
+                }
+            )
+            Util.waitForTransactionToBeMined(this.web3, txHash)
+            .then(res => resolve(res))
+            .catch(err => reject(err))
         })
     }
 

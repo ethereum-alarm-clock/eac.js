@@ -7,9 +7,9 @@ const alarmClient = require('../client/main.js')
 const EAC_Scheduler = require('../scheduling/index.js')
 const Util = require('../util.js')
 
-const createWallet = require('../wallet/createWallet.js')
-const fundAccounts = require('../wallet/fundAccounts.js')
-const drainWallet = require('../wallet/drainWallet.js')
+// const createWallet = require('../wallet/createWallet.js')
+// const fundAccounts = require('../wallet/fundAccounts.js')
+// const drainWallet = require('../wallet/drainWallet.js')
 
 const BigNumber = require('bignumber.js')
 const clear = require('clear')
@@ -27,17 +27,17 @@ const log = {
 }
 
 program
-    .version('0.9.0-beta')
-    .option('--createWallet', 'guides you through creating a new wallet.')
-    .option('--fundWallet <eth>', 'funds the accounts in wallet with amount "eth"')
-    .option('--drainWallet <target>', 'sends the target address all ether in the wallet')
+    .version('1.0.0')
+    // .option('--createWallet', 'guides you through creating a new wallet.')
+    // .option('--fundWallet <eth>', 'funds the accounts in wallet with amount "eth"')
+    // .option('--drainWallet <target>', 'sends the target address all ether in the wallet')
     .option('-c, --client', 'starts the executing client')
     .option('-m, --milliseconds <ms>', 'tells the client to scan every <ms> seconds', 4000)
     .option('--logfile [path]', 'specifies the output logifle', 'default')
     .option('--logLevel [0,1,2,3]', 'sets the log level', 2)
     .option('--provider <string>', 'set the HttpProvider to use', 'http://localhost:8545')
-    .option('-w, --wallet [path]', 'specify the path to the keyfile you would like to unlock')
-    .option('-p, --password [string]', 'the password to unlock your keystore file')
+    // .option('-w, --wallet [path]', 'specify the path to the keyfile you would like to unlock')
+    // .option('-p, --password [string]', 'the password to unlock your keystore file')
     .option('-s, --schedule', 'schedules a transactions')
     .parse(process.argv)
 
@@ -47,7 +47,7 @@ const web3 = new Web3(provider)
 
 const checkForUnlockedAccount = async web3 => {
     if (web3.eth.defaultAccount == null) {
-        const accounts = await web3.eth.getAccounts()
+        const accounts = web3.eth.accounts
         if (accounts.length < 1) {
             console.log('\n  error: must have an unlocked account in index 0\n')
             return false
@@ -59,86 +59,81 @@ const checkForUnlockedAccount = async web3 => {
 }
 
 const checkNetworkID = web3 => {
-    return new Promise((resolve, reject) => {
-        web3.eth.net.getId()
-        .then(id => {
-            if (id == 1) resolve(true)      // mainnet
-            else if (id == 3) resolve(true) // ropsten
-            else if (id == 4) resolve(true) // rinkeby
-            else resolve(false)
-        })
-        .catch(err => reject(err))
-    })
+    const id = web3.version.network
+    if (id == 1) return true      // mainnet
+    else if (id == 3) return true // ropsten
+    else if (id == 4) return true // rinkeby
+    else return false
 }
 
 const main = async _ => {
-    if (program.createWallet) {
+    // if (program.createWallet) {
   
-        const numAccounts = readlineSync.question('How many accounts would you like in your wallet? [1 - 10]\n> ')
+    //     const numAccounts = readlineSync.question('How many accounts would you like in your wallet? [1 - 10]\n> ')
     
-        function isNumber(n) { return !isNaN(parseFloat(n)) && !isNaN(n - 0) }
+    //     function isNumber(n) { return !isNaN(parseFloat(n)) && !isNaN(n - 0) }
     
-        if (!isNumber(numAccounts) || numAccounts > 10 || numAccounts <= 0) {
-            console.error('  error: must specify a number between 1 - 10 for number of accounts')
-            process.exit(1)
-        }
+    //     if (!isNumber(numAccounts) || numAccounts > 10 || numAccounts <= 0) {
+    //         console.error('  error: must specify a number between 1 - 10 for number of accounts')
+    //         process.exit(1)
+    //     }
     
-        const file = readlineSync.question('Where would you like to save the encrypted keys? Please provide a valid filename or path.\n> ')
-        const password = readlineSync.question("Please enter a password for the keyfile. Write this down!\n> ")
+    //     const file = readlineSync.question('Where would you like to save the encrypted keys? Please provide a valid filename or path.\n> ')
+    //     const password = readlineSync.question("Please enter a password for the keyfile. Write this down!\n> ")
 
-        createWallet(web3, numAccounts, file, password)
-    }
+    //     createWallet(web3, numAccounts, file, password)
+    // }
 
-    else if (program.fundWallet) {
-        if (!await checkForUnlockedAccount(web3)) process.exit(1)
+    // else if (program.fundWallet) {
+    //     if (!await checkForUnlockedAccount(web3)) process.exit(1)
 
-        if (!program.wallet 
-            || !program.password)
-        {
-            console.log('\n  error: must supply the `--wallet <keyfile>` and `--password <pw>` flags\n')
-            process.exit(1)
-        }
+    //     if (!program.wallet 
+    //         || !program.password)
+    //     {
+    //         console.log('\n  error: must supply the `--wallet <keyfile>` and `--password <pw>` flags\n')
+    //         process.exit(1)
+    //     }
 
-        const spinner = ora('Sending the funding transactions...').start()
-        fundAccounts(web3, program.fundWallet, program.wallet, program.password)
-        .then(res => {
-            res.forEach(txObj => {
-                if (txObj.status != '0x1') {
-                    console.log(`\n  error: funding to ${txObj.to} failed... must retry manually\n`)
-                }
-            })
-            spinner.succeed('Accounts funded!')
-        })
-        .catch(err => spinner.fail(err))
-    }
+    //     const spinner = ora('Sending the funding transactions...').start()
+    //     fundAccounts(web3, program.fundWallet, program.wallet, program.password)
+    //     .then(res => {
+    //         res.forEach(txObj => {
+    //             if (txObj.status != '0x1') {
+    //                 console.log(`\n  error: funding to ${txObj.to} failed... must retry manually\n`)
+    //             }
+    //         })
+    //         spinner.succeed('Accounts funded!')
+    //     })
+    //     .catch(err => spinner.fail(err))
+    // }
 
-    else if (program.drainWallet) {
-        if (!program.wallet 
-            || !program.password)
-        {
-            console.log('\n  error: must supply the `--wallet <keyfile>` and `--password <pw>` flags\n')
-            process.exit(1)
-        }
+    // else if (program.drainWallet) {
+    //     if (!program.wallet 
+    //         || !program.password)
+    //     {
+    //         console.log('\n  error: must supply the `--wallet <keyfile>` and `--password <pw>` flags\n')
+    //         process.exit(1)
+    //     }
 
-        if (!ethUtil.isValidAddress(program.drainWallet)) {
-            console.log(`\n  error: input ${program.drainWallet} not valid Ethereum address`)
-            process.exit(1)
-        }
+    //     if (!ethUtil.isValidAddress(program.drainWallet)) {
+    //         console.log(`\n  error: input ${program.drainWallet} not valid Ethereum address`)
+    //         process.exit(1)
+    //     }
 
-        const spinner = ora('Sending transactions...').start()
-        web3.eth.getGasPrice()
-        .then(gasPrice => {
-            drainWallet(web3, gasPrice, program.drainWallet, program.wallet, program.password)
-            .then(res => {
-                spinner.succeed('Wallet drained!')
-            })
-            .catch(err => {
-                spinner.fail(err)
-            })
-        })
-    }
+    //     const spinner = ora('Sending transactions...').start()
+    //     web3.eth.getGasPrice()
+    //     .then(gasPrice => {
+    //         drainWallet(web3, gasPrice, program.drainWallet, program.wallet, program.password)
+    //         .then(res => {
+    //             spinner.succeed('Wallet drained!')
+    //         })
+    //         .catch(err => {
+    //             spinner.fail(err)
+    //         })
+    //     })
+    // }
 
-    else if (program.client) {
+    if (program.client) {
         clear()
         console.log(chalk.green('⏰⏰⏰ Welcome to the Ethereum Alarm Clock client ⏰⏰⏰\n'))
 
@@ -195,9 +190,9 @@ const main = async _ => {
         if (!callData) {
             callData = 'Sent from eac.js commandline client.'
         }
-        if (!web3.utils.isHex(callData)) {
-            callData = web3.utils.utf8ToHex(callData)
-        }
+        // if (!web3.utils.isHex(callData)) {
+            callData = web3.fromAscii(callData)
+        // }
 
         let callGas = readlineSync.question(chalk.black.bgBlue(`Enter the call gas: [press enter for recommended]\n`))
 
@@ -227,7 +222,7 @@ const main = async _ => {
         let gasPrice = readlineSync.question(chalk.black.bgBlue('Enter a gas price:\n'))
 
         if (!gasPrice) {
-            gasPrice = web3.utils.toWei('50', 'gwei')
+            gasPrice = web3.toWei('50', 'gwei')
         }
 
         let donation = readlineSync.question(chalk.black.bgBlue('Enter a donation amount:\n'))
@@ -245,7 +240,7 @@ const main = async _ => {
         let requiredDeposit = readlineSync.question(chalk.black.bgBlue('Enter required claim deposit:\n'))
 
         if (!requiredDeposit) {
-            requiredDeposit = web3.utils.toWei('20', 'finney')
+            requiredDeposit = web3.toWei('20', 'finney')
         }
 
         clear()
@@ -272,7 +267,7 @@ payment         - ${payment}
 requiredDeposit - ${requiredDeposit}
 
 Sending from ${web3.eth.defaultAccount}
-Endowment: ${web3.utils.fromWei(endowment.toString())}
+Endowment: ${web3.fromWei(endowment.toString())}
 `)
 
         const confirm = readlineSync.question('Are all of these variables correct? [Y/n]\n')

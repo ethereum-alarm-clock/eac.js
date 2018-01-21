@@ -36,7 +36,7 @@ const startScanning = (ms, conf) => {
 
 /**
  * The main driver function that begins the client operation.
- * @param {*} web3 An instantiate web3 instance.
+ * @param {*} web3 An instantiated web3 instance.
  * @param {String} provider The supplied provider host for the web3 instance. (Ex. 'http://localhost:8545)
  * @param {Number} ms Milliseconds between each conduction of a blockchain scan.
  * @param {String} logfile The file that the logging utility will log to, or 'console' for logging to console.
@@ -77,6 +77,8 @@ const main = async (web3, provider, ms, logfile, logLevel, walletFile, pw) => {
         pw                  //wallet password
     )
 
+    conf.wallet = false
+
     // Assigns the client variable
     if (chain == 'rinkeby') {
         conf.client = 'geth'
@@ -87,27 +89,28 @@ const main = async (web3, provider, ms, logfile, logLevel, walletFile, pw) => {
     conf.statsdb = new StatsDB(conf.web3)
 
     // Determines wallet support
-    if (conf.wallet) {
-        console.log('Wallet support: Enabled')
-        console.log('\nExecuting from accounts:')
-        conf.wallet.getAccounts().forEach(async account => {
-            console.log(`${account} | Balance: ${web3.utils.fromWei(await web3.eth.getBalance(account))}`)
-        })
-        conf.statsdb.initialize(conf.wallet.getAccounts())
-    } else { 
-        console.log('Wallet support: Disabled')
-        console.log('\nExecuting from account:')
-        // Loads the default account.
-        const account = (await web3.eth.getAccounts())[0]
-        web3.eth.defaultAccount = account
-        if (!ethUtil.isValidAddress(web3.eth.defaultAccount)) {
-            throw new Error('Wallet is disabled but you do not have a local account unlocked.')
-        }
-        console.log(`${account} | Balance: ${web3.utils.fromWei(await web3.eth.getBalance(account))}`)
-        conf.statsdb.initialize([account])
+    // if (conf.wallet) {
+    //     console.log('Wallet support: Enabled')
+    //     console.log('\nExecuting from accounts:')
+    //     conf.wallet.getAccounts().forEach(async account => {
+    //         console.log(`${account} | Balance: ${web3.fromWei(web3.eth.getBalance(account))}`)
+    //     })
+    //     conf.statsdb.initialize(conf.wallet.getAccounts())
+    // } else { 
+    console.log('Wallet support: Disabled')
+    console.log('\nExecuting from account:')
+    // Loads the default account.
+    const account = web3.eth.accounts[0]
+    web3.eth.defaultAccount = account
+    if (!ethUtil.isValidAddress(web3.eth.defaultAccount)) {
+        throw new Error('Wallet is disabled but you do not have a local account unlocked.')
     }
+    console.log(`${account} | Balance: ${web3.fromWei(web3.eth.getBalance(account))}`)
+    conf.statsdb.initialize([account])
+    // }
 
     // Begin
+
     conf.scanning = false
     startScanning(ms, conf)
 

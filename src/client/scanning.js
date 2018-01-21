@@ -17,8 +17,8 @@ const scanBlockchain = async conf => {
     const log = conf.logger 
     const web3 = conf.web3
 
-    const left = await web3.eth.getBlockNumber() - 45
-    const right = left + 2500
+    const left = web3.eth.blockNumber - 15
+    const right = left + 75
     log.debug(`Scanning bounds from ${left} to ${right}`)
 
     const requestTracker = conf.tracker 
@@ -41,7 +41,7 @@ const scanBlockchain = async conf => {
             log.error(`Encountered unknown request~ factory: ${requestFactory.address} | query: ">=" | value ${left} | address: ${nextRequestAddress}`)
             throw new Error(`Encountered unknown address! Please check that you are using the correct contracts JSON file.`)
         }
-        
+
         const trackerWindowStart = await requestTracker.windowStartFor(nextRequestAddress)
         
         const txRequest = new TxRequest(nextRequestAddress, web3)
@@ -57,8 +57,7 @@ const scanBlockchain = async conf => {
             log.debug(`Scan exit condition hit! Next window start exceeds right bound.`)
             break
         }
-
-        nextRequestAddress = await requestTracker.nextRequest(txRequest.address)
+        nextRequestAddress = requestTracker.nextRequest(txRequest.address)
 
         // Hearbeat
         if (nextRequestAddress === NULL_ADDRESS) { log.info('No new requests.') }
@@ -80,6 +79,6 @@ const scanCache = async conf => {
 }
 
 module.exports = {
-    scanBlockchain: scanBlockchain,
-    scanCache: scanCache
+    scanBlockchain,
+    scanCache
 }

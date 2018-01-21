@@ -13,16 +13,14 @@ class StatsDB {
     /// Takes an arry of addresses and stores them as new stats objects.
     initialize (accounts) {
         accounts.forEach(account => {
-            this.web3.eth.getBalance(account)
-            .then(bal => {
-                bal = new BigNumber(bal)
-                this.stats.insert({
-                    account: account,
-                    claimed: 0,
-                    executed: 0,
-                    startingEther: bal,
-                    currentEther: bal,
-                })
+            let bal = this.web3.eth.getBalance(account)
+            bal = new BigNumber(bal)
+            this.stats.insert({
+                account: account,
+                claimed: 0,
+                executed: 0,
+                startingEther: bal,
+                currentEther: bal,
             })
         })
     }
@@ -31,26 +29,22 @@ class StatsDB {
     updateClaimed (account) {
         const found = this.stats.find({ account: account })[0]
         found.claimed++
-        this.web3.eth.getBalance(account)
-        .then(bal => {
-            bal = new BigNumber(bal)
-            const difference = bal.minus(found.currentEther)
-            found.currentEther = found.currentEther.plus(difference)
-            this.stats.update(found)
-        })
+        let bal = this.web3.eth.getBalance(account)
+        bal = new BigNumber(bal)
+        const difference = bal.minus(found.currentEther)
+        found.currentEther = found.currentEther.plus(difference)
+        this.stats.update(found)
     }
 
     /// Takes the account which has executed a transaction.
     updateExecuted (account) {
         const found = this.stats.find({ account: account })[0]
         found.executed++
-        this.web3.eth.getBalance(account)
-        .then(bal => {
-            bal = new BigNumber(bal)
-            const difference = bal.minus(found.currentEther)
-            found.currentEther = found.currentEther.plus(difference)
-            this.stats.update(found)
-        })
+        let bal = this.web3.eth.getBalance(account)
+        bal = new BigNumber(bal)
+        const difference = bal.minus(found.currentEther)
+        found.currentEther = found.currentEther.plus(difference)
+        this.stats.update(found)
     }
 
     /// Gets the stats

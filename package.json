@@ -38,7 +38,7 @@
     "ora": "^1.3.0",
     "readline-sync": "^1.4.7",
     "truffle-contract": "^3.0.2",
-    "web3": "^1.0.0-beta.28",
+    "web3": "^0.20.4",
     "websocket": "^1.0.25"
   },
   "preferGlobal": "true",
