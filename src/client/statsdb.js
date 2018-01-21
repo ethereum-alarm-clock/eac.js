@@ -1,6 +1,8 @@
 const BigNumber = require('bignumber.js')
 const loki = require('lokijs')
 
+const eac = require('../index')
+
 /// Wrapper over a lokijs persistent storage to keep track of the stats of executing accounts.
 class StatsDB {
 
@@ -12,8 +14,8 @@ class StatsDB {
 
     /// Takes an arry of addresses and stores them as new stats objects.
     initialize (accounts) {
-        accounts.forEach(account => {
-            let bal = this.web3.eth.getBalance(account)
+        accounts.forEach(async account => {
+            let bal = await eac.Util.getBalance(this.web3, account)
             bal = new BigNumber(bal)
             this.stats.insert({
                 account: account,
@@ -26,10 +28,10 @@ class StatsDB {
     }
 
     /// Takes the account which has claimed a transaction.
-    updateClaimed (account) {
+    async updateClaimed (account) {
         const found = this.stats.find({ account: account })[0]
         found.claimed++
-        let bal = this.web3.eth.getBalance(account)
+        let bal = await eac.Util.getBalance(this.web3, account)
         bal = new BigNumber(bal)
         const difference = bal.minus(found.currentEther)
         found.currentEther = found.currentEther.plus(difference)
@@ -37,10 +39,10 @@ class StatsDB {
     }
 
     /// Takes the account which has executed a transaction.
-    updateExecuted (account) {
+    async updateExecuted (account) {
         const found = this.stats.find({ account: account })[0]
         found.executed++
-        let bal = this.web3.eth.getBalance(account)
+        let bal = await eac.Util.getBalance(this.web3, account)
         bal = new BigNumber(bal)
         const difference = bal.minus(found.currentEther)
         found.currentEther = found.currentEther.plus(difference)

@@ -93,7 +93,7 @@ const main = async (web3, provider, ms, logfile, logLevel, walletFile, pw) => {
     if (!eac.Util.checkValidAddress(web3.eth.defaultAccount)) {
         throw new Error('Wallet is disabled but you do not have a local account unlocked.')
     }
-    console.log(`${account} | Balance: ${web3.fromWei(web3.eth.getBalance(account))}`)
+    console.log(`${account} | Balance: ${web3.fromWei(await eac.Util.getBalance(conf.web3, account))}`)
     conf.statsdb.initialize([account])
 
     // Begin

@@ -53,7 +53,6 @@ class RequestData {
 
     static from(txRequest) {
         return new Promise((resolve, reject) => {
-            console.log('here')
             txRequest.requestData.call((err, data) => {
                 if (err) reject(err)
                 else {

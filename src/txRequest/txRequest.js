@@ -190,7 +190,12 @@ class TxRequest {
      */
 
     callData () {
-        return this.instance.callData()
+        return new Promise((resolve, reject) => {
+            this.instance.callData.call((err, callData) => {
+                if (!err) resolve(callData)
+                else reject(err)
+            })
+        })
     }
 
     /**
@@ -274,7 +279,7 @@ class TxRequest {
      */
 
     async getBalance () {
-        const bal = await getBalance(this.web3, this.address)
+        const bal = await Util.getBalance(this.web3, this.address)
         return new BigNumber(bal)
     }
 }

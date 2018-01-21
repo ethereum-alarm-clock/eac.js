@@ -1,4 +1,5 @@
 const repl = require('repl')
+const eac = require('../index')
 
 const start = (conf, ms) => {
     const web3 = conf.web3
@@ -11,11 +12,11 @@ const start = (conf, ms) => {
         async action () {
             if (conf.wallet) {
                 conf.wallet.getAccounts().forEach(async account => {
-                    console.log(`${account} | Balance: ${web3.fromWei(web3.eth.getBalance(account))}`)
+                    console.log(`${account} | Balance: ${web3.fromWei(await eac.Util.getBalance(web3, account))}`)
                 })
             } else {
                 const account = web3.eth.defaultAccount
-                console.log(`${account} | Balance: ${web3.fromWei(web3.eth.getBalance(account))}`)
+                console.log(`${account} | Balance: ${web3.fromWei(await eac.Util.getBalance(web3, account))}`)
             }
         }  
     })

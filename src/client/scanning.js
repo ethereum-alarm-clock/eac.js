@@ -58,7 +58,7 @@ const scanBlockchain = async conf => {
             log.debug(`Scan exit condition hit! Next window start exceeds right bound.`)
             break
         }
-        nextRequestAddress = requestTracker.nextRequest(txRequest.address)
+        nextRequestAddress = await requestTracker.nextRequest(txRequest.address)
 
         // Hearbeat
         if (nextRequestAddress === eac.Constants.NULL_ADDRESS) { log.info('No new requests.') }
@@ -73,7 +73,6 @@ const scanCache = async conf => {
     const allTxRequests = conf.cache.stored().map(address => new eac.TxRequest(address, conf.web3))
 
     allTxRequests.forEach(txRequest => {
-        // console.log(txRequest)
         txRequest.refreshData()
         .then(_ => routeTxRequest(conf, txRequest))
     })

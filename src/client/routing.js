@@ -19,7 +19,6 @@ const routeTxRequest = async (conf, txRequest) => {
         log.info(`Ignoring txRequest with pending transaction in the transaction pool.`)
         return
     }
-    // console.log(await hasPending(conf, txRequest))
 
     // Return early if the transaction request has been cancelled
     if (txRequest.isCancelled) {
