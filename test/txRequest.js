@@ -69,7 +69,7 @@ describe('TxRequest', () => {
         expect(txRequest.address)
         .to.equal(newRequestAddress)
 
-        // await txRequest.fillData()
+        await txRequest.fillData()
 
         // Check that all of the variables in `txRequest` matches up to the ones
         // we set in `scheduler.blockSchedule`

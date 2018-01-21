@@ -49,7 +49,7 @@ class Scheduler {
         requiredDeposit) {
 
         return new Promise((resolve, reject) => {
-                const txHash = this.blockScheduler.schedule(
+                this.blockScheduler.schedule(
                 toAddress,
                 callData,
                 [
@@ -66,11 +66,16 @@ class Scheduler {
                     from: this.sender,
                     gas: this.gasLimit,
                     value: this.sendValue
+                },
+                (err, txHash) => {
+                    if (err) reject(err)
+                    else {
+                        Util.waitForTransactionToBeMined(this.web3, txHash)
+                        .then(res => resolve(res))
+                        .catch(err => reject(err))
+                    }
                 }
             )
-            Util.waitForTransactionToBeMined(this.web3, txHash)
-            .then(res => resolve(res))
-            .catch(err => reject(err))
         })
     }
 
@@ -104,11 +109,15 @@ class Scheduler {
                     from: this.sender,
                     gas: this.gasLimit,
                     value: this.sendValue
+                },
+                (err, txHash) => {
+                    if (err) reject(err)
+                    else
+                        Util.waitForTransactionToBeMined(this.web3, txHash)
+                        .then(res => resolve(res))
+                        .catch(err => reject(err))
                 }
             )
-            Util.waitForTransactionToBeMined(this.web3, txHash)
-            .then(res => resolve(res))
-            .catch(err => reject(err))
         })
     }
 

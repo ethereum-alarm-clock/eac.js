@@ -16,9 +16,16 @@ const getArtifact = name => {
     return contract
 }
 
-async function main() {
-    web3.eth.defaultAccount = web3.eth.accounts[0]
+const getAccounts = web3 => {
+    return new Promise((resolve, reject) => {
+        web3.eth.getAccounts((err, accounts) => {
+            if (!err) resolve(accounts)
+            else reject(err)
+        })
+    })
+}
 
+async function main() {
     // const BaseScheduler = getArtifact('BaseScheduler')
     const BlockScheduler        = getArtifact('BlockScheduler')
     const ClaimLib              = getArtifact('ClaimLib')
@@ -54,48 +61,52 @@ async function main() {
         timestampScheduler,
         transactionRequest
 
-    const _ = {from: web3.eth.defaultAccount, gas: 7000000}
-
     return new Promise((resolve, reject) => {
-        ExecutionLib.new(_)
+        let ___
+        getAccounts(web3)
+        .then(accounts => {
+            web3.eth.defaultAccount = accounts[0]
+            ___ = {from: web3.eth.defaultAccount, gas: 7000000}
+            ExecutionLib.new(___)
+        })
         .then(instance => {
             executionLib = instance 
-            return GroveLib.new(_)
+            return GroveLib.new(___)
         })
         .then(instance => {
             groveLib = instance 
-            return IterTools.new(_)
+            return IterTools.new(___)
         })
         .then(instance => {
             iterTools = instance
-            return MathLib.new(_)
+            return MathLib.new(___)
         })
         .then(instance => {
             mathLib = instance
-            return RequestMetaLib.new(_)
+            return RequestMetaLib.new(___)
         })
         .then(instance => {
             requestMetaLib = instance
-            return SafeMath.new(_)
+            return SafeMath.new(___)
         })
         .then(instance => {
             safeMath = instance
-            return ClaimLib.new(_)
+            return ClaimLib.new(___)
         })
         .then(instance => {
             claimLib = instance
-            return PaymentLib.new(_)
+            return PaymentLib.new(___)
         })
         .then(instance => {
             paymentLib = instance
-            return RequestScheduleLib.new(_)
+            return RequestScheduleLib.new(___)
         })
         .then(instance => {
             requestScheduleLib = instance
             linkLibrary(RequestLib, mathLib)
             linkLibrary(RequestLib, paymentLib)
             linkLibrary(RequestLib, requestScheduleLib)
-            return RequestLib.new(_)
+            return RequestLib.new(___)
         })
         .then(instance => {
             requestLib = instance
@@ -103,13 +114,13 @@ async function main() {
             linkLibrary(SchedulerLib, paymentLib)
             linkLibrary(SchedulerLib, requestLib)
             linkLibrary(SchedulerLib, safeMath)
-            return SchedulerLib.new(_)
+            return SchedulerLib.new(___)
         })
         .then(instance => {
             schedulerLib = instance
             linkLibrary(RequestTracker, groveLib)
             linkLibrary(RequestTracker, mathLib)
-            return RequestTracker.new(_)
+            return RequestTracker.new(___)
         })
         .then(instance => {
             requestTracker = instance
@@ -120,7 +131,7 @@ async function main() {
             linkLibrary(RequestFactory, paymentLib)
             linkLibrary(RequestFactory, requestLib)
             linkLibrary(RequestFactory, requestTracker)
-            return RequestFactory.new(requestTracker.address, _)
+            return RequestFactory.new(requestTracker.address, ___)
         })
         .then(instance => {
             requestFactory = instance
@@ -129,7 +140,7 @@ async function main() {
             linkLibrary(BlockScheduler, requestScheduleLib)
             linkLibrary(BlockScheduler, requestLib)
             linkLibrary(BlockScheduler, mathLib)
-            return BlockScheduler.new(requestFactory.address, _)
+            return BlockScheduler.new(requestFactory.address, ___)
         })
         .then(instance => {
             blockScheduler = instance
@@ -138,13 +149,13 @@ async function main() {
             linkLibrary(TimestampScheduler, requestScheduleLib)
             linkLibrary(TimestampScheduler, requestLib)
             linkLibrary(TimestampScheduler, mathLib)
-            return TimestampScheduler.new(requestFactory.address, _)
+            return TimestampScheduler.new(requestFactory.address, ___)
         })
         .then(instance => {
             timestampScheduler = instance
             return Promise.resolve()
         })
-        .then(_ => {
+        .then(___ => {
             const contracts = {
                 requestTracker: requestTracker.address,
                 requestFactory: requestFactory.address,

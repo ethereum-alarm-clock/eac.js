@@ -33,21 +33,29 @@ const getChainName = web3 => {
 const waitForTransactionToBeMined = (web3, txHash, interval) => {
     interval = interval ? interval : 500
     const txReceiptAsync = (txHash, resolve, reject) => {
-        try {
-            let receipt = web3.eth.getTransactionReceipt(txHash)
-            if (receipt == null) {
+        web3.eth.getTransactionReceipt(txHash, (err, receipt) => {
+            if (err) {
+                reject(err)
+            } else if (receipt == null) {
                 setTimeout(() => {
                     txReceiptAsync(txHash, resolve, reject)
                 }, interval)
             } else {
                 resolve(receipt)
             }
-        } catch (err) {
-            reject(err)
-        }
+        })
     }
     return new Promise((resolve, reject) => {
         txReceiptAsync(txHash, resolve, reject)
+    })
+}
+
+const getTransactionReceipt = (web3, txHash) => {
+    return new Promise((resolve, reject) => {
+        web3.eth.getTransactionReceipt(txHash, (err, receipt) => {
+            if (!err) resolve(receipt)
+            else reject(err)
+        })
     })
 }
 

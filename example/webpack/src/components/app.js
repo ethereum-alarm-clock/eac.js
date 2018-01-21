@@ -1,17 +1,17 @@
 'use strict'
 
-const React = require('react')
-const Eac = require('eac')
-const Web3 = require('web3')
 const BigNumber = require('bignumber.js')
+const React = require('react')
+const Web3 = require('web3')
+
+const eac = require('eac.js')
 
 class App extends React.Component {
   constructor (props) {
     	super(props)
     	this.state = {
-			account: '',
-			eac: {}
-    	}
+			account: ''
+		}
 	}
 
 	componentDidMount () {
@@ -24,8 +24,7 @@ class App extends React.Component {
 					web3.eth.defaultAccount = res[0]
 				}
 			})
-			window.eac = new Eac(web3, 'ropsten')
-			this.setState({eac: window.eac})
+			window.eacScheduler = new eac.Scheduler(web3, 'ropsten')
 		}
 	}
 
@@ -41,34 +40,33 @@ class App extends React.Component {
 		const payment = document.getElementById('payment').value
 		const requiredDeposit = document.getElementById('requiredDeposit').value
 		console.log('submit pressed!')
-		console.log(toAddress)
 
-		const endowment = eac.calcEndowment(
+		const endowment = eacScheduler.calcEndowment(
 			new BigNumber(callGas),
 			new BigNumber(callValue),
 			new BigNumber(gasPrice),
 			new BigNumber(donation),
 			new BigNumber(payment)
 		)
-		// console.log(endowment)
-		eac.initSender({
+		eacScheduler.initSender({
 			from: web3.eth.defaultAccount,
 			gas: 3000000,
 			value: endowment
 		})
 
-		console.log(toAddress,
-			web3.fromAscii(callData),
-			callGas,
-			callValue,
-			windowSize,
-			windowStart,
-			gasPrice,
-			donation,
-			payment,
-			requiredDeposit)
+		// console.log(
+		// 	toAddress,
+		// 	web3.fromAscii(callData),
+		// 	callGas,
+		// 	callValue,
+		// 	windowSize,
+		// 	windowStart,
+		// 	gasPrice,
+		// 	donation,
+		// 	payment,
+		// 	requiredDeposit)
 
-		eac.blockSchedule(
+		eacScheduler.blockSchedule(
 			toAddress,
 			web3.fromAscii(callData),
 			callGas,

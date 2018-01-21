@@ -5,6 +5,15 @@ const Deployer = require('../deploy.js')
 
 const eac = require('../src')
 
+const getBlockNumber = web3 => {
+    return new Promise((resolve, reject) => {
+        web3.eth.getBlockNumber((err, blockNum) => {
+            if (!err) resolve(blockNum)
+            else reject(err)
+        })
+    })
+}
+
 describe('EAC_Scheduler', () => {
 
     let eacScheduler 
@@ -47,7 +56,7 @@ describe('EAC_Scheduler', () => {
         const callGas = 3000000
         const callValue = 123454321
         const windowSize = 255
-        const windowStart = await web3.eth.getBlockNumber() + 25
+        const windowStart = await getBlockNumber(web3) + 25
         const gasPrice = web3.toWei('55', 'gwei')
         const donation = web3.toWei('120', 'finney')
         const payment = web3.toWei('250', 'finney')
