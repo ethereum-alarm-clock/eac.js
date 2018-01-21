@@ -17,6 +17,15 @@ class Scheduler {
         }
     }
 
+    getFactoryAddr() {
+        return new Promise((resolve, reject) => {
+            this.blockScheduler.factoryAddress.call((err, address) => {
+                if (!err) resolve(address)
+                else reject(err)
+            })
+        })
+    }
+
     initSender(opts) {
         this.sender = opts.from
         this.gasLimit = opts.gas 

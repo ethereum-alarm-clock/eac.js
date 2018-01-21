@@ -4,43 +4,28 @@ const expect = require('chai').expect
 
 const eac = require('../src')
 
-describe('EAC_Scheduler', () => {
+describe('Request Factory', () => {
 
-    let eacScheduler 
+    let rfAddr
     let web3
 
     before(async () => {
         const deployed = await Deployer()
         web3 = deployed.web3
-        eacScheduler = new eac.Scheduler(web3, 'tester')
+        rfAddr = deployed.requestFactory.address
     })
 
-    it('Calculates the expected endowment', () => {
-        const callGas = new BigNumber(3000000)
-        const callValue = new BigNumber(123454321)
-        const gasPrice = new BigNumber(web3.toWei('55', 'gwei'))
-        const donation = new BigNumber(web3.toWei('120', 'finney'))
-        const payment = new BigNumber(web3.toWei('250', 'finney'))
-
-        const expectedEndowment = payment
-                                  .plus(donation.mul(2))
-                                  .plus(callGas.mul(gasPrice))
-                                  .plus(gasPrice.mul(180000))
-                                  .plus(callValue)
-
-        const endowment = eacScheduler.calcEndowment(
-            callGas,
-            callValue,
-            gasPrice,
-            donation,
-            payment
-        )
-
-        expect(endowment.toString())
-        .to.equal(expectedEndowment.toString())
+    it('Ensures that requestFactory is valid', () => {
+        const requestFactory = new eac.RequestFactory(rfAddr, web3)
+        expect(requestFactory.address)
+        .to.exist
     })
 
-    it('Schedules a transaction using calculated endowment', async () => {
+    it('tests RequestFactory.isKnownRequest()', async () => {
+        // To test `isKnownRequest()` we have to use the scheduler to deploy a
+        // new instance of a TxRequest.
+        const eacScheduler = new eac.Scheduler(web3, 'tester')
+
         const toAddress = '0xDacC9C61754a0C4616FC5323dC946e89Eb272302'
         const callData = '0x' + Buffer.from('callData').toString('hex')
         const callGas = 3000000
@@ -81,5 +66,20 @@ describe('EAC_Scheduler', () => {
 
         expect(receipt.status)
         .to.equal(1)
+
+        const newRequestAddress = '0x'.concat(receipt.logs[0].data.slice(-40))
+
+        // This is to get around an issue with the deploy script. It deploys new instances
+        // of the contracts in between each test so it messes up keeping the right
+        // addresses. Need a better solution but for now this is a workaround.
+        const rfAddr2 = await eacScheduler.getFactoryAddr()
+        const requestFactory = new eac.RequestFactory(rfAddr2, web3)
+
+        // Now that we've got the address of our new request, we can check it against
+        // the request factory.
+        const isKnown = await requestFactory.isKnownRequest(newRequestAddress)
+        expect(isKnown)
+        .to.be.true
     })
+
 })
