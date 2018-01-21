@@ -20,7 +20,12 @@ class RequestFactory {
      */
 
     isKnownRequest (requestAddress) {
-        return this.instance.isKnownRequest.call(requestAddress)
+        return new Promise((resolve, reject) => {
+            this.instance.isKnownRequest.call(requestAddress, (err, isKnown) => {
+                if (!err) resolve(isKnown)
+                else reject(err)
+            })
+        })
     }
 
     /**

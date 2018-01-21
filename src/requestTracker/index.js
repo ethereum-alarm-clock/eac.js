@@ -31,30 +31,45 @@ class RequestTracker {
 
     nextFromLeft (left) {
         this.checkFactory()
-        const next = this.instance.query.call(
-            this.factory,
-            Constants.GTE_HEX,
-            left
-        )
-        return next
+        return new Promise((resolve, reject) => {
+            this.instance.query.call(
+                this.factory,
+                Constants.GTE_HEX,
+                left,
+                (err, next) => {
+                    if (!err) resolve(next)
+                    else reject(err)
+                }
+            )
+        })
     }
 
     windowStartFor (txRequestAddress) {
         this.checkFactory()
-        const windowStart = this.instance.getWindowStart.call(
-            this.factory,
-            txRequestAddress
-        )
-        return windowStart
+        return new Promise((resolve, reject) => {
+            this.instance.getWindowStart.call(
+                this.factory,
+                txRequestAddress,
+                (err, windowStart) => {
+                    if (!err) resolve(windowStart)
+                    else reject(err)
+                }
+            )
+        })
     }
 
     nextRequest (txRequestAddress) {
         this.checkFactory()
-        const next = this.instance.getNextRequest.call(
-            this.factory,
-            txRequestAddress
-        )
-        return next
+        return new Promise((resolve, reject) => {
+            this.instance.getNextRequest.call(
+                this.factory,
+                txRequestAddress,
+                (err, next) => {
+                    if (!err) resolve(next)
+                    else reject(err)
+                }
+            )
+        })
     }
 
     /**

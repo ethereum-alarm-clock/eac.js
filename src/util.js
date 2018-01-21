@@ -11,6 +11,24 @@ const getABI = name => {
     return json.abi
 }
 
+const getBalance = (web3, address) => {
+    return new Promise((resolve, reject) => {
+        web3.eth.getBalance(address, (err, bal) => {
+            if (!err) resolve(bal)
+            else reject(err)
+        })
+    })
+}
+
+const getBlockNumber = web3 => {
+    return new Promise((resolve, reject) => {
+        web3.eth.getBlockNumber((err, blockNum) => {
+            if (!err) resolve(blockNum)
+            else reject(err)
+        })
+    })
+}
+
 /**
  * Returns the string argument of the detected network to be 
  * passed into eacScheduler.
@@ -50,18 +68,11 @@ const waitForTransactionToBeMined = (web3, txHash, interval) => {
     })
 }
 
-const getTransactionReceipt = (web3, txHash) => {
-    return new Promise((resolve, reject) => {
-        web3.eth.getTransactionReceipt(txHash, (err, receipt) => {
-            if (!err) resolve(receipt)
-            else reject(err)
-        })
-    })
-}
-
 module.exports = {
     checkNotNullAddress,
     getABI,
+    getBalance,
+    getBlockNumber,
     getChainName,
     waitForTransactionToBeMined
 }

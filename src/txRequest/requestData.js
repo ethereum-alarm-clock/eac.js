@@ -52,13 +52,26 @@ class RequestData {
     }
 
     static from(txRequest) {
-        const data = txRequest.requestData.call()
-        return new RequestData(data, txRequest)
+        return new Promise((resolve, reject) => {
+            txRequest.requestData.call((err, data) => {
+                if (err) reject(err)
+                else {
+                    resolve(new RequestData(data, txRequest))
+                }
+            })
+        })
     }
 
-    async refresh () {
-        const data = await this.txRequest.requestData.call()
-        this.fill(data)
+    refresh () {
+        return new Promise((resolve, reject) => {
+            this.txRequest.requestData.call((err, data) => {
+                if (err) reject(err)
+                else {
+                    this.fill(data)
+                    resolve(true)
+                }
+            })
+        })
     }
 }
 

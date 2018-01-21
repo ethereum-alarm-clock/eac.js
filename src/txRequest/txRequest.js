@@ -74,48 +74,48 @@ class TxRequest {
      * Dynamic getters
      */
 
-    now () {
+    async now () {
         if (this.temporalUnit == 1) {
-            return new BigNumber(this.web3.eth.blockNumber)
-        } else if (this.temporalUnit == 2) {
-            const block = this.web3.eth.getBlock('latest')
-            return new BigNumber(block.timestamp)
+            return new BigNumber(await Util.getBlockNumber(this.web3))
+        // } else if (this.temporalUnit == 2) {
+        //     const block = this.web3.eth.getBlock('latest')
+        //     return new BigNumber(block.timestamp)
         } else {
             throw new Error(`Unrecognized temporal unit: ${this.temporalUnit}`)
         }
     }
 
-    beforeClaimWindow () {
-        const now = this.now()
+    async beforeClaimWindow () {
+        const now = await this.now()
         return this.claimWindowStart.greaterThan(now)
     }
 
-    inClaimWindow () {
-        const now = this.now()
+    async inClaimWindow () {
+        const now = await this.now()
         return this.claimWindowStart.lessThanOrEqualTo(now) &&
                 this.claimWindowEnd.greaterThan(now)
     }
 
-    inFreezePeriod () {
-        const now = this.now()
+    async inFreezePeriod () {
+        const now = await this.now()
         return this.claimWindowEnd.lessThanOrEqualTo(now) &&
                 this.freezePeriodEnd.greaterThan(now)
     }
 
-    inExecutionWindow () {
-        const now = this.now()
+    async inExecutionWindow () {
+        const now = await this.now()
         return this.windowStart.lessThanOrEqualTo(now) &&
                 this.executionWindowEnd.greaterThanOrEqualTo(now)
     }
 
-    inReservedWindow () {
-        const now = this.now()
+    async inReservedWindow () {
+        const now = await this.now()
         return this.windowStart.lessThanOrEqualTo(now) &&
                 this.reservedWindowEnd.greaterThan(now)
     }
 
-    afterExecutionWindow () {
-        const now = this.now()
+    async afterExecutionWindow () {
+        const now = await this.now()
         return this.executionWindowEnd.lessThan(now)
     }
 
@@ -139,8 +139,8 @@ class TxRequest {
         return this.data.claimData.requiredDeposit
     }
 
-    claimPaymentModifier () {
-        const now = this.now()
+    async claimPaymentModifier () {
+        const now = await this.now()
         const elapsed = now.minus(this.claimWindowStart)
         return elapsed.times(100).dividedToIntegerBy(this.claimWindowSize)
     }
@@ -197,8 +197,8 @@ class TxRequest {
      * Data management
      */
 
-    fillData () {
-        const requestData = RequestData.from(this.instance)
+    async fillData () {
+        const requestData = await RequestData.from(this.instance)
         this.data = requestData
         return true
     }
@@ -232,28 +232,40 @@ class TxRequest {
 
     claim (params) {
         return new Promise((resolve, reject) => {
-            const txHash = this.instance.claim(params)
-            Util.waitForTransactionToBeMined(this.web3, txHash)
-            .then(receipt => resolve(receipt))
-            .catch(err => reject(err))
+            this.instance.claim(params, (err, txHash) => {
+                if (err) reject(err)
+                else {
+                    Util.waitForTransactionToBeMined(this.web3, txHash)
+                    .then(receipt => resolve(receipt))
+                    .catch(err => reject(err))
+                }
+            })
         })
     }
 
     execute (params) {
         return new Promise((resolve, reject) => {
-            const txHash = this.instance.execute(params)
-            Util.waitForTransactionToBeMined(this.web3, txHash)
-            .then(receipt => resolve(receipt))
-            .catch(err => reject(err))
+            this.instance.execute(params, (err, txHash) => {
+                if (err) reject(err)
+                else {
+                    Util.waitForTransactionToBeMined(this.web3, txHash)
+                    .then(receipt => resolve(receipt))
+                    .catch(err => reject(err))
+                }
+            })
         })
     }
 
     cancel (params) {
         return new Promise((resolve, reject) => {
-            const txHash = this.instance.cancel(params)
-            Util.waitForTransactionToBeMined(this.web3, txHash)
-            .then(receipt => resolve(receipt))
-            .catch(err => reject(err))
+            this.instance.cancel(params, (err, txHash) => {
+                if (err) reject(err)
+                else {
+                    Util.waitForTransactionToBeMined(this.web3, txHash)
+                    .then(receipt => resolve(receipt))
+                    .catch(err => reject(err))
+                }
+            })
         })
     }
 
@@ -261,8 +273,8 @@ class TxRequest {
      * Misc.
      */
 
-    getBalance () {
-        const bal = this.web3.eth.getBalance(this.address)
+    async getBalance () {
+        const bal = await getBalance(this.web3, this.address)
         return new BigNumber(bal)
     }
 }
