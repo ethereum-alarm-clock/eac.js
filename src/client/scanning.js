@@ -1,5 +1,5 @@
 const { BigNumber } = require('bignumber.js');
-const eac = require('./index')
+const eac = require('../index')
 
 const store = (conf, txRequest) => {
     const log = conf.logger
@@ -45,7 +45,7 @@ const scanBlockchain = async conf => {
 
         const trackerWindowStart = await requestTracker.windowStartFor(nextRequestAddress)
         
-        const txRequest = new TxRequest(nextRequestAddress, web3)
+        const txRequest = new eac.TxRequest(nextRequestAddress, web3)
         await txRequest.fillData()
 
         if (!txRequest.windowStart.equals(trackerWindowStart)) {
@@ -70,7 +70,7 @@ const { routeTxRequest } = require('./routing.js')
 const scanCache = async conf => {
     if (conf.cache.len() === 0) return //nothing stored in cache
     
-    const allTxRequests = conf.cache.stored().map(address => new TxRequest(address, conf.web3))
+    const allTxRequests = conf.cache.stored().map(address => new eac.TxRequest(address, conf.web3))
 
     allTxRequests.forEach(txRequest => {
         // console.log(txRequest)
