@@ -8,3 +8,4 @@ src/testStatsDb.js
 docs/Instructions.md
 old-*
 new-*
+.node
