@@ -1,7 +1,15 @@
 const Constants = require('./constants.js')
+const ethUtil = require('ethereumjs-util')
 
 const checkNotNullAddress = address => {
     if (address === Constants.NULL_ADDRESS) return false
+    return true
+}
+
+const checkValidAddress = address => {
+    if (!ethUtil.isValidAddress(address)) {
+        return false
+    }
     return true
 }
 
@@ -24,6 +32,15 @@ const getBlockNumber = web3 => {
     return new Promise((resolve, reject) => {
         web3.eth.getBlockNumber((err, blockNum) => {
             if (!err) resolve(blockNum)
+            else reject(err)
+        })
+    })
+}
+
+const getGasPrice = web3 => {
+    return new Promise((resolve, reject) => {
+        web3.eth.getGasPrice((err, gasPrice) => {
+            if (!err) resolve(gasPrice)
             else reject(err)
         })
     })
@@ -70,9 +87,11 @@ const waitForTransactionToBeMined = (web3, txHash, interval) => {
 
 module.exports = {
     checkNotNullAddress,
+    checkValidAddress,
     getABI,
     getBalance,
     getBlockNumber,
+    getGasPrice,
     getChainName,
     waitForTransactionToBeMined
 }

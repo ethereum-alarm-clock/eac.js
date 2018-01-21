@@ -1,6 +1,8 @@
 const BigNumber = require('bignumber.js')
 const hasPending = require('./pending.js')
 
+const { Util } = require('../index')
+
 /**
  * Takes in a txRequest object and routes it to the thread that will act on it,
  * or returns if no action can be taken.
@@ -27,14 +29,14 @@ const routeTxRequest = async (conf, txRequest) => {
 
     // Returne early if the transaction request is before claim window,
     // and therefore not actionable upon
-    if (txRequest.beforeClaimWindow()) {
+    if (await txRequest.beforeClaimWindow()) {
         log.debug(`Ignoring txRequest not in claim window.`)
         return
     }
 
     // If the transaction request is in the claim window, we check if 
     // it already claimed and if not, we claim it
-    if (txRequest.inClaimWindow()) {
+    if (await txRequest.inClaimWindow()) {
         // The client set the txRequest to `attempted claim` and watch 
         // for the result and either marked successfully `claimed` or not.
         // Using the cache codes is a primitive way to accomplish this.
@@ -56,8 +58,13 @@ const routeTxRequest = async (conf, txRequest) => {
             if (receipt.status == 1) {
                 log.info(`TxRequest at ${txRequest.address} claimed!`)
                 conf.cache.set(txRequest.address, 103)
-                const txObj = web3.eth.getTransaction(receipt.transactionHash)
-                conf.statsdb.updateClaimed(txObj.from)
+                web3.eth.getTransaction(receipt.transactionHash, (err, txObj) => {
+                    if (!err) {
+                        conf.statsdb.updateClaimed(txObj.from)
+                    } else {
+                        log.error(err)
+                    }
+                })
             }
             // Or find the reason why it failed TODO
             else return
@@ -75,7 +82,7 @@ const routeTxRequest = async (conf, txRequest) => {
 
     // If the transaction request is in the execution window, we can
     // attempt an execution of it
-    if (txRequest.inExecutionWindow()) {
+    if (await txRequest.inExecutionWindow()) {
         log.debug(``)
         if (conf.cache.get(txRequest.address) <= 99) return // waiting to be cleaned
         if (txRequest.wasCalled) { log.debug(`Already called.`); cleanup(conf, txRequest); return }
@@ -101,8 +108,13 @@ const routeTxRequest = async (conf, txRequest) => {
             if (receipt.status == 1) {
                 log.info(`TxRequest at ${txRequest.address} executed!`)
                 conf.cache.set(txRequest.address, 100)
-                const txObj = web3.eth.getTransaction(receipt.transactionHash)
-                conf.statsdb.updateExecuted(txObj.from)
+                web3.eth.getTransaction(receipt.transactionHash, (err, txObj) => {
+                    if (!err) {
+                        conf.statsdb.updateExecuted(txObj.from)
+                    } else {
+                        log.error(err)
+                    }
+                })
             }
             // Or find the reason why it failed TODO
             else return
@@ -112,7 +124,7 @@ const routeTxRequest = async (conf, txRequest) => {
     }
 
     // If the transaction request is expired, we try to clean it
-    if (txRequest.afterExecutionWindow()) {
+    if (await txRequest.afterExecutionWindow()) {
         log.debug(`Cleaning up expired txRequest and removing from cache.`)
         cleanup(conf, txRequest)
         return
@@ -124,7 +136,7 @@ const claim = async (conf, txRequest) => {
     const web3 = conf.web3
 
     // All the checks have been done in routing, now we follow through on the actions.
-    const claimPaymentModifier = txRequest.claimPaymentModifier().dividedToIntegerBy(100)
+    const claimPaymentModifier = (await txRequest.claimPaymentModifier()).dividedToIntegerBy(100)
     const paymentWhenClaimed = txRequest.payment.times(claimPaymentModifier).floor()
     const claimDeposit = txRequest.requiredDeposit
     const data = txRequest.claimData
@@ -135,7 +147,7 @@ const claim = async (conf, txRequest) => {
         value: claimDeposit.toString(),
         data: data
     })
-    const currentGasPrice = new BigNumber(web3.eth.gasPrice)
+    const currentGasPrice = new BigNumber(await Util.getGasPrice(web3))
     const gasCostToClaim = currentGasPrice.times(gasToClaim)
 
 
@@ -161,7 +173,7 @@ const claim = async (conf, txRequest) => {
         from: web3.eth.defaultAccount,
         value: claimDeposit,
         gas: gasToClaim + 21000,
-        gasPrice: web3.eth.gasPrice
+        gasPrice: await Util.getGasPrice(web3)
     })
 }
 
@@ -221,7 +233,7 @@ const cleanup = async (conf, txRequest) => {
                 from: web3.eth.defaultAccount,
                 value: 0,
                 gas: gasToCancel + 21000,
-                gasPrice: web3.eth.gasPrice
+                gasPrice: await Util.getGasPrice(web3)
             })
         } else {
             if (gasCostToCancel.greaterThan(txRequestBalance)) {
@@ -231,7 +243,7 @@ const cleanup = async (conf, txRequest) => {
                 from: web3.eth.defaultAccount,
                 value: 0,
                 gas: gasToCancel + 21000,
-                gasPrice: web3.eth.gasPrice
+                gasPrice: await Util.getGasPrice(web3)
             })
         }
     }

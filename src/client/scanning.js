@@ -1,6 +1,5 @@
 const { BigNumber } = require('bignumber.js');
-const { GTE_HEX, NULL_ADDRESS } = require('../constants.js')
-const { TxRequest } = require('../index.js')
+const eac = require('./index')
 
 const store = (conf, txRequest) => {
     const log = conf.logger
@@ -17,7 +16,7 @@ const scanBlockchain = async conf => {
     const log = conf.logger 
     const web3 = conf.web3
 
-    const left = web3.eth.blockNumber - 15
+    const left = await eac.Util.getBlockNumber(web3) - 15
     const right = left + 75
     log.debug(`Scanning bounds from ${left} to ${right}`)
 
@@ -28,12 +27,14 @@ const scanBlockchain = async conf => {
 
     let nextRequestAddress = await requestTracker.nextFromLeft(left)
 
-    if (nextRequestAddress === NULL_ADDRESS) {
-        log.info(`No new requests.`)
+    if (nextRequestAddress === eac.Constants.NULL_ADDRESS) {
+        log.info('No new requests.')
         return
+    } else if (!eac.Util.checkValidAddress(nextRequestAddress)) {
+        throw new Error(`Received invalid response from Request Tracker | Response: ${nextRequestAddress}`)
     }
 
-    while (nextRequestAddress !== NULL_ADDRESS) {
+    while (nextRequestAddress !== eac.Constants.NULL_ADDRESS) {
         log.debug(`Found request - ${nextRequestAddress}`)
 
         // Verify that the request is known to the factory we are validating with.
@@ -60,7 +61,7 @@ const scanBlockchain = async conf => {
         nextRequestAddress = requestTracker.nextRequest(txRequest.address)
 
         // Hearbeat
-        if (nextRequestAddress === NULL_ADDRESS) { log.info('No new requests.') }
+        if (nextRequestAddress === eac.Constants.NULL_ADDRESS) { log.info('No new requests.') }
     }
 }
 

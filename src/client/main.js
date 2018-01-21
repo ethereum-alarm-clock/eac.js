@@ -1,12 +1,8 @@
-const Config = require('./config.js')
-const Repl = require('./repl.js')
-const Scanner = require('./scanning.js')
-const StatsDB = require('./statsdb.js')
-const Util = require('../util.js')
-
-const { RequestFactory, RequestTracker } = require('../index')
-
-const ethUtil = require('ethereumjs-util')
+const Config = require('./config')
+const Repl = require('./repl')
+const Scanner = require('./scanning')
+const StatsDB = require('./statsdb')
+const eac = require('../index')
 
 const startScanning = (ms, conf) => {
     const log = conf.logger
@@ -46,15 +42,16 @@ const startScanning = (ms, conf) => {
  * @param {String} pw Password to decrypt wallet.
  */
 const main = async (web3, provider, ms, logfile, logLevel, walletFile, pw) => {
-
-    const chain = await Util.getChainName(web3)
+    
+    // Assigns chain to the name of the network ID
+    const chain = eac.Util.getChainName(web3)
 
     // Loads the contracts
     const requestFactory = chain === 'ropsten' ? 
-                            RequestFactory.initRopsten(web3) : 
+                            eac.RequestFactory.initRopsten(web3) : 
                             new Error(`Not implemented for chain ${chain}`)
     const requestTracker = chain === 'ropsten' ?
-                            RequestTracker.initRopsten(web3) :
+                            eac.RequestTracker.initRopsten(web3) :
                             new Error(`Not implemented for chain ${chain}`)
 
     // Parses the logfile
@@ -88,35 +85,20 @@ const main = async (web3, provider, ms, logfile, logLevel, walletFile, pw) => {
     // Creates StatsDB
     conf.statsdb = new StatsDB(conf.web3)
 
-    // Determines wallet support
-    // if (conf.wallet) {
-    //     console.log('Wallet support: Enabled')
-    //     console.log('\nExecuting from accounts:')
-    //     conf.wallet.getAccounts().forEach(async account => {
-    //         console.log(`${account} | Balance: ${web3.fromWei(web3.eth.getBalance(account))}`)
-    //     })
-    //     conf.statsdb.initialize(conf.wallet.getAccounts())
-    // } else { 
     console.log('Wallet support: Disabled')
     console.log('\nExecuting from account:')
-    // Loads the default account.
+
     const account = web3.eth.accounts[0]
     web3.eth.defaultAccount = account
-    if (!ethUtil.isValidAddress(web3.eth.defaultAccount)) {
+    if (!eac.Util.checkValidAddress(web3.eth.defaultAccount)) {
         throw new Error('Wallet is disabled but you do not have a local account unlocked.')
     }
     console.log(`${account} | Balance: ${web3.fromWei(web3.eth.getBalance(account))}`)
     conf.statsdb.initialize([account])
-    // }
 
     // Begin
-
     conf.scanning = false
     startScanning(ms, conf)
-
-    // For the records, we should keep the time it started scanning.
-    // TODO this isn't used anywhere yet, but will be used in the `getStats` featur
-    const started = new Date()
 
     // Waits a bit before starting the repl so that the accounts have time to print.
     setTimeout(() => Repl.start(conf, ms), 1200)
