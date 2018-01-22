@@ -53,7 +53,7 @@ class RequestData {
 
     static from(txRequest) {
         return new Promise((resolve, reject) => {
-            txRequest.requestData.call((err, data) => {
+            txRequest.requestData.call({gas: 3000000}, (err, data) => {
                 if (err) reject(err)
                 else {
                     resolve(new RequestData(data, txRequest))

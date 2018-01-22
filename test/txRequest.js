@@ -69,29 +69,40 @@ describe('TxRequest', () => {
         expect(txRequest.address)
         .to.equal(newRequestAddress)
 
-        /// We cannot run these checks below because I haven't figure out
-        // why the ganache chain is returining an OOG error for
-        // the constant call conatained in `fillData()`. 
-
-        // await txRequest.fillData()
-
-        // console.log(txRequest.data)
+        expect(await txRequest.fillData())
+        .to.be.true
 
         // Check that all of the variables in `txRequest` matches up to the ones
         // we set in `scheduler.blockSchedule`
 
-        // expect(txRequest.toAddress)
-        // .to.equal(toAddress)
+        expect(txRequest.toAddress)
+        .to.equal(toAddress.toLowerCase())
 
-        // expect(await txRequest.callData())
-        // .to.equal(callData)
+        expect(await txRequest.callData())
+        .to.equal(callData)
 
-        // expect(txRequest.callGas)
-        // .to.equal(callGas)
+        expect(txRequest.callGas.toNumber())
+        .to.equal(callGas)
 
-        
+        expect(txRequest.callValue.toNumber())
+        .to.equal(callValue)
 
+        expect(txRequest.windowSize.toNumber())
+        .to.equal(windowSize)
+
+        expect(txRequest.windowStart.toNumber())
+        .to.equal(windowStart)
+
+        expect(txRequest.gasPrice.toString())
+        .to.equal(gasPrice)
+
+        expect(txRequest.donation.toString())
+        .to.equal(donation)
+
+        expect(txRequest.payment.toString())
+        .to.equal(payment)
+
+        expect(txRequest.requiredDeposit.toString())
+        .to.equal(requiredDeposit)
     })
-
-
 })

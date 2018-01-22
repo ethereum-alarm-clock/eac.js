@@ -173,6 +173,10 @@ class TxRequest {
         return this.data.txData.callGas
     }
 
+    get callValue () {
+        return this.data.txData.callValue
+    }
+
     get gasPrice () {
         return this.data.txData.gasPrice
     }

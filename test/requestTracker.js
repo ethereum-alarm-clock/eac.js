@@ -76,17 +76,39 @@ describe('Request Tracker', () => {
         const left = await eac.Util.getBlockNumber(web3) - 10
         const res = await requestTracker.nextFromLeft(left)
         const resWS = await requestTracker.windowStartFor(res)
-        console.log(res)   
-        console.log(resWS)
+        // The best way to test these is to make a txRequest instance out of them
+        const txRequest = new eac.TxRequest(res, web3)
+        await txRequest.fillData()
+        expect(txRequest.address)
+        .to.exist
+        expect(txRequest.windowStart.toNumber())
+        .to.equal(resWS.toNumber())
+
+        // Depending on the tests, further txRequests may be registered.
         const res2 = await requestTracker.nextRequest(res)
         const res2WS = await requestTracker.windowStartFor(res2)
-        console.log(res2)
-        console.log(res2WS)
+        let txRequest2
+        if (res2 !== eac.Constants.NULL_ADDRESS) {
+            txRequest2 = new eac.TxRequest(res2, web3)
+            await txRequest2.fillData()
+            expect(txRequest2.address)
+            .to.exist
+            // This txRequest2 should have a later start than txRequest
+            expect(txRequest2.windowStart.toNumber())
+            .to.be.at.least(txRequest.windowStart.toNumber())
+        }
+        
         const res3 = await requestTracker.nextRequest(res2)
         const res3WS = await requestTracker.windowStartFor(res3)
-        console.log(res3)
-        console.log(res3WS)
-        const res4 = await requestTracker.nextRequest(res3)
-        console.log(res4)
+        let txRequest3
+        if (res3 !== eac.Constants.NULL_ADDRESS) {
+            txRequest3 = new eac.TxRequest(res3, web3)
+            await txRequest3.fillData()
+            expect(txRequest3.address)
+            .to.exist
+            // This txRequest3 should have a later start than txRequest2
+            expect(txRequest3.windowStart.toNumber())
+            .to.be.at.least(txRequest2.windowStart.toNumber())
+        }
     })
 })
