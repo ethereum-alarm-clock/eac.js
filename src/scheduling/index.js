@@ -1,4 +1,3 @@
-const { getABI } = require('../util.js')
 const BigNumber = require('bignumber.js')
 const Util = require('../util')
 
@@ -8,12 +7,12 @@ class Scheduler {
         this.web3 = web3
         try {
             const contracts = require(`../assets/${chain}.json`)
-            const BlockSchedulerABI = getABI('BlockScheduler')
-            const TimestampSchedulerABI = getABI('TimestampScheduler')
+            const BlockSchedulerABI = Util.getABI('BlockScheduler')
+            const TimestampSchedulerABI = Util.getABI('TimestampScheduler')
             this.blockScheduler = web3.eth.contract(BlockSchedulerABI).at(contracts.blockScheduler)
             this.timestampScheduler = web3.eth.contract(TimestampSchedulerABI).at(contracts.timestampScheduler)
         } catch (err) {
-            console.log(err)
+            throw new Error(err)
         }
     }
 
@@ -58,7 +57,7 @@ class Scheduler {
         requiredDeposit) {
 
         return new Promise((resolve, reject) => {
-                this.blockScheduler.schedule(
+                this.blockScheduler.schedule.sendTransaction(
                 toAddress,
                 callData,
                 [
@@ -80,7 +79,7 @@ class Scheduler {
                     if (err) reject(err)
                     else {
                         Util.waitForTransactionToBeMined(this.web3, txHash)
-                        .then(res => resolve(res))
+                        .then(receipt => resolve(receipt))
                         .catch(err => reject(err))
                     }
                 }
@@ -123,7 +122,7 @@ class Scheduler {
                     if (err) reject(err)
                     else
                         Util.waitForTransactionToBeMined(this.web3, txHash)
-                        .then(res => resolve(res))
+                        .then(receipt => resolve(receipt))
                         .catch(err => reject(err))
                 }
             )

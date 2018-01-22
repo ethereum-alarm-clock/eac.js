@@ -3,9 +3,8 @@
 const program = require('commander')
 const chalk = require('chalk')
 
-const alarmClient = require('../client/main.js')
-const EAC_Scheduler = require('../scheduling/index.js')
-const Util = require('../util.js')
+const alarmClient = require('../client/main')
+const eac = require('../index')
 
 const BigNumber = require('bignumber.js')
 const clear = require('clear')
@@ -24,11 +23,13 @@ const log = {
 
 program
     .version('1.0.0')
+    // Client options
     .option('-c, --client', 'starts the executing client')
     .option('-m, --milliseconds <ms>', 'tells the client to scan every <ms> seconds', 4000)
     .option('--logfile [path]', 'specifies the output logifle', 'default')
     .option('--logLevel [0,1,2,3]', 'sets the log level', 2)
     .option('--provider <string>', 'set the HttpProvider to use', 'http://localhost:8545')
+    // Scheduling options
     .option('-s, --schedule', 'schedules a transactions')
     .parse(process.argv)
 
@@ -91,20 +92,21 @@ const main = async _ => {
             process.exit(1)
         }
         if (!checkForUnlockedAccount(web3)) process.exit(1)
+        const chain = eac.Util.getChainName(web3)
+        const eacScheduler = new eac.Scheduler(web3, chain)
 
-        const chain = await Util.getChainName(web3)
-
-        const eacScheduler = new EAC_Scheduler(web3, program.chain)
-
-        /// Starts the scheduling wizard.
+        // Starts the scheduling wizard.
         clear()
         log.info('🧙 🧙 🧙  Schedule a transaction  🧙 🧙 🧙\n')
 
         let toAddress = readlineSync.question(chalk.black.bgBlue('Enter the recipient address:\n'))
+        if (!toAddress) {
+            toAddress = '0xbbf5029fd710d227630c8b7d338051b8e76d50b3'
+        }
 
-        /// Validate the address 
+        // Validate the address 
         toAddress = ethUtil.addHexPrefix(toAddress)
-        if (!ethUtil.isValidAddress(toAddress)) {
+        if (!eac.Util.checkValidAddress(toAddress)) {
             log.error('Not a valid address')
             log.fatal('exiting...')
             process.exit(1)
@@ -115,9 +117,7 @@ const main = async _ => {
         if (!callData) {
             callData = 'Sent from eac.js commandline client.'
         }
-        // if (!web3.utils.isHex(callData)) {
-            callData = web3.fromAscii(callData)
-        // }
+        callData = web3.fromAscii(callData)
 
         let callGas = readlineSync.question(chalk.black.bgBlue(`Enter the call gas: [press enter for recommended]\n`))
 
@@ -137,9 +137,14 @@ const main = async _ => {
             windowSize = 255
         }
 
-        let windowStart = readlineSync.question(chalk.black.bgBlue(`Enter window start: [Current block number - ${await web3.eth.getBlockNumber()}\n`))
+        const blockNum = await eac.Util.getBlockNumber(web3)
+        let windowStart = readlineSync.question(chalk.black.bgBlue(`Enter window start: [Current block number - ${blockNum}\n`))
 
-        if (windowStart < await web3.eth.getBlockNumber() + 25) {
+        if (!windowStart) {
+            windowStart = blockNum + 50
+        }
+
+        if (windowStart < blockNum + 25) {
             log.error('That window start time is too soon!')
             process.exit(1)
         }
@@ -223,7 +228,8 @@ Endowment: ${web3.fromWei(endowment.toString())}
             donation,
             payment,
             requiredDeposit
-        ).then(receipt => {
+        )
+        .then(receipt => {
             if (receipt.status != 1) {
                 spinner.fail(`Transaction was mined but failed. No transaction scheduled.`)
                 process.exit(1)

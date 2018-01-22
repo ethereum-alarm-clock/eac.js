@@ -4,7 +4,7 @@ const expect = require('chai').expect
 
 const eac = require('../src')
 
-describe('EAC_Scheduler', () => {
+describe('Scheduler', () => {
 
     let eacScheduler 
     let web3

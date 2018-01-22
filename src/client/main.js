@@ -77,9 +77,10 @@ const main = async (web3, provider, ms, logfile, logLevel, walletFile, pw) => {
     conf.wallet = false
 
     // Assigns the client variable
-    if (chain == 'rinkeby') {
-        conf.client = 'geth'
-    } else { conf.client = 'parity' }
+    // if (chain == 'rinkeby') {
+    //     conf.client = 'geth'
+    // } else { 
+    conf.client = 'parity'
     conf.chain = chain
 
     // Creates StatsDB
