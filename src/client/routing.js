@@ -135,15 +135,17 @@ const claim = async (conf, txRequest) => {
     const claimDeposit = txRequest.requiredDeposit
     const data = txRequest.claimData
     const sender = web3.eth.defaultAccount
-    const gasToClaim = web3.eth.estimateGas({
-        from: sender,
-        to: txRequest.address,
-        value: claimDeposit.toString(),
-        data: data
-    })
+    const gasToClaim = await Util.estimateGas(
+        web3,
+        {
+            from: sender,
+            to: txRequest.address,
+            value: claimDeposit.toString(),
+            data: data
+        }
+    )
     const currentGasPrice = new BigNumber(await Util.getGasPrice(web3))
     const gasCostToClaim = currentGasPrice.times(gasToClaim)
-
 
     if (gasCostToClaim.greaterThan(paymentWhenClaimed)) {
         log.debug(`Not profitable to claim. Returning`)
@@ -211,13 +213,16 @@ const cleanup = async (conf, txRequest) => {
     if (!txRequest.isCancelled) {
         const cancelData = txRequest.cancelData
         const sender = conf.wallet ? conf.wallet.getAccounts()[0] : web3.eth.defaultAccount
-        const gasToCancel = await txRequest.cancel.estimateGas({
-            from: sender,
-            to: txRequest.address,
-            value: '0',
-            data: cancelData
-        })
-        const currentGasPrice = new BigNumber(await eac.Util.getGasPrice())
+        const gasToCancel = await Util.estimateGas(
+            web3,
+            {
+                from: sender,
+                to: txRequest.address,
+                value: '0',
+                data: cancelData
+            }
+        )
+        const currentGasPrice = new BigNumber(await Util.getGasPrice(web3))
         const gasCostToCancel = currentGasPrice.times(gasToCancel)
 
 

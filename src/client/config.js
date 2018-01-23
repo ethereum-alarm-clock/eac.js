@@ -5,6 +5,7 @@ const { Logger } = require('./logger.js')
 class Config {
     
     constructor(
+        scanSpread,
         logfile,
         logLevel,
         factory,
@@ -14,6 +15,7 @@ class Config {
         walletFile,
         password)
     {
+        this.scanSpread = scanSpread
         this.logger = new Logger(logfile, logLevel)
 
         this.cache = new Cache(this.logger)

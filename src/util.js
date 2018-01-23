@@ -13,6 +13,20 @@ const checkValidAddress = address => {
     return true
 }
 
+/**
+ * Promise resolves to the amount of gas from web3.eth.estimateGas
+ * @param {Web3} web3
+ * @param {Object} opts Ethereum object options, including `from`, `to`, `value`, and `data`
+ */
+const estimateGas = (web3, opts) => {
+    return new Promise((resolve, reject) => {
+        web3.eth.estimateGas(opts, (err, gas) => {
+            if (!err) resolve(gas)
+            else reject(err)
+        })
+    })
+}
+
 /// Requires a case sensitive name of the contract and will return the ABI if found.
 const getABI = name => {
     const json = require(`${__dirname}/build/contracts/${name}.json`)
@@ -88,6 +102,7 @@ const waitForTransactionToBeMined = (web3, txHash, interval) => {
 module.exports = {
     checkNotNullAddress,
     checkValidAddress,
+    estimateGas,
     getABI,
     getBalance,
     getBlockNumber,

@@ -16,8 +16,8 @@ const scanBlockchain = async conf => {
     const log = conf.logger 
     const web3 = conf.web3
 
-    const left = await eac.Util.getBlockNumber(web3) - 15
-    const right = left + 75
+    const left = await eac.Util.getBlockNumber(web3) - conf.scanSpread
+    const right = left + (conf.scanSpread * 2)
     log.debug(`Scanning bounds from ${left} to ${right}`)
 
     const requestTracker = conf.tracker 

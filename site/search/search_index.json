@@ -399,6 +399,21 @@
             "location": "/GUI_Implementer_Guide/#necessary-options", 
             "text": "You will need to present an option for the user to switch between block-based\nscheduling and timestamp-based scheduling. This could be accomplished by the\nimplementation of a switch or checkbox, or perhaps a drop-down menu.  To be continued...", 
             "title": "Necessary Options"
+        }, 
+        {
+            "location": "/Changelog/", 
+            "text": "Changelog\n\n\n0.9.8", 
+            "title": "Changelog"
+        }, 
+        {
+            "location": "/Changelog/#changelog", 
+            "text": "", 
+            "title": "Changelog"
+        }, 
+        {
+            "location": "/Changelog/#098", 
+            "text": "", 
+            "title": "0.9.8"
         }
     ]
 }

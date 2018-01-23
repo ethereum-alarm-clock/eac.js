@@ -34,6 +34,7 @@ const startScanning = (ms, conf) => {
  * The main driver function that begins the client operation.
  * @param {*} web3 An instantiated web3 instance.
  * @param {String} provider The supplied provider host for the web3 instance. (Ex. 'http://localhost:8545)
+ * @param {Number} scanSpread The spread +- of the current block number to scan.
  * @param {Number} ms Milliseconds between each conduction of a blockchain scan.
  * @param {String} logfile The file that the logging utility will log to, or 'console' for logging to console.
  * @param {Number} logLevel The level of logging allowed.
@@ -41,7 +42,7 @@ const startScanning = (ms, conf) => {
  * @param {String} walletFile Path to the encrypted wallet file.
  * @param {String} pw Password to decrypt wallet.
  */
-const main = async (web3, provider, ms, logfile, logLevel, walletFile, pw) => {
+const main = async (web3, provider, scanSpread, ms, logfile, logLevel, walletFile, pw) => {
     
     // Assigns chain to the name of the network ID
     const chain = eac.Util.getChainName(web3)
@@ -64,6 +65,7 @@ const main = async (web3, provider, ms, logfile, logLevel, walletFile, pw) => {
 
     // Loads conf
     const conf = new Config(
+        scanSpread,         //conf.scanSpread
         logfile,            //conf.logger.logfile
         logLevel,           //conf.logger.logLevel
         requestFactory,     //conf.factory

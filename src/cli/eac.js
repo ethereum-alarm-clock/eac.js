@@ -25,6 +25,7 @@ program
     .version('1.0.0')
     // Client options
     .option('-c, --client', 'starts the executing client')
+    .option('--scan <spread>', 'sets the scanning spread (ie +- from current block', 75)
     .option('-m, --milliseconds <ms>', 'tells the client to scan every <ms> seconds', 4000)
     .option('--logfile [path]', 'specifies the output logifle', 'default')
     .option('--logLevel [0,1,2,3]', 'sets the log level', 2)
@@ -71,6 +72,7 @@ const main = async _ => {
         alarmClient(
             web3,
             program.provider,
+            program.scan,
             program.milliseconds,
             program.logfile,
             program.logLevel, // 1 = debug, 2 = info, 3 = error

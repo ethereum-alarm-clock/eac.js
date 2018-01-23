@@ -11,4 +11,5 @@ pages:
     - 'Transaction Request': API/txRequest.md
     - 'Util': API/util.md
   - GUI Implementer Guide: GUI_Implementer_Guide.md
+  - Changelog: Changelog.md
 theme: 'readthedocs'
