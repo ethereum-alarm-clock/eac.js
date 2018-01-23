@@ -211,13 +211,13 @@ const cleanup = async (conf, txRequest) => {
     if (!txRequest.isCancelled) {
         const cancelData = txRequest.cancelData
         const sender = conf.wallet ? conf.wallet.getAccounts()[0] : web3.eth.defaultAccount
-        const gasToCancel = await txRequest.cancel().estimateGas({
+        const gasToCancel = await txRequest.cancel.estimateGas({
             from: sender,
             to: txRequest.address,
             value: '0',
             data: cancelData
         })
-        const currentGasPrice = new BigNumber(await web3.eth.getGasPrice())
+        const currentGasPrice = new BigNumber(await eac.Util.getGasPrice())
         const gasCostToCancel = currentGasPrice.times(gasToCancel)
 
 

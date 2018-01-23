@@ -26,8 +26,8 @@ the commands should work by specifying the Kovan network just as well.
 
 We begin by creating a new account.
 
-```bash
-$ parity --chain ropsten account new
+```
+    $ parity --chain ropsten account new
 ```
 
 The command will prompt you to enter a new password. As with any password,
@@ -39,14 +39,94 @@ sign and send transaction. You will also want to create a text file and save
 password in it since parity requires it to unlock the account. Try 
 restarting parity again and unlocking the account:
 
-```bash
-$ parity --geth --chain ropsten --unlock <YOUR ACCOUNT> --password <PASSWORD FILE>
+```
+    $ parity --geth --chain ropsten --unlock <YOUR ACCOUNT> --password <PASSWORD FILE>
 ```
 
 Parity should continue syncing with your account unlocked. Your next
 steps should be finding a source for some Kovan Ether, we recommend asking
 on the Kovan Faucet Gitter chat, they're usually responsive! If that doesn't work 
 trying pinging @lsaether on Gitter or asking in the Ethereum Alarm Clock room.
+
+## Optional - Create and fund a light wallet
+
+Eac.js includes the functionality to create and use a lightwallet 
+for execution instead of the default unlocked account. Although it
+is not strictly necessary, this is a recommended way to use the client,
+as it mitigates the issue of a "stuck transaction" blocking the following
+executions due to the transactions reliance on an in-order nonce. 
+
+The lightwallet that is created via the eac.js wizard is of the same
+type that Geth and Parity creates for you, it creates it on the client side
+and saves an encrypted keyfile to your local directory. Begin by starting eac.js
+with the `--createWallet` flag and answering the questions that the 
+wizard asks. An example output is provided below:
+
+```
+    $ eac.js --createWallet
+    How many accounts would you like in your wallet? [1 - 10]
+    > 4
+    Where would you like to save the encrypted keys? Please provide a valid filename or path.
+    > ./keyz
+    Please enter a password for the keyfile. Write this down!
+    > password
+
+    New wallet created!
+    Accounts:
+    0xf5F2DFA5A836704235C29db828Fca4bD857B272A
+    0x3A7e857Ad0CDA3AD1C93E1bb05272a83AF2933Df
+    0xFf48193f6370bE0094C3A235C726386fd39b7a67
+    0x1C8E06924902A3a7cB641C33946E641F037B03E7
+    Saving encrypted file to ./keyz. Don't forget your password!
+```
+
+You can make sure your keyfile exists encrypted on your local directory.
+
+```
+    $ cat ./keyz
+    <prints yours encrypted keys to console>
+```
+
+After this is down you will want to fund your children account with
+enough ether that they will be able to pay the claim deposits / execution
+gas costs. They don't need much for all intents and purposes 1 ether should
+be enough for each account on the testnets and on the mainnet potentially 
+much less than this.
+
+The eac.js tool also includes a utility to fund your children account
+from the default account that you unlocked when starting parity.
+Make sure your account has enough ether in it to cover each transaction
+and run eac.js with the `--fundWallet` flag and providing the amount of
+ether you would like to send to EACH account. (Note: your unlocked account
+will need enough ether to cover the amount you pass in times the number
+of accounts you created.)
+
+```
+    $ eac.js --fundWallet 0.4 --wallet ./keyz --password password
+    ⠴ Sending the funding transactions...
+    ✔ Accounts funded!
+```
+
+You can now check the balance of your lightwallet account by starting
+eac.js in client mode and passing in your wallet parameters.
+
+```
+    $ eac.js --wallet ./keyz --password password -c
+```
+
+Lastly, I will show you how to use eac.js to drain this wallet of its
+ether in the case that you decide you want it back. You can use the 
+`--drainWallet <target>` flag and pass in a valid ethereum address
+to send the funds to as `target`.
+
+```
+    $ eac.js --drainWallet 0x1cb960969f58a792551c4e8791d643b13025256d --wallet ./keyz --password password
+    ⠹ Sending transactions...
+    ✔ Wallet drained!
+```
+
+Now your wallet will need to be funded in the future if you ever want 
+to start using it again.
 
 ## Running the client
 
@@ -55,16 +135,23 @@ You can run the client using just your default account by simply passing the
 are using. It will drop you into a REPL that has a few speciic commands to
 help with interacting with the EAC.
 
-```bash
-$ eac.js -c
-⏰⏰⏰ Welcome to the Ethereum Alarm Clock client ⏰⏰⏰
+```
+    $ eac.js -c
+    ⏰⏰⏰ Welcome to the Ethereum Alarm Clock client ⏰⏰⏰
 
-Wallet support: Disabled
+    Wallet support: Disabled
 
-Executing from account:
-0x009f7EfeD908c05df5101DA1557b7CaaB38EE4Ce | Balance: 62.055242795864837678
+    Executing from account:
+    0x009f7EfeD908c05df5101DA1557b7CaaB38EE4Ce | Balance: 62.055242795864837678
 
->>
+    >>
+```
+
+If you want to run the client with wallet support enabled, you would simply
+provide the `--wallet <keyfile>` and `--password <password>` flags.
+
+```
+    $ eac.js --wallet ./keyz --password password -c
 ```
 
 The REPL is an important aspect of the eac.js tool and provides you
@@ -72,7 +159,7 @@ with a set of specific commands that will help you in interacting with
 and executing on the Ethereum Alarm Clock contracts. The EAC-centric commands 
 you can pass to this REPL are below:
 
-```rust
+```
 .dumpCache    Dumps your cache storage.
 .getBalance   Get the balance of your accounts.
 .getBlock     Get the latest blockNum and timestamp.

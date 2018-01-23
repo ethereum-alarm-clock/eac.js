@@ -1,0 +1,14 @@
+site_name: eac.js
+pages:
+  - Home: index.md
+  - Executing: Executing_Tut.md
+  - API: 
+    - 'API Documentation': API/index.md
+    - 'Constants': API/constants.md
+    - 'Request Factory': API/requestFactory.md
+    - 'Request Tracker': API/requestTracker.md
+    - 'Scheduler': API/scheduler.md
+    - 'Transaction Request': API/txRequest.md
+    - 'Util': API/util.md
+  - GUI Implementer Guide: GUI_Implementer_Guide.md
+theme: 'readthedocs'
