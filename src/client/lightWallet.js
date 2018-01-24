@@ -30,12 +30,12 @@ class LightWallet {
 
 			fs.writeFileSync(
 				file,
-				JSON.stringify(this.wallet.encrypt(password)),
+				JSON.stringify(this.wallet.encrypt(password))
 			)
 			this.wallet.clear()
 			if (!this.wallet.length === 0) {
 				throw new Error(
-					`Something went wrong when saving keyfile. Assume file: ${file} is corrupted and try again.`,
+					`Something went wrong when saving keyfile. Assume file: ${file} is corrupted and try again.`
 				)
 			}
 		})
@@ -44,7 +44,7 @@ class LightWallet {
 	decryptAndLoad(file, password) {
 		if (this.wallet.length > 0) {
 			console.log(
-				"Wallet is already loaded! Returning without loading new wallet...",
+				"Wallet is already loaded! Returning without loading new wallet..."
 			)
 			return
 		}
@@ -61,7 +61,7 @@ class LightWallet {
 	sendFromIndex(index, recip, val, gasLimit, gasPrice, data) {
 		if (index > this.wallet.length) {
 			console.log(
-				"Index is outside of range of addresses in this wallet!",
+				"Index is outside of range of addresses in this wallet!"
 			)
 			return
 		}

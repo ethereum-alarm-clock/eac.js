@@ -48,20 +48,32 @@ const main = async (
 	logfile,
 	logLevel,
 	walletFile,
-	pw,
+	pw
 ) => {
 	// Assigns chain to the name of the network ID
 	const chain = eac.Util.getChainName(web3)
 
 	// Loads the contracts
-	const requestFactory =
-		chain === "ropsten"
-			? eac.RequestFactory.initRopsten(web3)
-			: new Error(`Not implemented for chain ${chain}`)
-	const requestTracker =
-		chain === "ropsten"
-			? eac.RequestTracker.initRopsten(web3)
-			: new Error(`Not implemented for chain ${chain}`)
+	let requestFactory, requestTracker
+	switch (chain) {
+		case "mainnet":
+			throw new Error("Not implemented.")
+			break
+		case "ropsten":
+			requestFactory = eac.RequestFactory.initRopsten(web3)
+			requestTracker = eac.RequestTracker.initRopsten(web3)
+			break
+		case "rinkeby":
+			throw new Error("Not implemented.")
+			break
+		case "kovan":
+			requestFactory = eac.RequestFactory.initKovan(web3)
+			requestTracker = eac.RequestTracker.initKovan(web3)
+			break
+		default:
+			throw new Error(`Chain value: ${chain} not valid.`)
+			break
+	}
 
 	// Parses the logfile
 	if (logfile === "console") {
@@ -81,7 +93,7 @@ const main = async (
 		web3, //conf.web3
 		provider, //conf.provider
 		walletFile, //conf.wallet
-		pw, //wallet password
+		pw //wallet password
 	)
 
 	conf.wallet = false
@@ -103,13 +115,13 @@ const main = async (
 	web3.eth.defaultAccount = account
 	if (!eac.Util.checkValidAddress(web3.eth.defaultAccount)) {
 		throw new Error(
-			"Wallet is disabled but you do not have a local account unlocked.",
+			"Wallet is disabled but you do not have a local account unlocked."
 		)
 	}
 	console.log(
 		`${account} | Balance: ${web3.fromWei(
-			await eac.Util.getBalance(conf.web3, account),
-		)}`,
+			await eac.Util.getBalance(conf.web3, account)
+		)}`
 	)
 	conf.statsdb.initialize([account])
 

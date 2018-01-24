@@ -12,7 +12,7 @@ class Config {
 		web3,
 		provider,
 		walletFile,
-		password,
+		password
 	) {
 		this.scanSpread = scanSpread
 		this.logger = new Logger(logfile, logLevel)

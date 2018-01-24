@@ -62,7 +62,7 @@ const hasPendingGeth = (conf, txRequest) => {
 					}
 				}
 				resolve(false)
-			},
+			}
 		)
 	})
 }

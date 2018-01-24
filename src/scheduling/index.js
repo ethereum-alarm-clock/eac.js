@@ -57,7 +57,7 @@ class Scheduler {
 		gasPrice,
 		donation,
 		payment,
-		requiredDeposit,
+		requiredDeposit
 	) {
 		return new Promise((resolve, reject) => {
 			this.blockScheduler.schedule.sendTransaction(
@@ -85,7 +85,7 @@ class Scheduler {
 							.then(receipt => resolve(receipt))
 							.catch(err => reject(err))
 					}
-				},
+				}
 			)
 		})
 	}
@@ -100,7 +100,7 @@ class Scheduler {
 		gasPrice,
 		donation,
 		payment,
-		requiredDeposit,
+		requiredDeposit
 	) {
 		return new Promise((resolve, reject) => {
 			const txHash = this.timestampScheduler.schedule(
@@ -127,7 +127,7 @@ class Scheduler {
 						Util.waitForTransactionToBeMined(this.web3, txHash)
 							.then(receipt => resolve(receipt))
 							.catch(err => reject(err))
-				},
+				}
 			)
 		})
 	}
@@ -147,6 +147,26 @@ class Scheduler {
 			.plus(callGas.times(gasPrice))
 			.plus(gasPrice.times(180000))
 			.plus(callValue)
+	}
+
+	/**
+	 * Chain inits
+	 */
+
+	static initMainnet() {
+		throw new Error("Not implemented.")
+	}
+
+	static initRopsten(web3) {
+		return new Scheduler(web3, "ropsten")
+	}
+
+	static initRinkeby() {
+		throw new Error("Not implemented.")
+	}
+
+	static initKovan(web3) {
+		return new Scheduler(web3, "kovan")
 	}
 }
 

@@ -14,16 +14,16 @@ const start = (conf, ms) => {
 				conf.wallet.getAccounts().forEach(async account => {
 					console.log(
 						`${account} | Balance: ${web3.fromWei(
-							await eac.Util.getBalance(web3, account),
-						)}`,
+							await eac.Util.getBalance(web3, account)
+						)}`
 					)
 				})
 			} else {
 				const account = web3.eth.defaultAccount
 				console.log(
 					`${account} | Balance: ${web3.fromWei(
-						await eac.Util.getBalance(web3, account),
-					)}`,
+						await eac.Util.getBalance(web3, account)
+					)}`
 				)
 			}
 		},
@@ -33,7 +33,7 @@ const start = (conf, ms) => {
 		async action() {
 			const block = await web3.eth.getBlock("latest")
 			console.log(
-				`BlockNum: ${block.number} | Timestamp: ${block.timestamp}`,
+				`BlockNum: ${block.number} | Timestamp: ${block.timestamp}`
 			)
 		},
 	})
@@ -54,7 +54,7 @@ const start = (conf, ms) => {
 		action(level) {
 			if (level < 0 || level > 3) {
 				console.log(
-					"Please define 1 for debug, 2 for info, 3 for error.",
+					"Please define 1 for debug, 2 for info, 3 for error."
 				)
 				return
 			}
@@ -85,7 +85,7 @@ const start = (conf, ms) => {
 		action() {
 			const ora = require("ora")
 			const spinner = ora(
-				"Sending test transaction to network...",
+				"Sending test transaction to network..."
 			).start()
 			const testScheduler = require("../scheduling/testTx")
 			testScheduler(conf.chain, web3)
@@ -95,7 +95,7 @@ const start = (conf, ms) => {
 						return
 					}
 					spinner.succeed(
-						`Transaction mined! Hash ${receipt.transactionHash}`,
+						`Transaction mined! Hash ${receipt.transactionHash}`
 					)
 				})
 				.catch(err => spinner.fail(err))
@@ -107,7 +107,7 @@ const start = (conf, ms) => {
 			const stats = conf.statsdb.getStats()
 			stats.forEach(accountStats => {
 				let etherGain = accountStats.currentEther.minus(
-					accountStats.startingEther,
+					accountStats.startingEther
 				)
 				etherGain = web3.fromWei(etherGain.toString())
 				console.log(
@@ -115,7 +115,7 @@ const start = (conf, ms) => {
 						accountStats.claimed
 					} | Executed: ${
 						accountStats.executed
-					} | Ether gain: ${etherGain}`,
+					} | Ether gain: ${etherGain}`
 				)
 			})
 		},
