@@ -5,7 +5,7 @@ class RequestFactory {
 	constructor(address, web3) {
 		if (!Util.checkNotNullAddress(address)) {
 			throw new Error(
-				"Attempted to instantiate a RequestFactory class from a null address.",
+				"Attempted to instantiate a RequestFactory class from a null address."
 			)
 		}
 		this.web3 = web3
@@ -38,7 +38,7 @@ class RequestFactory {
 				(err, isKnown) => {
 					if (!err) resolve(isKnown)
 					else reject(err)
-				},
+				}
 			)
 		})
 	}
@@ -60,8 +60,9 @@ class RequestFactory {
 		throw new Error("Not implemented.")
 	}
 
-	static initKovan() {
-		throw new Error("Not implemented.")
+	static initKovan(web3) {
+		const address = require("../assets/kovan.json").requestFactory
+		return new RequestFactory(address, web3)
 	}
 }
 

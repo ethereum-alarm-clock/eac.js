@@ -32,7 +32,7 @@ const scanBlockchain = async conf => {
 		return
 	} else if (!eac.Util.checkValidAddress(nextRequestAddress)) {
 		throw new Error(
-			`Received invalid response from Request Tracker | Response: ${nextRequestAddress}`,
+			`Received invalid response from Request Tracker | Response: ${nextRequestAddress}`
 		)
 	}
 
@@ -44,15 +44,15 @@ const scanBlockchain = async conf => {
 			log.error(
 				`Encountered unknown transaction request: ${
 					requestFactory.address
-				} | query: ">=" | value ${left} | address: ${nextRequestAddress}`,
+				} | query: ">=" | value ${left} | address: ${nextRequestAddress}`
 			)
 			throw new Error(
-				`Encountered unknown address! Please check that you are using the correct contracts JSON file.`,
+				`Encountered unknown address! Please check that you are using the correct contracts JSON file.`
 			)
 		}
 
 		const trackerWindowStart = await requestTracker.windowStartFor(
-			nextRequestAddress,
+			nextRequestAddress
 		)
 
 		const txRequest = new eac.TxRequest(nextRequestAddress, web3)
@@ -61,14 +61,14 @@ const scanBlockchain = async conf => {
 		if (!txRequest.windowStart.equals(trackerWindowStart)) {
 			// The data between the txRequest we have and from the requestTracker do not match.
 			log.error(
-				`Data mismatch between txRequest and requestTracker. Double check contract addresses.`,
+				`Data mismatch between txRequest and requestTracker. Double check contract addresses.`
 			)
 		} else if (txRequest.windowStart.lessThanOrEqualTo(right)) {
 			// This request is within bounds, store it.
 			store(conf, txRequest)
 		} else {
 			log.debug(
-				`Scan exit condition hit! Next window start exceeds right bound.`,
+				`Scan exit condition hit! Next window start exceeds right bound.`
 			)
 			break
 		}

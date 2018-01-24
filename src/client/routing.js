@@ -17,7 +17,7 @@ const routeTxRequest = async (conf, txRequest) => {
 	// in the transaction pool
 	if (await hasPending(conf, txRequest)) {
 		log.info(
-			`Ignoring txRequest with pending transaction in the transaction pool.`,
+			`Ignoring txRequest with pending transaction in the transaction pool.`
 		)
 		return
 	}
@@ -67,7 +67,7 @@ const routeTxRequest = async (conf, txRequest) => {
 							} else {
 								log.error(err)
 							}
-						},
+						}
 					)
 				} else
 					// Or find the reason why it failed TODO
@@ -83,7 +83,7 @@ const routeTxRequest = async (conf, txRequest) => {
 		log.debug(
 			`Ignoring frozen txRequest. Now ${await txRequest.now()} | Window start: ${
 				txRequest.windowStart
-			}`,
+			}`
 		)
 		return
 	}
@@ -123,7 +123,7 @@ const routeTxRequest = async (conf, txRequest) => {
 							} else {
 								log.error(err)
 							}
-						},
+						}
 					)
 				} else
 					// Or find the reason why it failed TODO
@@ -147,7 +147,7 @@ const claim = async (conf, txRequest) => {
 
 	// All the checks have been done in routing, now we follow through on the actions.
 	const claimPaymentModifier = (await txRequest.claimPaymentModifier()).dividedToIntegerBy(
-		100,
+		100
 	)
 	const paymentWhenClaimed = txRequest.payment
 		.times(claimPaymentModifier)
@@ -168,10 +168,10 @@ const claim = async (conf, txRequest) => {
 		log.debug(`Not profitable to claim. Returning`)
 		log.debug(
 			`gasCostToClaim: ${web3.fromWei(
-				gasCostToClaim.toString(),
+				gasCostToClaim.toString()
 			)} | paymentWhenClaimed: ${web3.fromWei(
-				paymentWhenClaimed.toString(),
-			)}`,
+				paymentWhenClaimed.toString()
+			)}`
 		)
 		return Promise.resolve({ status: "0x0" })
 	}
@@ -188,7 +188,7 @@ const claim = async (conf, txRequest) => {
 	log.info(
 		`Attempting the claim of txRequest at address ${
 			txRequest.address
-		} | Payment: ${paymentWhenClaimed}`,
+		} | Payment: ${paymentWhenClaimed}`
 	)
 	conf.cache.set(txRequest.address, 102)
 
@@ -214,7 +214,7 @@ const execute = async (conf, txRequest) => {
 	}
 
 	log.info(
-		`Attempting the execution of txRequest at address ${txRequest.address}`,
+		`Attempting the execution of txRequest at address ${txRequest.address}`
 	)
 	conf.cache.set(txRequest.address, -1)
 

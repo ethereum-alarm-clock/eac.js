@@ -6,7 +6,7 @@ class RequestTracker {
 	constructor(address, web3) {
 		if (!Util.checkNotNullAddress(address)) {
 			throw new Error(
-				"Attempted to instantiate a RequestTracker class from a null address.",
+				"Attempted to instantiate a RequestTracker class from a null address."
 			)
 		}
 		this.web3 = web3
@@ -43,7 +43,7 @@ class RequestTracker {
 				(err, next) => {
 					if (!err) resolve(next)
 					else reject(err)
-				},
+				}
 			)
 		})
 	}
@@ -57,7 +57,7 @@ class RequestTracker {
 				(err, windowStart) => {
 					if (!err) resolve(windowStart)
 					else reject(err)
-				},
+				}
 			)
 		})
 	}
@@ -71,7 +71,7 @@ class RequestTracker {
 				(err, next) => {
 					if (!err) resolve(next)
 					else reject(err)
-				},
+				}
 			)
 		})
 	}
@@ -93,8 +93,9 @@ class RequestTracker {
 		throw new Error("Not implemented.")
 	}
 
-	static initKovan() {
-		throw new Error("Not implemented.")
+	static initKovan(web3) {
+		const address = require("../assets/kovan.json").requestTracker
+		return new RequestTracker(address, web3)
 	}
 }
 

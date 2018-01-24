@@ -19,7 +19,7 @@ const main = async (chain, web3) => {
 		new BigNumber(callValue),
 		new BigNumber(gasPrice),
 		new BigNumber(donation),
-		new BigNumber(payment),
+		new BigNumber(payment)
 	)
 
 	eacScheduler.initSender({
@@ -38,7 +38,7 @@ const main = async (chain, web3) => {
 		gasPrice,
 		donation, //donation
 		payment, //payment
-		requiredDeposit,
+		requiredDeposit
 	)
 }
 

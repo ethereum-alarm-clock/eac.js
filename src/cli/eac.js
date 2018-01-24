@@ -11,7 +11,7 @@ const clear = require("clear")
 const ora = require("ora")
 const readlineSync = require("readline-sync")
 
-const ethUtil = require("ethereumjs-util")
+const ethUtil = require('ethereumjs-util')
 
 const log = {
 	debug: msg => console.log(msg),
@@ -28,22 +28,24 @@ program
 	.option(
 		"--scan <spread>",
 		"sets the scanning spread (ie +- from current block",
-		75,
+		75
 	)
 	.option(
 		"-m, --milliseconds <ms>",
 		"tells the client to scan every <ms> seconds",
-		4000,
+		4000
 	)
 	.option("--logfile [path]", "specifies the output logifle", "default")
 	.option("--logLevel [0,1,2,3]", "sets the log level", 2)
 	.option(
 		"--provider <string>",
 		"set the HttpProvider to use",
-		"http://localhost:8545",
+		"http://localhost:8545"
 	)
 	// Scheduling options
 	.option("-s, --schedule", "schedules a transactions")
+	.option("--block")
+	.option("--timestamp")
 	.parse(process.argv)
 
 const Web3 = require("web3")
@@ -67,14 +69,14 @@ const checkNetworkID = web3 => {
 	const id = web3.version.network
 	// mainnet = 1
 	if (id == 1) return false
-	// ropsten = 3
 	else if (id == 3)
+		// ropsten = 3
 		return true
-	// rinkeby = 4
 	else if (id == 4)
+		// rinkeby = 4
 		return false
-	// kovan = 42
-	else if (id ==42)
+	else if (id == 42)
+		// kovan = 42
 		return true
 	else return false
 }
@@ -83,12 +85,12 @@ const main = async _ => {
 	if (program.client) {
 		clear()
 		console.log(
-			"⏰ ⏰ ⏰ Welcome to the Ethereum Alarm Clock client ⏰ ⏰ ⏰\n",
+			"⏰ ⏰ ⏰ Welcome to the Ethereum Alarm Clock client ⏰ ⏰ ⏰\n"
 		)
 
 		if (!await checkNetworkID(web3)) {
 			console.log(
-				"  error: must be running a local node on the Ropsten or Rinkeby networks",
+				"  error: must be running a local node on the Ropsten or Rinkeby networks"
 			)
 			process.exit(1)
 		}
@@ -101,11 +103,11 @@ const main = async _ => {
 			program.logfile,
 			program.logLevel, // 1 = debug, 2 = info, 3 = error
 			program.wallet,
-			program.password,
+			program.password
 		).catch(err => {
 			if (err.toString().indexOf("Invalid JSON RPC") !== -1) {
 				log.error(
-					`Received invalid RPC response, please make sure the blockchain is running.\n`,
+					`Received invalid RPC response, please make sure the blockchain is running.\n`
 				)
 			} else {
 				log.fatal(err)
@@ -115,7 +117,7 @@ const main = async _ => {
 	} else if (program.schedule) {
 		if (!await checkNetworkID(web3)) {
 			console.log(
-				"  error: must be running a localnode on the Ropsten or Kovan networks",
+				"  error: must be running a localnode on the Ropsten or Kovan networks"
 			)
 			process.exit(1)
 		}
@@ -127,8 +129,28 @@ const main = async _ => {
 		clear()
 		log.info("🧙 🧙 🧙  Schedule a transaction  🧙 🧙 🧙\n")
 
+		let temporalUnit
+		if (program.block) {
+			temporalUnit = 1
+		} else if (program.timestamp) {
+			temporalUnit = 2
+		} else {
+			const u = readlineSync.question(
+				chalk.black.bgBlue(
+					"Do you want to use block or timestamps as the unit? [block/timestamp]\n"
+				)
+			)
+			if (u.toLowerCase() === "block") {
+				temporalUnit = 1
+			} else if (u.toLowerCase() === "timestamp") {
+				temporalUnit = 2
+			} else {
+				throw new Error("Invalid temporal unit.")
+			}
+		}
+
 		let toAddress = readlineSync.question(
-			chalk.black.bgBlue("Enter the recipient address:\n"),
+			chalk.black.bgBlue("Enter the recipient address:\n")
 		)
 		if (!toAddress) {
 			toAddress = "0xbbf5029fd710d227630c8b7d338051b8e76d50b3"
@@ -143,18 +165,18 @@ const main = async _ => {
 		}
 
 		let callData = readlineSync.question(
-			chalk.black.bgBlue("Enter call data: [press enter to skip]\n"),
+			chalk.black.bgBlue("Enter call data: [press enter to skip]\n")
 		)
 
 		if (!callData) {
-			callData = "Sent from eac.js commandline client."
+			callData = "0x0"
 		}
-		callData = web3.fromAscii(callData)
+		callData = web3.toHex(callData)
 
 		let callGas = readlineSync.question(
 			chalk.black.bgBlue(
-				`Enter the call gas: [press enter for recommended]\n`,
-			),
+				`Enter the call gas: [press enter for recommended]\n`
+			)
 		)
 
 		if (!callGas) {
@@ -162,7 +184,7 @@ const main = async _ => {
 		}
 
 		let callValue = readlineSync.question(
-			chalk.black.bgBlue("Enter call value:\n"),
+			chalk.black.bgBlue("Enter call value:\n")
 		)
 
 		if (!callValue) {
@@ -170,7 +192,7 @@ const main = async _ => {
 		}
 
 		let windowSize = readlineSync.question(
-			chalk.black.bgBlue("Enter window size:\n"),
+			chalk.black.bgBlue("Enter window size:\n")
 		)
 
 		if (!windowSize) {
@@ -180,8 +202,8 @@ const main = async _ => {
 		const blockNum = await eac.Util.getBlockNumber(web3)
 		let windowStart = readlineSync.question(
 			chalk.black.bgBlue(
-				`Enter window start: [Current block number - ${blockNum}\n`,
-			),
+				`Enter window start: [Current block number - ${blockNum}\n`
+			)
 		)
 
 		if (!windowStart) {
@@ -194,7 +216,7 @@ const main = async _ => {
 		}
 
 		let gasPrice = readlineSync.question(
-			chalk.black.bgBlue("Enter a gas price:\n"),
+			chalk.black.bgBlue("Enter a gas price:\n")
 		)
 
 		if (!gasPrice) {
@@ -202,7 +224,7 @@ const main = async _ => {
 		}
 
 		let donation = readlineSync.question(
-			chalk.black.bgBlue("Enter a donation amount:\n"),
+			chalk.black.bgBlue("Enter a donation amount:\n")
 		)
 
 		if (!donation) {
@@ -210,7 +232,7 @@ const main = async _ => {
 		}
 
 		let payment = readlineSync.question(
-			chalk.black.bgBlue("Enter a payment amount:\n"),
+			chalk.black.bgBlue("Enter a payment amount:\n")
 		)
 
 		if (!payment) {
@@ -218,7 +240,7 @@ const main = async _ => {
 		}
 
 		let requiredDeposit = readlineSync.question(
-			chalk.black.bgBlue("Enter required claim deposit:\n"),
+			chalk.black.bgBlue("Enter required claim deposit:\n")
 		)
 
 		if (!requiredDeposit) {
@@ -232,7 +254,7 @@ const main = async _ => {
 			new BigNumber(callValue),
 			new BigNumber(gasPrice),
 			new BigNumber(donation),
-			new BigNumber(payment),
+			new BigNumber(payment)
 		)
 
 		log.debug(`
@@ -252,7 +274,7 @@ Endowment: ${web3.fromWei(endowment.toString())}
 `)
 
 		const confirm = readlineSync.question(
-			"Are all of these variables correct? [Y/n]\n",
+			"Are all of these variables correct? [Y/n]\n"
 		)
 		if (confirm === "" || confirm.toLowerCase() === "y") {
 			/// Do nothing, just continue
@@ -270,39 +292,81 @@ Endowment: ${web3.fromWei(endowment.toString())}
 
 		console.log("\n")
 		const spinner = ora(
-			"Sending transaction! Waiting for a response...",
+			"Sending transaction! Waiting for a response..."
 		).start()
 
-		eacScheduler
-			.blockSchedule(
-				toAddress,
-				callData,
-				callGas,
-				callValue,
-				windowSize,
-				windowStart,
-				gasPrice,
-				donation,
-				payment,
-				requiredDeposit,
-			)
-			.then(receipt => {
-				if (receipt.status != 1) {
-					spinner.fail(
-						`Transaction was mined but failed. No transaction scheduled.`,
+		temporalUnit == 1
+			? eacScheduler
+					.blockSchedule(
+						toAddress,
+						callData,
+						callGas,
+						callValue,
+						windowSize,
+						windowStart,
+						gasPrice,
+						donation,
+						payment,
+						requiredDeposit
 					)
-					process.exit(1)
-				}
-				spinner.succeed(
-					`Transaction successful! Hash: ${receipt.transactionHash}`,
-				)
-			})
-			.catch(err => {
-				spinner.fail(err)
-			})
+					.then(receipt => {
+						if (receipt.status != 1) {
+							spinner.fail(
+								`Transaction was mined but failed. No transaction scheduled.`
+							)
+							process.exit(1)
+						}
+						spinner.succeed(
+							`Transaction successful! Hash: ${
+								receipt.transactionHash
+							}\n`
+						)
+						console.log(
+							`Address of the transaction request: ${eac.Util.getTxRequestFromReceipt(
+								receipt
+							)}`
+						)
+					})
+					.catch(err => {
+						spinner.fail(err)
+					})
+			: eacScheduler
+					.timestampSchedule(
+						toAddress,
+						callData,
+						callGas,
+						callValue,
+						windowSize,
+						windowStart,
+						gasPrice,
+						donation,
+						payment,
+						requiredDeposit
+					)
+					.then(receipt => {
+						if (receipt.status != 1) {
+							spinner.fail(
+								`Transaction was mined but failed. No transaction scheduled.`
+							)
+							process.exit(1)
+						}
+						spinner.succeed(
+							`Transaction successful! Hash: ${
+								receipt.transactionHash
+							}\n`
+						)
+						console.log(
+							`Address of the transaction request: ${eac.Util.getTxRequestFromReceipt(
+								receipt
+							)}`
+						)
+					})
+					.catch(err => {
+						spinner.fail(err)
+					})
 	} else {
 		console.log(
-			"\n  error: please start eac in either client `-c` or sheduling `-s` mode",
+			"\n  error: please start eac in either client `-c` or sheduling `-s` mode"
 		)
 		process.exit(1)
 	}

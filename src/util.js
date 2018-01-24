@@ -90,6 +90,8 @@ const getChainName = web3 => {
 		return "ropsten"
 	} else if (networkID == 4) {
 		return "rinkeby"
+	} else if (networkID == 42) {
+		return "kovan"
 	} else {
 		throw new Error("Invalid network.")
 	}

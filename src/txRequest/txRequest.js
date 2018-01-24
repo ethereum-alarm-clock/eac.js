@@ -9,7 +9,7 @@ class TxRequest {
 	constructor(address, web3) {
 		if (!Util.checkNotNullAddress(address)) {
 			throw new Error(
-				"Attempted to instantiate a TxRequest class from a null address.",
+				"Attempted to instantiate a TxRequest class from a null address."
 			)
 		}
 		this.web3 = web3
