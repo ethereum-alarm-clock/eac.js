@@ -1,3 +1,3 @@
-const TxRequest = require('./txRequest')
+const TxRequest = require("./txRequest")
 
 module.exports = TxRequest

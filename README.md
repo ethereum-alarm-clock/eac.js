@@ -4,10 +4,10 @@ _Note: `eac.js` is operational but still considered alpha software, released to 
 
 # eac.js
 
-A tool to interact with the [Ethereum Alarm Clock](https://github.com/ethereum-alarm-clock/ethereum-alarm-clock) protocol.
-It is both a commandline tool for running an execution client or scheduling a transaction as well
-as a Javascript library and an extension on the standard web3.js library facilitating an open API
-for interacting with the Ethereum Alarm Clock contracts from Javascript.
+A tool and library to interact with the [Ethereum Alarm Clock](https://github.com/ethereum-alarm-clock/ethereum-alarm-clock) protocol.
+You can use the commandline tool for running an execution client or scheduling a transaction.
+The library is available to make it easy for developers to get started using the contracts
+from their web3 javascript code.
 
 ## Documentation
 
