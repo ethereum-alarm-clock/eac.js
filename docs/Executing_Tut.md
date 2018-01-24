@@ -7,13 +7,14 @@ execute them. If the client successfully executes a transaction, it will
 be rewarded with the `payment` that was set by the scheduler as well
 as reimbursed for all the gas costs. 
 
-_Note: Currenlty eac.js is only available for the Ropsten testnet and only
-works on a parity local node._
+_Note: Currenlty eac.js is only available for the Ropsten or Kovan testnet and only
+works on a parity local node. Geth support is not available on the stable branch
+and is not recommended at this time._
 
 ## Setting up a Parity local node
 
-To run the execution client while it is in beta requires the set up of a 
-Parity local node on the Ropsten test network. This requirement is due to 
+To run the execution client on the commandline requires the set up of a 
+Parity local node on the Ropsten or Kovan test networks. This requirement is due to 
 the fact that the client relies on a Parity-specific API for checking
 the transaction pool for existing calls to contracts. Without this 
 RPC call, the client will try to send transactions on top of other clients
@@ -22,7 +23,7 @@ losing the client some gas fees. You can download Parity by following the
 instructions on their [github](https://github.com/paritytech/parity).
 
 For the sake of this tutorial, we will be using the Ropsten network, but all
-the commands should work by specifying the Kovan network just as well.
+the commands should work by specifying the Kovan network instead.
 
 We begin by creating a new account.
 
@@ -44,9 +45,8 @@ $ parity --geth --chain ropsten --unlock <YOUR ACCOUNT> --password <PASSWORD FIL
 ```
 
 Parity should continue syncing with your account unlocked. Your next
-steps should be finding a source for some Kovan Ether, we recommend asking
-on the Kovan Faucet Gitter chat, they're usually responsive! If that doesn't work 
-trying pinging @lsaether on Gitter or asking in the Ethereum Alarm Clock room.
+steps should be finding a source for some Ropsten Ether, try the [Metamask
+faucet](faucet.metamask.io) or ask in the Ethereum Alarm Clock Gitter room.
 
 ## Running the client
 
@@ -100,6 +100,11 @@ If you notice that the blockchain is sparse of upcoming transactions, you can
 populate a test transaction by using the command `.testTx`. Note! This will use
 your default unlocked account to send a transaction to the network so make sure
 you have enough testnet ether in your account to do this.
+
+One last note! The logs will be output to ~/.eac.log. You can follow the output
+by opening a new terminal screen and running `tail -f ~/.eac.log`. Remember that
+you can change the logging output inside the REPL using the `.logLevel <num>`
+command.
 
 And that's all there is to it. If you have any questions please join us on Gitter,
 or raise an issue on Github. Thanks for using the tool! 🙂

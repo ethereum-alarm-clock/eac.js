@@ -1,300 +1,314 @@
-const { BigNumber } = require('bignumber.js')
+const { BigNumber } = require("bignumber.js")
 
-const RequestData = require('./requestData')
+const RequestData = require("./requestData")
 
-const Constants = require('../constants')
-const Util = require('../util')
+const Constants = require("../constants")
+const Util = require("../util")
 
 class TxRequest {
-    constructor(address, web3) {
-        if (!Util.checkNotNullAddress(address)) {
-            throw new Error('Attempted to instantiate a TxRequest class from a null address.')
-        }
-        this.web3 = web3
-        this.instance = this.web3.eth.contract(Util.getABI('TransactionRequest')).at(address)
-    }
+	constructor(address, web3) {
+		if (!Util.checkNotNullAddress(address)) {
+			throw new Error(
+				"Attempted to instantiate a TxRequest class from a null address.",
+			)
+		}
+		this.web3 = web3
+		this.instance = this.web3.eth
+			.contract(Util.getABI("TransactionRequest"))
+			.at(address)
+	}
 
-    get address () {
-        return this.instance.address
-    }
+	get address() {
+		return this.instance.address
+	}
 
-    /**
-     * Window centric getters
-     */
+	/**
+	 * Window centric getters
+	 */
 
-    get claimWindowSize () {
-        return this.data.schedule.claimWindowSize
-    }
+	get claimWindowSize() {
+		return this.data.schedule.claimWindowSize
+	}
 
-    get claimWindowStart () {
-        return this.windowStart.minus(this.freezePeriod).minus(this.claimWindowSize)
-    }
+	get claimWindowStart() {
+		return this.windowStart
+			.minus(this.freezePeriod)
+			.minus(this.claimWindowSize)
+	}
 
-    get claimWindowEnd () {
-        return this.claimWindowStart.plus(this.claimWindowSize)
-    }
+	get claimWindowEnd() {
+		return this.claimWindowStart.plus(this.claimWindowSize)
+	}
 
-    get freezePeriod () {
-        return this.data.schedule.freezePeriod
-    }
+	get freezePeriod() {
+		return this.data.schedule.freezePeriod
+	}
 
-    get freezePeriodStart () {
-        return this.windowStart.plus(this.claimWindowSize)
-    }
+	get freezePeriodStart() {
+		return this.windowStart.plus(this.claimWindowSize)
+	}
 
-    get freezePeriodEnd () {
-        return this.claimWindowEnd.plus(this.freezePeriod)
-    }
+	get freezePeriodEnd() {
+		return this.claimWindowEnd.plus(this.freezePeriod)
+	}
 
-    get temporalUnit () {
-        return this.data.schedule.temporalUnit
-    }
+	get temporalUnit() {
+		return this.data.schedule.temporalUnit
+	}
 
-    get windowSize () {
-        return this.data.schedule.windowSize
-    }
+	get windowSize() {
+		return this.data.schedule.windowSize
+	}
 
-    get windowStart () {
-        return this.data.schedule.windowStart
-    }
+	get windowStart() {
+		return this.data.schedule.windowStart
+	}
 
-    get reservedWindowSize () {
-        return this.data.schedule.reservedWindowSize
-    }
+	get reservedWindowSize() {
+		return this.data.schedule.reservedWindowSize
+	}
 
-    get reservedWindowEnd () {
-        return this.windowStart.plus(this.reservedWindowSize)
-    }
+	get reservedWindowEnd() {
+		return this.windowStart.plus(this.reservedWindowSize)
+	}
 
-    get executionWindowEnd () {
-        return this.windowStart.plus(this.windowSize)
-    }
+	get executionWindowEnd() {
+		return this.windowStart.plus(this.windowSize)
+	}
 
-    /**
-     * Dynamic getters
-     */
+	/**
+	 * Dynamic getters
+	 */
 
-    async now () {
-        if (this.temporalUnit == 1) {
-            return new BigNumber(await Util.getBlockNumber(this.web3))
-        } else if (this.temporalUnit == 2) {
-            const timestamp = await Util.getTimestamp(this.web3)
-            return new BigNumber(timestamp)
-        } else {
-            throw new Error(`Unrecognized temporal unit: ${this.temporalUnit}`)
-        }
-    }
+	async now() {
+		if (this.temporalUnit == 1) {
+			return new BigNumber(await Util.getBlockNumber(this.web3))
+		} else if (this.temporalUnit == 2) {
+			const timestamp = await Util.getTimestamp(this.web3)
+			return new BigNumber(timestamp)
+		} else {
+			throw new Error(`Unrecognized temporal unit: ${this.temporalUnit}`)
+		}
+	}
 
-    async beforeClaimWindow () {
-        const now = await this.now()
-        return this.claimWindowStart.greaterThan(now)
-    }
+	async beforeClaimWindow() {
+		const now = await this.now()
+		return this.claimWindowStart.greaterThan(now)
+	}
 
-    async inClaimWindow () {
-        const now = await this.now()
-        return this.claimWindowStart.lessThanOrEqualTo(now) &&
-                this.claimWindowEnd.greaterThan(now)
-    }
+	async inClaimWindow() {
+		const now = await this.now()
+		return (
+			this.claimWindowStart.lessThanOrEqualTo(now) &&
+			this.claimWindowEnd.greaterThan(now)
+		)
+	}
 
-    async inFreezePeriod () {
-        const now = await this.now()
-        return this.claimWindowEnd.lessThanOrEqualTo(now) &&
-                this.freezePeriodEnd.greaterThan(now)
-    }
+	async inFreezePeriod() {
+		const now = await this.now()
+		return (
+			this.claimWindowEnd.lessThanOrEqualTo(now) &&
+			this.freezePeriodEnd.greaterThan(now)
+		)
+	}
 
-    async inExecutionWindow () {
-        const now = await this.now()
-        return this.windowStart.lessThanOrEqualTo(now) &&
-                this.executionWindowEnd.greaterThanOrEqualTo(now)
-    }
+	async inExecutionWindow() {
+		const now = await this.now()
+		return (
+			this.windowStart.lessThanOrEqualTo(now) &&
+			this.executionWindowEnd.greaterThanOrEqualTo(now)
+		)
+	}
 
-    async inReservedWindow () {
-        const now = await this.now()
-        return this.windowStart.lessThanOrEqualTo(now) &&
-                this.reservedWindowEnd.greaterThan(now)
-    }
+	async inReservedWindow() {
+		const now = await this.now()
+		return (
+			this.windowStart.lessThanOrEqualTo(now) &&
+			this.reservedWindowEnd.greaterThan(now)
+		)
+	}
 
-    async afterExecutionWindow () {
-        const now = await this.now()
-        return this.executionWindowEnd.lessThan(now)
-    }
+	async afterExecutionWindow() {
+		const now = await this.now()
+		return this.executionWindowEnd.lessThan(now)
+	}
 
-    /**
-     * Claim props/methods
-     */
-    
-    get claimedBy () {
-        return this.data.claimData.claimedBy
-    }
+	/**
+	 * Claim props/methods
+	 */
 
-    get isClaimed () {
-        return this.data.claimData.claimedBy !== Constants.NULL_ADDRESS
-    }
+	get claimedBy() {
+		return this.data.claimData.claimedBy
+	}
 
-    isClaimedBy (address) {
-        return this.claimedBy === address
-    }
- 
-    get requiredDeposit () {
-        return this.data.claimData.requiredDeposit
-    }
+	get isClaimed() {
+		return this.data.claimData.claimedBy !== Constants.NULL_ADDRESS
+	}
 
-    async claimPaymentModifier () {
-        const now = await this.now()
-        const elapsed = now.minus(this.claimWindowStart)
-        return elapsed.times(100).dividedToIntegerBy(this.claimWindowSize)
-    }
+	isClaimedBy(address) {
+		return this.claimedBy === address
+	}
 
-    /**
-     * Meta
-     */
+	get requiredDeposit() {
+		return this.data.claimData.requiredDeposit
+	}
 
-    get isCancelled () {
-        return this.data.meta.isCancelled
-    }
+	async claimPaymentModifier() {
+		const now = await this.now()
+		const elapsed = now.minus(this.claimWindowStart)
+		return elapsed.times(100).dividedToIntegerBy(this.claimWindowSize)
+	}
 
-    get wasCalled () {
-        return this.data.meta.wasCalled
-    }
+	/**
+	 * Meta
+	 */
 
-    get owner () {
-        return this.data.meta.owner
-    }
+	get isCancelled() {
+		return this.data.meta.isCancelled
+	}
 
-    /**
-     * TxData
-     */
+	get wasCalled() {
+		return this.data.meta.wasCalled
+	}
 
-    get toAddress () {
-        return this.data.txData.toAddress
-    }
+	get owner() {
+		return this.data.meta.owner
+	}
 
-    get callGas () {
-        return this.data.txData.callGas
-    }
+	/**
+	 * TxData
+	 */
 
-    get callValue () {
-        return this.data.txData.callValue
-    }
+	get toAddress() {
+		return this.data.txData.toAddress
+	}
 
-    get gasPrice () {
-        return this.data.txData.gasPrice
-    }
+	get callGas() {
+		return this.data.txData.callGas
+	}
 
-    get donation () {
-        return this.data.paymentData.donation
-    }
+	get callValue() {
+		return this.data.txData.callValue
+	}
 
-    get payment () {
-        return this.data.paymentData.payment
-    }
+	get gasPrice() {
+		return this.data.txData.gasPrice
+	}
 
-    /**
-     * Call Data
-     */
+	get donation() {
+		return this.data.paymentData.donation
+	}
 
-    callData () {
-        return new Promise((resolve, reject) => {
-            this.instance.callData.call((err, callData) => {
-                if (!err) resolve(callData)
-                else reject(err)
-            })
-        })
-    }
+	get payment() {
+		return this.data.paymentData.payment
+	}
 
-    /**
-     * Data management
-     */
+	/**
+	 * Call Data
+	 */
 
-    async fillData () {
-        const requestData = await RequestData.from(this.instance)
-        this.data = requestData
-        return true
-    }
+	callData() {
+		return new Promise((resolve, reject) => {
+			this.instance.callData.call((err, callData) => {
+				if (!err) resolve(callData)
+				else reject(err)
+			})
+		})
+	}
 
-    async refreshData () {
-        if (!this.data) {
-            return this.fillData()
-        }
-        return this.data.refresh()
-    }
+	/**
+	 * Data management
+	 */
 
-    /**
-     * ABI convenience functions
-     */
+	async fillData() {
+		const requestData = await RequestData.from(this.instance)
+		this.data = requestData
+		return true
+	}
 
-    get claimData () {
-        return this.instance.claim.getData()
-    }
+	async refreshData() {
+		if (!this.data) {
+			return this.fillData()
+		}
+		return this.data.refresh()
+	}
 
-    get executeData () {
-        return this.instance.execute.getData()
-    }
+	/**
+	 * ABI convenience functions
+	 */
 
-    get cancelData () {
-        return this.instance.cancel.getData()
-    }
+	get claimData() {
+		return this.instance.claim.getData()
+	}
 
-    /**
-     * Action Wrappers
-     */
+	get executeData() {
+		return this.instance.execute.getData()
+	}
 
-    /**
-     * @param {Object} params Transaction object including `from`, `gas`, `gasPrice` and `value`.
-     */
-    claim (params) {
-        return new Promise((resolve, reject) => {
-            this.instance.claim(params, (err, txHash) => {
-                if (err) reject(err)
-                else {
-                    Util.waitForTransactionToBeMined(this.web3, txHash)
-                    .then(receipt => resolve(receipt))
-                    .catch(err => reject(err))
-                }
-            })
-        })
-    }
+	get cancelData() {
+		return this.instance.cancel.getData()
+	}
 
-    /**
-     * @param {Object} params Transaction object including `from`, `gas`, `gasPrice` and `value`.
-     */
-    execute (params) {
-        return new Promise((resolve, reject) => {
-            this.instance.execute(params, (err, txHash) => {
-                if (err) reject(err)
-                else {
-                    Util.waitForTransactionToBeMined(this.web3, txHash)
-                    .then(receipt => resolve(receipt))
-                    .catch(err => reject(err))
-                }
-            })
-        })
-    }
+	/**
+	 * Action Wrappers
+	 */
 
-    /**
-     * @param {Object} params Transaction object including `from`, `gas`, `gasPrice` and `value`.
-     */
-    cancel (params) {
-        return new Promise((resolve, reject) => {
-            this.instance.cancel(params, (err, txHash) => {
-                if (err) reject(err)
-                else {
-                    Util.waitForTransactionToBeMined(this.web3, txHash)
-                    .then(receipt => resolve(receipt))
-                    .catch(err => reject(err))
-                }
-            })
-        })
-    }
+	/**
+	 * @param {Object} params Transaction object including `from`, `gas`, `gasPrice` and `value`.
+	 */
+	claim(params) {
+		return new Promise((resolve, reject) => {
+			this.instance.claim(params, (err, txHash) => {
+				if (err) reject(err)
+				else {
+					Util.waitForTransactionToBeMined(this.web3, txHash)
+						.then(receipt => resolve(receipt))
+						.catch(err => reject(err))
+				}
+			})
+		})
+	}
 
-    /**
-     * Misc.
-     */
+	/**
+	 * @param {Object} params Transaction object including `from`, `gas`, `gasPrice` and `value`.
+	 */
+	execute(params) {
+		return new Promise((resolve, reject) => {
+			this.instance.execute(params, (err, txHash) => {
+				if (err) reject(err)
+				else {
+					Util.waitForTransactionToBeMined(this.web3, txHash)
+						.then(receipt => resolve(receipt))
+						.catch(err => reject(err))
+				}
+			})
+		})
+	}
 
-    async getBalance () {
-        const bal = await Util.getBalance(this.web3, this.address)
-        return new BigNumber(bal)
-    }
+	/**
+	 * @param {Object} params Transaction object including `from`, `gas`, `gasPrice` and `value`.
+	 */
+	cancel(params) {
+		return new Promise((resolve, reject) => {
+			this.instance.cancel(params, (err, txHash) => {
+				if (err) reject(err)
+				else {
+					Util.waitForTransactionToBeMined(this.web3, txHash)
+						.then(receipt => resolve(receipt))
+						.catch(err => reject(err))
+				}
+			})
+		})
+	}
+
+	/**
+	 * Misc.
+	 */
+
+	async getBalance() {
+		const bal = await Util.getBalance(this.web3, this.address)
+		return new BigNumber(bal)
+	}
 }
 
 module.exports = TxRequest
