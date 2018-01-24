@@ -77,9 +77,9 @@ class TxRequest {
     async now () {
         if (this.temporalUnit == 1) {
             return new BigNumber(await Util.getBlockNumber(this.web3))
-        // } else if (this.temporalUnit == 2) {
-        //     const block = this.web3.eth.getBlock('latest')
-        //     return new BigNumber(block.timestamp)
+        } else if (this.temporalUnit == 2) {
+            const timestamp = await Util.getTimestamp(this.web3)
+            return new BigNumber(timestamp)
         } else {
             throw new Error(`Unrecognized temporal unit: ${this.temporalUnit}`)
         }
@@ -239,6 +239,9 @@ class TxRequest {
      * Action Wrappers
      */
 
+    /**
+     * @param {Object} params Transaction object including `from`, `gas`, `gasPrice` and `value`.
+     */
     claim (params) {
         return new Promise((resolve, reject) => {
             this.instance.claim(params, (err, txHash) => {
@@ -252,6 +255,9 @@ class TxRequest {
         })
     }
 
+    /**
+     * @param {Object} params Transaction object including `from`, `gas`, `gasPrice` and `value`.
+     */
     execute (params) {
         return new Promise((resolve, reject) => {
             this.instance.execute(params, (err, txHash) => {
@@ -265,6 +271,9 @@ class TxRequest {
         })
     }
 
+    /**
+     * @param {Object} params Transaction object including `from`, `gas`, `gasPrice` and `value`.
+     */
     cancel (params) {
         return new Promise((resolve, reject) => {
             this.instance.cancel(params, (err, txHash) => {

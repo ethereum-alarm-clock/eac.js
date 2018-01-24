@@ -60,6 +60,22 @@ const getGasPrice = web3 => {
     })
 }
 
+const getTimestamp = web3 => {
+    return new Promise((resolve, reject) => {
+        web3.eth.getBlock('latest', (err, block) => {
+            if (!err) resolve(block.timestamp)
+            else reject(err)
+        })
+    })
+}
+
+const getTxRequestFromReceipt = receipt => {
+    const log = receipt.logs.find(log => {
+        return log.topics[0] === Constants.NEWREQUESTLOG
+    })
+    return '0x'.concat(log.data.slice(-40))
+}
+
 /**
  * Returns the string argument of the detected network to be 
  * passed into eacScheduler.
@@ -106,7 +122,9 @@ module.exports = {
     getABI,
     getBalance,
     getBlockNumber,
-    getGasPrice,
     getChainName,
+    getGasPrice,
+    getTimestamp,
+    getTxRequestFromReceipt,
     waitForTransactionToBeMined
 }
