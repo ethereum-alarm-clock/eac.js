@@ -1,3 +1,5 @@
+[<img src="https://s3.amazonaws.com/chronologic.network/ChronoLogic_logo.svg" width="128px">](https://github.com/chronologic)
+
 _Note: `eac.js` is operational but still considered alpha software, released to the public for expirmentation and testing. We do not recommend using it on the mainnet as it will lose you money under certain situations._ 
 
 [![Build Status](https://travis-ci.org/ethereum-alarm-clock/eac.js.svg?branch=stable)](https://travis-ci.org/ethereum-alarm-clock/eac.js)
