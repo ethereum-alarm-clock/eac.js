@@ -69,6 +69,19 @@ const getTimestamp = web3 => {
 	})
 }
 
+const getTimestampForBlock = async (web3, blockNum) => {
+	const curBlockNum = await getBlockNumber(web3)
+	if (blockNum > curBlockNum) {
+		throw new Error(`Must pass in a blocknumber at or lower than the current blocknumber. Now: ${curBlockNum} | Tried: ${blockNum}`)
+	}
+	return new Promise((resolve, reject) => {
+		web3.eth.getBlock(blockNum, (err, block) => {
+			if (!err) resolve(block.timestamp)
+			else reject(err)
+		})
+	})
+}
+
 const getTxRequestFromReceipt = receipt => {
 	const log = receipt.logs.find(log => {
 		return log.topics[0] === Constants.NEWREQUESTLOG
@@ -127,6 +140,7 @@ module.exports = {
 	getChainName,
 	getGasPrice,
 	getTimestamp,
+	getTimestampForBlock,
 	getTxRequestFromReceipt,
 	waitForTransactionToBeMined,
 }
