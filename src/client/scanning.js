@@ -30,7 +30,7 @@ const scanBlockchain = async conf => {
 	scan(conf, leftBlock, rightBlock)
 	scan(conf, leftTimestamp, rightTimestamp)
 }
-
+ 
 const scan = async (conf, left, right) => {
 	const log = conf.logger
 	const web3 = conf.web3
