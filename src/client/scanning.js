@@ -16,9 +16,24 @@ const scanBlockchain = async conf => {
 	const log = conf.logger
 	const web3 = conf.web3
 
-	const left = (await eac.Util.getBlockNumber(web3)) - conf.scanSpread
-	const right = left + conf.scanSpread * 2
-	log.debug(`Scanning bounds from ${left} to ${right}`)
+	const leftBlock = (await eac.Util.getBlockNumber(web3)) - conf.scanSpread
+	const rightBlock = leftBlock + conf.scanSpread * 2
+
+	const leftTimestamp = await eac.Util.getTimestampForBlock(web3, leftBlock)
+	const avgBlockTime = Math.floor(await eac.Util.getTimestamp(web3) - leftTimestamp / conf.scanSpread)
+	const rightTimestamp = Math.floor(leftTimestamp + avgBlockTime * conf.scanSpread * 2)
+
+	log.debug(`Scanning bounds from 
+[debug] blocks: ${leftBlock} to ${rightBlock}
+[debug] timestamps: ${leftTimestamp} tp ${rightTimestamp}`)
+
+	scan(conf, leftBlock, rightBlock)
+	scan(conf, leftTimestamp, rightTimestamp)
+}
+ 
+const scan = async (conf, left, right) => {
+	const log = conf.logger
+	const web3 = conf.web3
 
 	const requestTracker = conf.tracker
 	const requestFactory = conf.factory
@@ -67,8 +82,9 @@ const scanBlockchain = async conf => {
 			// This request is within bounds, store it.
 			store(conf, txRequest)
 		} else {
+			console.log
 			log.debug(
-				`Scan exit condition hit! Next window start exceeds right bound.`
+				`Scan exit condition hit! Next window start exceeds right bound. WindowStart: ${txRequest.windowStart} | right: ${right}`
 			)
 			break
 		}
