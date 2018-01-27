@@ -22,7 +22,7 @@ const log = {
 }
 
 program
-	.version("1.0.1")
+	.version("1.0.2")
 	// Client options
 	.option("-c, --client", "starts the executing client")
 	.option(
@@ -90,7 +90,7 @@ const main = async _ => {
 
 		if (!await checkNetworkID(web3)) {
 			console.log(
-				"  error: must be running a local node on the Ropsten or Rinkeby networks"
+				"  error: must be running a local node on the Ropsten or Kovan networks"
 			)
 			process.exit(1)
 		}
