@@ -135,13 +135,44 @@ class Scheduler {
 	/**
 	 * Calculates the required endowment for scheduling a transactions
 	 * with the following parameters
-	 * @param {BigNumber} callGas
-	 * @param {BigNumber} callValue
-	 * @param {BigNumber} gasPrice
-	 * @param {BigNumber} donation
-	 * @param {BigNumber} payment
+	 * @param {Number|String|BigNumber} callGas
+	 * @param {Number|String|BigNumber} callValue
+	 * @param {Number|String|BigNumber} gasPrice
+	 * @param {Number|String|BigNumber} donation
+	 * @param {Number|String|BigNumber} payment
 	 */
 	calcEndowment(callGas, callValue, gasPrice, donation, payment) {
+		// Convert the value to a bignumber works even if it's already one.
+		callGas = new BigNumber(callGas)
+		callValue = new BigNumber(callValue)
+		gasPrice = new BigNumber(gasPrice)
+		donation = new BigNumber(donation)
+		payment = new BigNumber(payment)
+
+		return payment
+			.plus(donation.times(2))
+			.plus(callGas.times(gasPrice))
+			.plus(gasPrice.times(180000))
+			.plus(callValue)
+	}
+
+	/**
+	 * Calculates the required endowment for scheduling a transactions
+	 * with the following parameters
+	 * @param {Number|String|BigNumber} callGas
+	 * @param {Number|String|BigNumber} callValue
+	 * @param {Number|String|BigNumber} gasPrice
+	 * @param {Number|String|BigNumber} donation
+	 * @param {Number|String|BigNumber} payment
+	 */
+	static calcEndowment(callGas, callValue, gasPrice, donation, payment) {
+		// Convert the value to a bignumber works even if it's already one.
+		callGas = new BigNumber(callGas)
+		callValue = new BigNumber(callValue)
+		gasPrice = new BigNumber(gasPrice)
+		donation = new BigNumber(donation)
+		payment = new BigNumber(payment)
+
 		return payment
 			.plus(donation.times(2))
 			.plus(callGas.times(gasPrice))

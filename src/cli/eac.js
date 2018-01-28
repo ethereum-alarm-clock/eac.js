@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const program = require("commander")
-const chalk = require("chalk")
 
 const alarmClient = require("../client/main")
 const eac = require("../index")
@@ -105,14 +104,7 @@ const main = async _ => {
 			program.wallet,
 			program.password
 		).catch(err => {
-			if (err.toString().indexOf("Invalid JSON RPC") !== -1) {
-				log.error(
-					`Received invalid RPC response, please make sure the blockchain is running.\n`
-				)
-			} else {
-				log.fatal(err)
-			}
-			process.exit(1)
+			throw err
 		})
 	} else if (program.schedule) {
 		if (!await checkNetworkID(web3)) {
@@ -136,9 +128,7 @@ const main = async _ => {
 			temporalUnit = 2
 		} else {
 			const u = readlineSync.question(
-				chalk.black.bgBlue(
-					"Do you want to use block or timestamps as the unit? [block/timestamp]\n"
-				)
+				"Do you want to use block or timestamps as the unit? [block/timestamp]\n"
 			)
 			if (u.toLowerCase() === "block") {
 				temporalUnit = 1
@@ -150,7 +140,7 @@ const main = async _ => {
 		}
 
 		let toAddress = readlineSync.question(
-			chalk.black.bgBlue("Enter the recipient address:\n")
+			"Enter the recipient address:\n"
 		)
 		if (!toAddress) {
 			toAddress = "0xbbf5029fd710d227630c8b7d338051b8e76d50b3"
@@ -165,7 +155,7 @@ const main = async _ => {
 		}
 
 		let callData = readlineSync.question(
-			chalk.black.bgBlue("Enter call data: [press enter to skip]\n")
+			"Enter call data: [press enter to skip]\n"
 		)
 
 		if (!callData) {
@@ -174,9 +164,7 @@ const main = async _ => {
 		callData = web3.toHex(callData)
 
 		let callGas = readlineSync.question(
-			chalk.black.bgBlue(
-				`Enter the call gas: [press enter for recommended]\n`
-			)
+			`Enter the call gas: [press enter for recommended]\n`
 		)
 
 		if (!callGas) {
@@ -184,7 +172,7 @@ const main = async _ => {
 		}
 
 		let callValue = readlineSync.question(
-			chalk.black.bgBlue("Enter call value:\n")
+			"Enter call value:\n"
 		)
 
 		if (!callValue) {
@@ -192,7 +180,7 @@ const main = async _ => {
 		}
 
 		let windowSize = readlineSync.question(
-			chalk.black.bgBlue("Enter window size:\n")
+			"Enter window size:\n"
 		)
 
 		if (!windowSize) {
@@ -201,9 +189,7 @@ const main = async _ => {
 
 		const blockNum = await eac.Util.getBlockNumber(web3)
 		let windowStart = readlineSync.question(
-			chalk.black.bgBlue(
-				`Enter window start: [Current block number - ${blockNum}\n`
-			)
+			`Enter window start: [Current block number - ${blockNum}\n`
 		)
 
 		if (!windowStart) {
@@ -216,7 +202,7 @@ const main = async _ => {
 		}
 
 		let gasPrice = readlineSync.question(
-			chalk.black.bgBlue("Enter a gas price:\n")
+			"Enter a gas price:\n"
 		)
 
 		if (!gasPrice) {
@@ -224,7 +210,7 @@ const main = async _ => {
 		}
 
 		let donation = readlineSync.question(
-			chalk.black.bgBlue("Enter a donation amount:\n")
+			"Enter a donation amount:\n"
 		)
 
 		if (!donation) {
@@ -232,7 +218,7 @@ const main = async _ => {
 		}
 
 		let payment = readlineSync.question(
-			chalk.black.bgBlue("Enter a payment amount:\n")
+			"Enter a payment amount:\n"
 		)
 
 		if (!payment) {
@@ -240,7 +226,7 @@ const main = async _ => {
 		}
 
 		let requiredDeposit = readlineSync.question(
-			chalk.black.bgBlue("Enter required claim deposit:\n")
+			"Enter required claim deposit:\n"
 		)
 
 		if (!requiredDeposit) {
@@ -373,6 +359,12 @@ Endowment: ${web3.fromWei(endowment.toString())}
 }
 
 main().catch(e => {
-	log.fatal(e)
+	if (err.toString().indexOf("Invalid JSON RPC") !== -1) {
+		log.error(
+			`Received invalid RPC response, please make sure a local node is running.\n`
+		)
+	} else {
+		log.fatal(err)
+	}
 	process.exit(1)
 })
