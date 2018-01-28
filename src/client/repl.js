@@ -28,7 +28,7 @@ const start = (conf, ms) => {
 			}
 		},
 	})
-	replServer.defineCommand("getBlock", {
+	replServer.defineCommand("getNow", {
 		help: "Get the latest blockNum and timestamp",
 		async action() {
 			const block = await web3.eth.getBlock("latest")
@@ -119,6 +119,28 @@ const start = (conf, ms) => {
 				)
 			})
 		},
+	})
+	replServer.defineCommand("requestInfo", {
+		help: "Retrieve info about the transaction request at the passed in address.",
+		async action(txRequestAddr) {
+			if (!eac.Util.checkValidAddress(txRequestAddr)) {
+				console.log('Must pass a valid transaction request address')
+				return
+			}
+			const txRequest = new eac.TxRequest(txRequestAddr, web3)
+			try {
+				await txRequest.fillData()
+				console.log(`
+Owner: ${txRequest.owner}
+Claimed By: ${txRequest.isClaimed ? txRequest.claimedBy : 'not claimed'}
+Claim Window Begins: ${txRequest.claimWindowStart}
+Freeze Period Begins: ${txRequest.freezePeriodStart}
+Execution Window Begins: ${txRequest.windowStart}
+Now: ${await txRequest.now()}`)
+			} catch (err) {
+				console.error(err)
+			}
+		}
 	})
 }
 

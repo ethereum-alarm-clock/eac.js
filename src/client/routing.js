@@ -28,7 +28,7 @@ const routeTxRequest = async (conf, txRequest) => {
 		return
 	}
 
-	// Returne early if the transaction request is before claim window,
+	// Return early if the transaction request is before claim window,
 	// and therefore not actionable upon
 	if (await txRequest.beforeClaimWindow()) {
 		log.debug(`Ignoring txRequest not in claim window.`)
