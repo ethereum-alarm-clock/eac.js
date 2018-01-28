@@ -10,7 +10,7 @@ const clear = require("clear")
 const ora = require("ora")
 const readlineSync = require("readline-sync")
 
-const ethUtil = require('ethereumjs-util')
+const ethUtil = require("ethereumjs-util")
 
 const log = {
 	debug: msg => console.log(msg),
@@ -139,9 +139,7 @@ const main = async _ => {
 			}
 		}
 
-		let toAddress = readlineSync.question(
-			"Enter the recipient address:\n"
-		)
+		let toAddress = readlineSync.question("Enter the recipient address:\n")
 		if (!toAddress) {
 			toAddress = "0xbbf5029fd710d227630c8b7d338051b8e76d50b3"
 		}
@@ -171,17 +169,13 @@ const main = async _ => {
 			callGas = 3000000
 		}
 
-		let callValue = readlineSync.question(
-			"Enter call value:\n"
-		)
+		let callValue = readlineSync.question("Enter call value:\n")
 
 		if (!callValue) {
 			callValue = 123454321
 		}
 
-		let windowSize = readlineSync.question(
-			"Enter window size:\n"
-		)
+		let windowSize = readlineSync.question("Enter window size:\n")
 
 		if (!windowSize) {
 			windowSize = 255
@@ -201,25 +195,19 @@ const main = async _ => {
 			process.exit(1)
 		}
 
-		let gasPrice = readlineSync.question(
-			"Enter a gas price:\n"
-		)
+		let gasPrice = readlineSync.question("Enter a gas price:\n")
 
 		if (!gasPrice) {
 			gasPrice = web3.toWei("50", "gwei")
 		}
 
-		let donation = readlineSync.question(
-			"Enter a donation amount:\n"
-		)
+		let donation = readlineSync.question("Enter a donation amount:\n")
 
 		if (!donation) {
 			donation = 33
 		}
 
-		let payment = readlineSync.question(
-			"Enter a payment amount:\n"
-		)
+		let payment = readlineSync.question("Enter a payment amount:\n")
 
 		if (!payment) {
 			payment = 10

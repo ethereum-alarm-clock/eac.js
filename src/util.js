@@ -72,7 +72,9 @@ const getTimestamp = web3 => {
 const getTimestampForBlock = async (web3, blockNum) => {
 	const curBlockNum = await getBlockNumber(web3)
 	if (blockNum > curBlockNum) {
-		throw new Error(`Must pass in a blocknumber at or lower than the current blocknumber. Now: ${curBlockNum} | Tried: ${blockNum}`)
+		throw new Error(
+			`Must pass in a blocknumber at or lower than the current blocknumber. Now: ${curBlockNum} | Tried: ${blockNum}`
+		)
 	}
 	return new Promise((resolve, reject) => {
 		web3.eth.getBlock(blockNum, (err, block) => {
