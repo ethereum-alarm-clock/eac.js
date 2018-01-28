@@ -347,12 +347,12 @@ Endowment: ${web3.fromWei(endowment.toString())}
 }
 
 main().catch(e => {
-	if (err.toString().indexOf("Invalid JSON RPC") !== -1) {
+	if (e.toString().indexOf("Invalid JSON RPC") !== -1) {
 		log.error(
-			`Received invalid RPC response, please make sure a local node is running.\n`
+			`  error: invalid RPC response, please make sure a local node is running.`
 		)
 	} else {
-		log.fatal(err)
+		log.fatal(e)
 	}
 	process.exit(1)
 })
