@@ -21,7 +21,7 @@ const log = {
 }
 
 program
-	.version("1.0.3")
+	.version("1.0.4")
 	// Client options
 	.option("-c, --client", "starts the executing client")
 	.option(
