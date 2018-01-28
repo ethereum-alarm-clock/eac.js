@@ -34,8 +34,9 @@ class Cache {
 	}
 
 	del(k) {
-		this.mem = _.remove(this.mem, addr => {
-			addr === k
+		// mutates the this.mem array to remove the value
+		_.remove(this.mem, addr => {
+			return addr === k
 		})
 		this.cache.del(k)
 		this.log.cache(`deleted ${k}`)
