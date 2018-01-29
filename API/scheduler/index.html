@@ -199,6 +199,34 @@ Ethereum transaction. See the example at the bottom for more context.</p>
 <li><code>requiredDeposit</code> - <code>BigNumber</code> | String</li>
 </ul>
 <p>Returns a <code>Promise</code> that will resolve to the <code>receipt</code> of the transaction if successful.</p>
+<pre><code class="javascript">const endowment = eacScheduler.calcEndowment(
+    new BigNumber(callGas),
+    new BigNumber(callValue),
+    new BigNumber(gasPrice),
+    new BigNumber(donation),
+    new BigNumber(payment)
+)
+
+eacScheduler.initSender({
+    from: web3.eth.defaultAccount,
+    gas: 3000000,
+    value: endowment
+})
+
+eacScheduler.blockSchedule(
+    toAddress,
+    web3.fromAscii(callData),
+    callGas,
+    callValue,
+    windowSize,
+    windowStart,
+    gasPrice,
+    donation,
+    payment,
+    requiredDeposit
+)
+</code></pre>
+
 <h3 id="eacschedulertimestampscheduletoaddress-calldata-callgas-callvalue-windowsize-windowstart-gasprice-donation-payment-requireddeposit">eac.Scheduler.timestampSchedule(toAddress, callData, callGas, callValue, windowSize, windowStart, gasPrice, donation, payment, requiredDeposit)</h3>
 <ul>
 <li><code>toAddress</code>     - an Ethereum address</li>
