@@ -169,6 +169,10 @@ describe("Request Factory", () => {
             expect(bool).to.be.true
         })
 
+        const test = requestFactory.parseIsValid(isValid)
+        expect(test.length)
+        .to.equal(0)
+
         // now that we are sure it produces a positive for good parameters, let's make it fail
         // first let's subtract from the minimum calculated endowment, in this case 
         // the client would be trying to send less ether value than required
