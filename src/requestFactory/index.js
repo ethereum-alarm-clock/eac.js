@@ -43,6 +43,50 @@ class RequestFactory {
 		})
 	}
 
+	
+	validateRequestParams(addressArgs, uintArgs, callData, endowment) {
+		return new Promise((resolve, reject) => {
+			this.instance.validateRequestParams.call(
+				addressArgs,
+				uintArgs,
+				callData,
+				endowment,
+				(err, isValid) => {
+					if (!err) resolve(isValid)
+					else reject(err)
+				}
+			)
+		})
+	}
+
+	/**
+	 * Parses the boolean returned by validateRequestParams() and returns the reason validation failed.
+	 * @param {Array<boolean>} isValid The array returned by this.validateRequestParams()
+	 * @return {Array<String>} An array of the strings of validation errors or an array of length 0 if no errors.
+	 */
+	parseIsValid(isValid) {
+		if (isValid.length != 6) {
+			throw new Error(
+				"Must pass an array of booleans returned by validateRequestParams()"
+			)
+		}
+		const Errors = [
+			"InsufficientEndowment",
+			"ReservedWindowBiggerThanExecutionWindow",
+			"InvalidTemporalUnit",
+			"ExecutionWindowTooSoon",
+			"CallGasTooHigh",
+			"EmptyToAddress",
+		]
+		let errors = new Array()
+		isValid.forEach((boolIsTrue, index) => {
+			if (!boolIsTrue) {
+				errors.push(Errors[index])
+			}
+		})
+		return errors
+	}
+
 	/**
 	 * Chain inits
 	 */
