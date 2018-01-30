@@ -49,6 +49,35 @@ Takes in `BigNumber` arguments for `callGas`, `callValue`, `gasPrice`, `donation
 
 Returns a `Promise` that will resolve to the `receipt` of the transaction if successful.
 
+```javascript
+const endowment = eacScheduler.calcEndowment(
+    new BigNumber(callGas),
+    new BigNumber(callValue),
+    new BigNumber(gasPrice),
+    new BigNumber(donation),
+    new BigNumber(payment)
+)
+
+eacScheduler.initSender({
+    from: web3.eth.defaultAccount,
+    gas: 3000000,
+    value: endowment
+})
+
+eacScheduler.blockSchedule(
+    toAddress,
+    web3.fromAscii(callData),
+    callGas,
+    callValue,
+    windowSize,
+    windowStart,
+    gasPrice,
+    donation,
+    payment,
+    requiredDeposit
+)
+```
+
 ### eac.Scheduler.timestampSchedule(toAddress, callData, callGas, callValue, windowSize, windowStart, gasPrice, donation, payment, requiredDeposit)
 
  - `toAddress`     - an Ethereum address

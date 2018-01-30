@@ -53,19 +53,6 @@ class App extends React.Component {
 			gas: 3000000,
 			value: endowment
 		})
-
-		// console.log(
-		// 	toAddress,
-		// 	web3.fromAscii(callData),
-		// 	callGas,
-		// 	callValue,
-		// 	windowSize,
-		// 	windowStart,
-		// 	gasPrice,
-		// 	donation,
-		// 	payment,
-		// 	requiredDeposit)
-
 		eacScheduler.blockSchedule(
 			toAddress,
 			web3.fromAscii(callData),
