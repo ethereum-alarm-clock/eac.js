@@ -88,6 +88,10 @@
         
             <li><a class="toctree-l4" href="#eacrequestfactoryisknownrequestrequestaddr">eac.RequestFactory.isKnownRequest(requestAddr)</a></li>
         
+            <li><a class="toctree-l4" href="#eacrequestfactoryvalidaterequestparamsaddressargs-uintargs-calldata-endowment">eac.RequestFactory.validateRequestParams(addressArgs, uintArgs, callData, endowment)</a></li>
+        
+            <li><a class="toctree-l4" href="#eacrequestfactoryparseisvalidisvalid">eac.RequestFactory.parseIsValid(isValid)</a></li>
+        
         </ul>
     
 
@@ -198,6 +202,56 @@ contracts.</p>
 <pre><code class="javascript">// Verify that the request is known to the factory we are validating with.
 if (!await requestFactory.isKnownRequest(nextRequestAddress)) {
     throw new Error(`Encountered unknown address! Please check that you are using the correct contracts JSON file.`)
+}
+</code></pre>
+
+<h3 id="eacrequestfactoryvalidaterequestparamsaddressargs-uintargs-calldata-endowment">eac.RequestFactory.validateRequestParams(addressArgs, uintArgs, callData, endowment)</h3>
+<p>Lowest level validation function and takes the full request params</p>
+<ul>
+<li>addressArgs [0] -  meta.owner</li>
+<li>addressArgs [1] -  paymentData.donationBenefactor</li>
+<li>addressArgs [2] -  txnData.toAddress</li>
+<li>uintArgs [0]    -  paymentData.donation</li>
+<li>uintArgs [1]    -  paymentData.payment</li>
+<li>uintArgs [2]    -  schedule.claimWindowSize</li>
+<li>uintArgs [3]    -  schedule.freezePeriod</li>
+<li>uintArgs [4]    -  schedule.reservedWindowSize</li>
+<li>uintArgs [5]    -  schedule.temporalUnit</li>
+<li>uintArgs [6]    -  schedule.windowSize</li>
+<li>uintArgs [7]    -  schedule.windowStart</li>
+<li>uintArgs [8]    -  txnData.callGas</li>
+<li>uintArgs [9]    -  txnData.callValue</li>
+<li>uintArgs [10]   -  txnData.gasPrice</li>
+<li>uintArgs [11]   -  claimData.requiredDeposit</li>
+<li>callData        -  The call data</li>
+<li>endowment       -  The value sent with the creation request.</li>
+</ul>
+<p>where <code>addressArgs</code> is an array of length 3 containing valid Ethereum addresses, <code>uintArgs</code>
+is an array of length 12 containing unsigned integers, the <code>callData</code> is hex 
+encoded and the <code>endowment</code> is a wei value. Returns an <code>Array&lt;boolean&gt;</code> of length 6,
+the booleans will be true if validation passed and false if an error was triggered.
+Use <code>eac.RequestFactroy.parseIsValid()</code> to parse error messages from this array.</p>
+<h3 id="eacrequestfactoryparseisvalidisvalid">eac.RequestFactory.parseIsValid(isValid)</h3>
+<p>Takes an <code>Array&lt;boolean&gt;</code> of length six containing the results of <code>.validateRequestParams()</code>
+and returns an <code>Array&lt;string&gt;</code> containig the parsed error messages.</p>
+<p>Error messages include:
+ * InsufficientEndowment
+ * ReservedWindowBiggerThanExecutionWindow
+ * InvalidTemporalUnit
+ * ExecutionWindowTooSoon
+ * CallGasTooHigh
+ * EmptyToAddress</p>
+<pre><code class="javascript">// Defines the variables addressArgs, uintArgs, callData and endowment earlier in the file
+const isValid = await requestFactory.validateRequestParams(
+    addressArgs,
+    uintArgs,
+    callData,
+    endowment
+)
+
+if (isValid.indexOf(false) != -1) {
+    const errorMsgs = requestFactory.parseIsValid(isValid)
+    throw new Error(errorMsgs)
 }
 </code></pre>
               
