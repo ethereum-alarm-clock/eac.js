@@ -3,7 +3,7 @@ const { BigNumber } = require("bignumber.js")
 const RequestData = require("./requestData")
 
 const Constants = require("../constants")
-const Util = require("../util")
+const Util = require("../util")()
 
 class TxRequest {
 	constructor(address, web3) {

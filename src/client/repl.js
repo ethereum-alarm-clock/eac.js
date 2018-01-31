@@ -1,8 +1,8 @@
 const repl = require("repl")
-const eac = require("../index")
 
 const start = (conf, ms) => {
 	const web3 = conf.web3
+	const eac = require("../index")(web3)
 
 	console.log(" ") //blank space
 	const replServer = repl.start({ prompt: ">> " })
@@ -14,7 +14,7 @@ const start = (conf, ms) => {
 				conf.wallet.getAccounts().forEach(async account => {
 					console.log(
 						`${account} | Balance: ${web3.fromWei(
-							await eac.Util.getBalance(web3, account)
+							await eac.Util.getBalance(account)
 						)}`
 					)
 				})
@@ -22,7 +22,7 @@ const start = (conf, ms) => {
 				const account = web3.eth.defaultAccount
 				console.log(
 					`${account} | Balance: ${web3.fromWei(
-						await eac.Util.getBalance(web3, account)
+						await eac.Util.getBalance(account)
 					)}`
 				)
 			}
@@ -128,7 +128,7 @@ const start = (conf, ms) => {
 				console.log("Must pass a valid transaction request address")
 				return
 			}
-			const txRequest = new eac.TxRequest(txRequestAddr, web3)
+			const txRequest = await eac.transactionRequest(txRequestAddr)
 			try {
 				await txRequest.fillData()
 				console.log(`

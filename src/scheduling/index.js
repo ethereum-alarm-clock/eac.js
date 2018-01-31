@@ -1,5 +1,5 @@
 const BigNumber = require("bignumber.js")
-const Util = require("../util")
+const Util = require("../util")()
 
 class Scheduler {
 	constructor(web3, chain) {

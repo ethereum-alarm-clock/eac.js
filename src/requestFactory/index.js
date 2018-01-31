@@ -1,5 +1,5 @@
 const Constants = require("../constants")
-const Util = require("../util")
+const Util = require("../util")()
 
 class RequestFactory {
 	constructor(address, web3) {
@@ -43,7 +43,6 @@ class RequestFactory {
 		})
 	}
 
-	
 	validateRequestParams(addressArgs, uintArgs, callData, endowment) {
 		return new Promise((resolve, reject) => {
 			this.instance.validateRequestParams.call(

@@ -1,10 +1,7 @@
 #!/usr/bin/env node
 
 const program = require("commander")
-
 const alarmClient = require("../client/main")
-const eac = require("../index")
-
 const BigNumber = require("bignumber.js")
 const clear = require("clear")
 const ora = require("ora")
@@ -20,8 +17,9 @@ const log = {
 	fatal: msg => console.log(`[FATAL] ${msg}`),
 }
 
+// Parse the command line options using commander.
 program
-	.version("1.0.5")
+	.version("1.1.0")
 	// Client options
 	.option("-c, --client", "starts the executing client")
 	.option(
@@ -47,6 +45,7 @@ program
 	.option("--timestamp")
 	.parse(process.argv)
 
+// Create the web3 object by using the chosen provider, defaults to localhost:8545
 const Web3 = require("web3")
 const provider = new Web3.providers.HttpProvider(`${program.provider}`)
 const web3 = new Web3(provider)
@@ -114,8 +113,11 @@ const main = async _ => {
 			process.exit(1)
 		}
 		if (!checkForUnlockedAccount(web3)) process.exit(1)
-		const chain = eac.Util.getChainName(web3)
-		const eacScheduler = new eac.Scheduler(web3, chain)
+
+		// Init the eac object by passing in the web3 object.
+		const eac = require("../index")(web3)
+
+		const eacScheduler = await eac.scheduler()
 
 		// Starts the scheduling wizard.
 		clear()
@@ -181,7 +183,7 @@ const main = async _ => {
 			windowSize = 255
 		}
 
-		const blockNum = await eac.Util.getBlockNumber(web3)
+		const blockNum = await eac.Util.getBlockNumber()
 		let windowStart = readlineSync.question(
 			`Enter window start: [Current block number - ${blockNum}\n`
 		)
@@ -223,7 +225,7 @@ const main = async _ => {
 
 		clear()
 
-		const endowment = eacScheduler.calcEndowment(
+		const endowment = eac.Util.calcEndowment(
 			new BigNumber(callGas),
 			new BigNumber(callValue),
 			new BigNumber(gasPrice),
