@@ -1,19 +1,16 @@
 const BigNumber = require("bignumber.js")
 const expect = require("chai").expect
-
 const Deployer = require("../deploy")
 
-const eac = require("../src")()
-
 describe("TxRequest", () => {
+	let eac
 	let delpoyed
-	let scheduler
 	let web3
 
 	before(async () => {
 		deployed = await Deployer()
 		web3 = deployed.web3
-		scheduler = new eac.Scheduler(web3, "tester")
+		eac = require('../src')(web3)
 	})
 
 	it("Schedules a transaction and correctly captures all variables", async () => {
@@ -22,19 +19,21 @@ describe("TxRequest", () => {
 		const callGas = 3000000
 		const callValue = 123454321
 		const windowSize = 255
-		const windowStart = (await eac.Util.getBlockNumber(web3)) + 25
+		const windowStart = (await eac.Util.getBlockNumber()) + 25
 		const gasPrice = web3.toWei("55", "gwei")
 		const donation = web3.toWei("120", "finney")
 		const payment = web3.toWei("250", "finney")
 		const requiredDeposit = web3.toWei("50", "finney")
 
-		const endowment = scheduler.calcEndowment(
+		const endowment = eac.Util.calcEndowment(
 			new BigNumber(callGas),
 			new BigNumber(callValue),
 			new BigNumber(gasPrice),
 			new BigNumber(donation),
 			new BigNumber(payment)
 		)
+
+		const scheduler = await eac.scheduler()
 
 		scheduler.initSender({
 			from: web3.eth.defaultAccount,
@@ -57,9 +56,9 @@ describe("TxRequest", () => {
 
 		expect(receipt.status).to.equal(1)
 
-		const newRequestAddress = "0x".concat(receipt.logs[0].data.slice(-40))
+		const newRequestAddress = eac.Util.getTxRequestFromReceipt(receipt)
 
-		const txRequest = new eac.TxRequest(newRequestAddress, web3)
+		const txRequest = await eac.transactionRequest(newRequestAddress)
 
 		expect(txRequest.address).to.exist
 

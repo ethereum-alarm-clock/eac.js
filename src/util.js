@@ -1,5 +1,20 @@
+const { BigNumber } = require('bignumber.js')
 const Constants = require("./constants.js")
 const ethUtil = require("ethereumjs-util")
+
+const calcEndowment = (callGas, callValue, gasPrice, donation, payment) => {
+	callGas = new BigNumber(callGas)
+	callValue = new BigNumber(callValue)
+	gasPrice = new BigNumber(gasPrice)
+	donation = new BigNumber(donation)
+	payment = new BigNumber(payment)
+
+	return payment
+		.plus(donation.times(2))
+		.plus(callGas.times(gasPrice))
+		.plus(gasPrice.times(180000))
+		.plus(callValue)
+}
 
 const checkNotNullAddress = address => {
 	if (address === Constants.NULL_ADDRESS) return false
@@ -142,6 +157,7 @@ const waitForTransactionToBeMined = (web3, txHash, interval) => {
 module.exports = web3 => {
 	if (!web3) {
 		return new Object({
+			calcEndowment,
 			checkNotNullAddress,
 			checkValidAddress,
 			estimateGas,
@@ -158,6 +174,7 @@ module.exports = web3 => {
 	}
 
 	return new Object({
+		calcEndowment,
 		checkNotNullAddress,
 		checkValidAddress,
 		estimateGas: opts => estimateGas(web3, opts),

@@ -14,6 +14,8 @@ describe("Util", () => {
 
     it('tests init without a parameter', () => {
         const util = require('../src')().Util
+        expect(util)
+        .to.exist
         // console.log(util)
     })
 

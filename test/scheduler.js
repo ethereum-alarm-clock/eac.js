@@ -2,16 +2,14 @@ const BigNumber = require("bignumber.js")
 const Deployer = require("../deploy.js")
 const expect = require("chai").expect
 
-const eac = require("../src")()
-
 describe("Scheduler", () => {
-	let eacScheduler
+	let eac
 	let web3
 
 	before(async () => {
 		const deployed = await Deployer()
 		web3 = deployed.web3
-		eacScheduler = new eac.Scheduler(web3, "tester")
+		eac = require('../src')(web3)
 	})
 
 	it("Calculates the expected endowment", () => {
@@ -27,7 +25,7 @@ describe("Scheduler", () => {
 			.plus(gasPrice.mul(180000))
 			.plus(callValue)
 
-		const endowment = eacScheduler.calcEndowment(
+		const endowment = eac.Util.calcEndowment(
 			callGas,
 			callValue,
 			gasPrice,
@@ -44,19 +42,21 @@ describe("Scheduler", () => {
 		const callGas = 3000000
 		const callValue = 123454321
 		const windowSize = 255
-		const windowStart = (await eac.Util.getBlockNumber(web3)) + 25
+		const windowStart = (await eac.Util.getBlockNumber()) + 25
 		const gasPrice = web3.toWei("55", "gwei")
 		const donation = web3.toWei("120", "finney")
 		const payment = web3.toWei("250", "finney")
 		const requiredDeposit = web3.toWei("50", "finney")
 
-		const endowment = eacScheduler.calcEndowment(
+		const endowment = eac.Util.calcEndowment(
 			new BigNumber(callGas),
 			new BigNumber(callValue),
 			new BigNumber(gasPrice),
 			new BigNumber(donation),
 			new BigNumber(payment)
 		)
+
+		const eacScheduler = await eac.scheduler()
 
 		eacScheduler.initSender({
 			from: web3.eth.defaultAccount,
@@ -89,19 +89,21 @@ describe("Scheduler", () => {
 		const callGas = 3000000
 		const callValue = 123454321
 		const windowSize = 255 * 15
-		const windowStart = (await eac.Util.getTimestamp(web3)) + 25 * 15
+		const windowStart = (await eac.Util.getTimestamp()) + 25 * 15
 		const gasPrice = web3.toWei("55", "gwei")
 		const donation = web3.toWei("120", "finney")
 		const payment = web3.toWei("250", "finney")
 		const requiredDeposit = web3.toWei("50", "finney")
 
-		const endowment = eacScheduler.calcEndowment(
+		const endowment = eac.Util.calcEndowment(
 			new BigNumber(callGas),
 			new BigNumber(callValue),
 			new BigNumber(gasPrice),
 			new BigNumber(donation),
 			new BigNumber(payment)
 		)
+
+		const eacScheduler = await eac.scheduler()
 
 		eacScheduler.initSender({
 			from: web3.eth.defaultAccount,
@@ -128,7 +130,7 @@ describe("Scheduler", () => {
 
 		expect(txRequestAddr).to.exist
 
-		const txRequest = new eac.TxRequest(txRequestAddr, web3)
+		const txRequest = await eac.transactionRequest(txRequestAddr)
 		await txRequest.fillData()
 
 		const winStart = txRequest.windowStart
