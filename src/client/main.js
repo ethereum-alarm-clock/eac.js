@@ -2,7 +2,6 @@ const Config = require("./config")
 const Repl = require("./repl")
 const Scanner = require("./scanning")
 const StatsDB = require("./statsdb")
-const eac = require("../index")()
 
 const startScanning = (ms, conf) => {
 	const log = conf.logger
@@ -30,7 +29,7 @@ const startScanning = (ms, conf) => {
 
 /**
  * The main driver function that begins the client operation.
- * @param {*} web3 An instantiated web3 instance.
+ * @param {Web3} web3 An instantiated web3 instance.
  * @param {String} provider The supplied provider host for the web3 instance. (Ex. 'http://localhost:8545)
  * @param {Number} scanSpread The spread +- of the current block number to scan.
  * @param {Number} ms Milliseconds between each conduction of a blockchain scan.
@@ -50,8 +49,9 @@ const main = async (
 	walletFile,
 	pw
 ) => {
+	const eac = require("../index")(web3)
 	// Assigns chain to the name of the network ID
-	const chain = eac.Util.getChainName(web3)
+	const chain = eac.Util.getChainName()
 
 	// Loads the contracts
 	let requestFactory, requestTracker
@@ -60,15 +60,15 @@ const main = async (
 			throw new Error("Not implemented.")
 			break
 		case "ropsten":
-			requestFactory = eac.RequestFactory.initRopsten(web3)
-			requestTracker = eac.RequestTracker.initRopsten(web3)
+			requestFactory = await eac.requestFactory()
+			requestTracker = await eac.requestTracker()
 			break
 		case "rinkeby":
 			throw new Error("Not implemented.")
 			break
 		case "kovan":
-			requestFactory = eac.RequestFactory.initKovan(web3)
-			requestTracker = eac.RequestTracker.initKovan(web3)
+			requestFactory = await eac.requestFactory()
+			requestTracker = await eac.requestTracker()
 			break
 		default:
 			throw new Error(`Chain value: ${chain} not valid.`)
@@ -120,7 +120,7 @@ const main = async (
 	}
 	console.log(
 		`${account} | Balance: ${web3.fromWei(
-			await eac.Util.getBalance(conf.web3, account)
+			await eac.Util.getBalance(account)
 		)}`
 	)
 	conf.statsdb.initialize([account])

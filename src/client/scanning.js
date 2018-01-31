@@ -1,5 +1,4 @@
 const { BigNumber } = require("bignumber.js")
-const eac = require("../index")()
 
 const store = (conf, txRequest) => {
 	const log = conf.logger
@@ -15,13 +14,14 @@ const store = (conf, txRequest) => {
 const scanBlockchain = async conf => {
 	const log = conf.logger
 	const web3 = conf.web3
+	const eac = require("../index")(web3)
 
-	const leftBlock = (await eac.Util.getBlockNumber(web3)) - conf.scanSpread
+	const leftBlock = (await eac.Util.getBlockNumber()) - conf.scanSpread
 	const rightBlock = leftBlock + conf.scanSpread * 2
 
-	const leftTimestamp = await eac.Util.getTimestampForBlock(web3, leftBlock)
+	const leftTimestamp = await eac.Util.getTimestampForBlock(leftBlock)
 	const avgBlockTime = Math.floor(
-		(await eac.Util.getTimestamp(web3)) - leftTimestamp / conf.scanSpread
+		(await eac.Util.getTimestamp()) - leftTimestamp / conf.scanSpread
 	)
 	const rightTimestamp = Math.floor(
 		leftTimestamp + avgBlockTime * conf.scanSpread * 2
@@ -38,6 +38,7 @@ const scanBlockchain = async conf => {
 const scan = async (conf, left, right) => {
 	const log = conf.logger
 	const web3 = conf.web3
+	const eac = require("../index")(web3)
 
 	const requestTracker = conf.tracker
 	const requestFactory = conf.factory
@@ -74,7 +75,7 @@ const scan = async (conf, left, right) => {
 			nextRequestAddress
 		)
 
-		const txRequest = new eac.TxRequest(nextRequestAddress, web3)
+		const txRequest = await eac.transactionRequest(nextRequestAddress)
 		await txRequest.fillData()
 
 		if (!txRequest.windowStart.equals(trackerWindowStart)) {
@@ -106,11 +107,14 @@ const scan = async (conf, left, right) => {
 const { routeTxRequest } = require("./routing.js")
 
 const scanCache = async conf => {
+	const web3 = conf.web3
+	const eac = require("../index")(web3)
+
 	if (conf.cache.len() === 0) return //nothing stored in cache
 
 	const allTxRequests = conf.cache
 		.stored()
-		.map(address => new eac.TxRequest(address, conf.web3))
+		.map(address => await eac.transactionRequest(address))
 
 	allTxRequests.forEach(txRequest => {
 		txRequest.refreshData().then(_ => routeTxRequest(conf, txRequest))
