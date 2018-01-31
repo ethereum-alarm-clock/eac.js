@@ -80,10 +80,6 @@
         
             <li><a class="toctree-l4" href="#constructor">Constructor</a></li>
         
-            <li><a class="toctree-l4" href="#eacrequestfactoryinitmainnetweb3">eac.RequestFactory.initMainnet(web3)</a></li>
-        
-            <li><a class="toctree-l4" href="#eacrequestfactoryinitropstenweb3">eac.RequestFactory.initRopsten(web3)</a></li>
-        
             <li><a class="toctree-l4" href="#eacrequestfactorygettrackeraddress">eac.RequestFactory.getTrackerAddress()</a></li>
         
             <li><a class="toctree-l4" href="#eacrequestfactoryisknownrequestrequestaddr">eac.RequestFactory.isKnownRequest(requestAddr)</a></li>
@@ -91,6 +87,10 @@
             <li><a class="toctree-l4" href="#eacrequestfactoryvalidaterequestparamsaddressargs-uintargs-calldata-endowment">eac.RequestFactory.validateRequestParams(addressArgs, uintArgs, callData, endowment)</a></li>
         
             <li><a class="toctree-l4" href="#eacrequestfactoryparseisvalidisvalid">eac.RequestFactory.parseIsValid(isValid)</a></li>
+        
+            <li><a class="toctree-l4" href="#eacrequestfactorygetrequestcreatedlogsstartblock-endblock">eac.RequestFactory.getRequestCreatedLogs(startBlock[, endBlock])</a></li>
+        
+            <li><a class="toctree-l4" href="#eacrequestfactorygetrequestsstartblock-endblock">eac.RequestFactory.getRequests(startBlock[, endBlock])</a></li>
         
         </ul>
     
@@ -165,40 +165,24 @@
                 <h2 id="eacrequestfactory">eac.RequestFactory</h2>
 <p>Exposes utilities for interacting with the Request Factory contract.</p>
 <h3 id="constructor">Constructor</h3>
-<p>Creates a new instance of a <code>eac.RequestFactory</code> and takes two arguments, the
-first is the <code>address</code> of the request factory contract and the second is a <code>web3</code> object.</p>
-<pre><code class="javascript">const requestFactory = new eac.RequestFactory(address, web3)
-</code></pre>
-
-<p>You can also instantiate a new requestFactory using the convenience functions.</p>
-<h3 id="eacrequestfactoryinitmainnetweb3">eac.RequestFactory.initMainnet(web3)</h3>
-<p>Takes a <code>web3</code> object and returns the new instance of a <code>eac.RequestFactory</code> instantiated for 
-the mainnet chain.</p>
-<h3 id="eacrequestfactoryinitropstenweb3">eac.RequestFactory.initRopsten(web3)</h3>
-<p>Takes a <code>web3</code> object and returns the new instance of a <code>eac.RequestFactory</code> instatiated for the ropsten
-chain.</p>
-<pre><code class="javascript">const requestFactory = eac.RequestFactory.initRopsten(web3)
-
-// You now have a fully instantiated instance which will
-// automatically use the canonical Ropsten contracts.
+<p>Returns a <code>Promise</code> that resolves a new instance of a <code>eac.RequestFactory</code>
+class. Uses the canonical Ethereum Alarm Clock contracts for the same 
+chain as the Web3 object was initiated on.</p>
+<pre><code class="javascript">// Inside of an async function:
+const requestFactory = await eac.requestFactory()
 </code></pre>
 
 <h3 id="eacrequestfactorygettrackeraddress">eac.RequestFactory.getTrackerAddress()</h3>
 <p>Returns the <code>address</code> of the tracker that the request factory is using
-to track new transaction requests. Can then pass the address to create a new instance of a <code>eac.RequestTracker</code>.</p>
+to track new transaction requests. </p>
 <pre><code class="javascript">const trackerAddr = requestFactory.getTrackerAddress()
-const requestTracker = new eac.RequestTracker(trackerAddr, web3)
-requestTracker.setFactory(requestFactory.address)
-
-// You now have a requestTracker that is the one connected to the
-// requestFactory.
 </code></pre>
 
 <h3 id="eacrequestfactoryisknownrequestrequestaddr">eac.RequestFactory.isKnownRequest(requestAddr)</h3>
-<p>Takes a <code>TxRequest</code> address and returns a <code>Promise</code> that will resolve <code>true</code> if the transaction request
-is registed with the factory and <code>false</code> if it's not. This function is used
-by clients to verify that the address was registered through the watched
-contracts.</p>
+<p>Takes a <code>TxRequest</code> address and returns a <code>Promise</code> that will resolve <code>true</code> if the 
+transaction request is registed with the factory and <code>false</code> if it's not. 
+This function is used by clients to verify that the address was registered through
+the watched contracts.</p>
 <pre><code class="javascript">// Verify that the request is known to the factory we are validating with.
 if (!await requestFactory.isKnownRequest(nextRequestAddress)) {
     throw new Error(`Encountered unknown address! Please check that you are using the correct contracts JSON file.`)
@@ -253,6 +237,36 @@ if (isValid.indexOf(false) != -1) {
     const errorMsgs = requestFactory.parseIsValid(isValid)
     throw new Error(errorMsgs)
 }
+</code></pre>
+
+<h3 id="eacrequestfactorygetrequestcreatedlogsstartblock-endblock">eac.RequestFactory.getRequestCreatedLogs(startBlock[, endBlock])</h3>
+<p>Takes a <code>number</code> <code>startBlock</code> and optional <code>number</code> <code>endBlock</code> and returns
+the raw logs for the requests created through the request factory between
+these block times. If <code>endBlock</code> is not provided it will return all logs 
+up until the <code>latest</code> block. Returns a <code>Promise</code> that resolves to an array
+of the logs.</p>
+<pre><code class="javascript">const logs = await requestFactory.getRequestCreatedLogs(5665000)
+console.log(logs)
+
+// [ { address: '0x209270d49a3673e8d6163849fa0539800cfeeb9c',
+//     blockHash: '0x94c1a6f26a765e47e72e77ce60d8c7ac4cb9dc5858e54bd04fffbc7ec4ce838e',
+//     blockNumber: 5665267,
+//     logIndex: 1,
+//     transactionHash: '0x1dfbd5f4e249fb211e9d4a0b47de54ea0380fc703773b0c393342de123be3d31',
+//     transactionIndex: 1,
+//     transactionLogIndex: '0x0',
+//     type: 'mined',
+//     event: 'RequestCreated',
+//     args: { request: '0x720704a706d8d6b01167d3a5723c1fa50b1aec28' } } ]
+</code></pre>
+
+<h3 id="eacrequestfactorygetrequestsstartblock-endblock">eac.RequestFactory.getRequests(startBlock[, endBlock])</h3>
+<p>Similar to the previous function but returns an array of only the
+addresses of each transaction request.</p>
+<pre><code class="javascript">const txRequests = await requestFactory.getRequests(5665000)
+console.log(txRequests)
+
+// [ '0x720704a706d8d6b01167d3a5723c1fa50b1aec28' ]
 </code></pre>
               
             </div>

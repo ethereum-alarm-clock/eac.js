@@ -209,10 +209,11 @@
 by the Ethereum Alarm Clock. Opens up getters to retrieve information
 about the transaction request and methods for important actions.</p>
 <h3 id="constructor">Constructor</h3>
-<p>The constructor for the <code>TxRequest</code> class requires two arguments,
-the <code>address</code> of the transaction request and the <code>web3</code> object. It will 
-return a new instance of a <code>TxRequest</code>.</p>
-<pre><code class="javascript">const txRequest = new eac.TxRequest(address, web3)
+<p>Returns a <code>Promise</code> that resolves a new instance of a <code>eac.TxRequest</code>
+class. Uses the canonical Ethereum Alarm Clock contracts for the 
+same chain as the Web3 object was initiated on. Requires one argument,
+the address of the transaction request.</p>
+<pre><code class="javascript">const txRequest = await eac.transactionRequest(address)
 
 // You now have a new transaction request object, the first thing
 // you will likely want to do it is fill its data.
@@ -232,9 +233,10 @@ console.log(txRequest.windowStart) // 2300780
 
 <h3 id="eactxrequestrefreshdata">eac.TxRequest.refreshData()</h3>
 <p>Async function that will return a <code>Promise</code> that resolves to <code>true</code> if the
-data is successfully refreshed/updated. Use this method after you have already filled
-the data on a transaction request and want to update its values. For example, you
-might use it if the transaction request was recently cancelled.</p>
+data is successfully refreshed/updated. Use this method after you 
+have already filled the data on a transaction request and want to 
+update its values. For example, you might use it if the transaction 
+request was recently cancelled.</p>
 <pre><code class="javascript">console.log(txReqeuest.isCancelled) //false
 
 await txRequest.cancel({
@@ -321,8 +323,8 @@ send when its executed.</p>
 <p>Returns the a <code>BigNumber</code> containing the <code>payment</code> in wei that the transaction request will
 send when its executed.</p>
 <h3 id="eactxrequestcalldata">eac.TxRequest.callData()</h3>
-<p>Returns a <code>Promise</code> that will resolve to the <code>callData</code> that the transaction request
-will send when its executed.</p>
+<p>Returns a <code>Promise</code> that will resolve to the <code>callData</code> that the 
+transaction requestwill send when its executed.</p>
 <h3 id="eactxrequestclaimparams">eac.TxRequest.claim(params)</h3>
 <p><code>Params</code> is a standard ethereum transaction object passed in as JSON and including the variables, <code>from</code>, <code>gas</code>, <code>gasPrice</code>, and <code>value</code>. Will attempt to claim a transaction request and returns a <code>Promise</code>
 that will resolve to the <code>receipt</code> of the transaction if it's successful.</p>

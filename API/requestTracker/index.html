@@ -84,12 +84,6 @@
         
             <li><a class="toctree-l4" href="#constructor">Constructor</a></li>
         
-            <li><a class="toctree-l4" href="#eacrequesttrackerinitmainnetweb3">eac.RequestTracker.initMainnet(web3)</a></li>
-        
-            <li><a class="toctree-l4" href="#eacrequesttrackerinitropstenweb3">eac.RequestTracker.initRopsten(web3)</a></li>
-        
-            <li><a class="toctree-l4" href="#eacrequesttrackersetfactoryfactoryaddr">eac.RequestTracker.setFactory(factoryAddr)</a></li>
-        
             <li><a class="toctree-l4" href="#eacrequesttrackernextfromleftblocknum">eac.RequestTracker.nextFromLeft(blockNum)</a></li>
         
             <li><a class="toctree-l4" href="#eacrequesttrackerwindowstartfortxrequestaddress">eac.RequestTracker.windowStartFor(txRequestAddress)</a></li>
@@ -165,32 +159,19 @@
                 <h2 id="eacrequesttracker">eac.RequestTracker</h2>
 <p>Exposes utilities for interacting with the Request Tracker contract.</p>
 <h3 id="constructor">Constructor</h3>
-<p>Creates a new instance of a <code>eac.RequestTracker</code> and takes two arguments, the first is the <code>address</code> of the request tracker contract and the second is a <code>web3</code> object.</p>
-<pre><code class="javascript">const requestTracker = new eac.RequestTracker(address, web3)
+<p>Returns a <code>Promise</code> that resolves a new instance of a <code>eac.RequestTracker</code>
+class. Uses the canonical Ethereum Alarm Clock contracts for the same
+chain as the Web3 object was initiated on.</p>
+<pre><code class="javascript">// Inside of an async function:
+const requestTracker = await eac.requestTracker()
 </code></pre>
 
-<p>Like the <code>eac.RequestFactory</code> there are convenience instantiation functions as well.</p>
-<h3 id="eacrequesttrackerinitmainnetweb3">eac.RequestTracker.initMainnet(web3)</h3>
-<p>Takes a <code>web3</code> object and returns the new instance of a <code>eac.RequestTracker</code> instantiated for 
-the mainnet chain.</p>
-<h3 id="eacrequesttrackerinitropstenweb3">eac.RequestTracker.initRopsten(web3)</h3>
-<p>Takes a <code>web3</code> object and returns the new instance of a <code>eac.RequestTracker</code> instatiated for the ropsten
-chain.</p>
-<pre><code class="javascript">const requestTracker = eac.requestTracker.initRopsten(web3)
-
-// You now have a fully instantiated instance which will
-// automatically use the canonical Ropsten contracts.
-</code></pre>
-
-<h3 id="eacrequesttrackersetfactoryfactoryaddr">eac.RequestTracker.setFactory(factoryAddr)</h3>
-<p>Takes one argument, the <code>address</code> of the <code>eac.RequestFactory</code> that is associated
-with this request tracker. You <em>must</em> set the factory before using any of the methods
-outlined below. This is because the <code>RequestTracker</code> internally uses the factory address
-to verify inputs.</p>
 <h3 id="eacrequesttrackernextfromleftblocknum">eac.RequestTracker.nextFromLeft(blockNum)</h3>
-<p>Takes one argument, a <code>blocknumber</code> and queries the RequestTracker for the next
-registered <code>TxRequest</code> at a windowstart greater than or equal to that block number. Returns a <code>Promise</code> which resolves to the the transaction request <code>address</code>.</p>
-<pre><code class="javascript">const left = await eac.Util.getBlockNumber(web3)
+<p>Takes one argument, a <code>blocknumber</code> and queries the RequestTracker for 
+the next registered <code>TxRequest</code> at a windowstart greater than or equal 
+to that block number. Returns a <code>Promise</code> which resolves to the the
+transaction request <code>address</code>.</p>
+<pre><code class="javascript">const left = await eac.Util.getBlockNumber()
 const nextRequestAddress = await requestTracker.nextFromLeft(left)
 
 console.log(nextRequestAddress)
@@ -199,13 +180,20 @@ console.log(nextRequestAddress)
 
 <h3 id="eacrequesttrackerwindowstartfortxrequestaddress">eac.RequestTracker.windowStartFor(txRequestAddress)</h3>
 <p>Takes one argument, the <code>address</code> of a <code>TxRequest</code> and returns
-a <code>Promise</code> that will resolve to  the <code>windowStart</code> for that transaction request.</p>
+a <code>Promise</code> that will resolve to  the <code>windowStart</code> for that 
+transaction request.</p>
+<pre><code class="javascript">const windowStart = await requestTracker.windowStartFor(nextRequestAddress)
+console.log(windowStart)
+
+// 5665000
+</code></pre>
+
 <h3 id="eacrequesttrackernextrequesttxrequestaddress">eac.RequestTracker.nextRequest(txRequestAddress)</h3>
 <p>Takes one argument, the <code>address</code> of a <code>TxRequest</code> and returns
-a <code>Promise</code> that resolves to the next
-registered transaction request address, which can be used to create an instance
-of a <code>eac.TxRequest</code>. Will resolve to a <code>NULL_ADDRESS</code> if there is not a next
-registered transaction request.</p>
+a <code>Promise</code> that resolves to the next registered transaction request 
+address, which can be used to create an instance of a <code>eac.TxRequest</code>. 
+Will resolve to a <code>NULL_ADDRESS</code> if there is not a next registered 
+transaction request.</p>
 <pre><code class="javascript">const nextRequestAddress = await requestTracker.nextRequest(txRequest.address)
 
 if (nextRequestAddress === eac.Constants.NULL_ADDRESS) { 

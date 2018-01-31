@@ -92,8 +92,6 @@
         
             <li><a class="toctree-l4" href="#eacschedulerinitsenderopts">eac.Scheduler.initSender(opts)</a></li>
         
-            <li><a class="toctree-l4" href="#eacschedulercalcendowmentcallgas-callvalue-gasprice-donation-payment">eac.Scheduler.calcEndowment(callGas, callValue, gasPrice, donation, payment)</a></li>
-        
             <li><a class="toctree-l4" href="#eacschedulerblockscheduletoaddress-calldata-callgas-callvalue-windowsize-windowstart-gasprice-donation-payment-requireddeposit">eac.Scheduler.blockSchedule(toAddress, callData, callGas, callValue, windowSize, windowStart, gasPrice, donation, payment, requiredDeposit)</a></li>
         
             <li><a class="toctree-l4" href="#eacschedulertimestampscheduletoaddress-calldata-callgas-callvalue-windowsize-windowstart-gasprice-donation-payment-requireddeposit">eac.Scheduler.timestampSchedule(toAddress, callData, callGas, callValue, windowSize, windowStart, gasPrice, donation, payment, requiredDeposit)</a></li>
@@ -166,32 +164,38 @@ Block based scheduling APIS of the Ethereum Alarm Clock. It
 attempts to abstract most of the complexity away from the user
 so that you will only have to feed it the variables it wants.</p>
 <h3 id="constructor">Constructor</h3>
-<p>Takes two arguments, a <code>web3</code> object and a <code>string</code> of the chain name
-to instantiate the contracts for.</p>
-<pre><code class="javascript">const eacScheduler = new eac.Scheduler(web3, 'ropsten')
-
-// Now using the canonical Ropsten contracts for 
-// scheduling transactions.
+<p>Returns a <code>Promise</code> that resolves a new instance of a <code>eac.Scheduler</code>
+class. Uses the canonical Ethereum Alarm Clock contracts for the same
+chain as the Web3 object was initiated on.</p>
+<pre><code class="javascript">const eacScheduler = await eac.scheduler()
 </code></pre>
 
 <h3 id="eacschedulergetfactoryaddress">eac.Scheduler.getFactoryAddress()</h3>
 <p>Returns a <code>Promise</code> that resolves to the <code>address</code> of the 
 Request Factory being used by the Scheduler.</p>
+<pre><code class="javascript">const factoryAddr = eacScheduler.getFactoryAddress()
+
+const requestFactory = await eac.requestFactory()
+
+console.log(factoryAddr == requestFactory.address)
+// true
+</code></pre>
+
 <h3 id="eacschedulerinitsenderopts">eac.Scheduler.initSender(opts)</h3>
 <p>Sets the sender for the scheduling transaction. The <code>opts</code> arguments is 
 a JSON that contains the <code>from</code>, <code>gas</code>, and <code>value</code> parameters of an 
-Ethereum transaction. See the example at the bottom for more context.</p>
-<h3 id="eacschedulercalcendowmentcallgas-callvalue-gasprice-donation-payment">eac.Scheduler.calcEndowment(callGas, callValue, gasPrice, donation, payment)</h3>
-<p>Takes in <code>BigNumber</code> arguments for <code>callGas</code>, <code>callValue</code>, <code>gasPrice</code>, <code>donation</code> and
-<code>payment</code> variables of a <code>eac.TxRequest</code> and returns the a <code>BigNumber</code> of the required
-<code>endowment</code> that must be sent to execute the transaction request.</p>
+Ethereum transaction. See the example at the bottom for more context.
+Normally in web3 you would pass this object in as the lat argument
+to a <code>web3.eth.sendTransaction()</code> call. eac.js requires you to pass
+it in before instead.</p>
+<p>See the example below.</p>
 <h3 id="eacschedulerblockscheduletoaddress-calldata-callgas-callvalue-windowsize-windowstart-gasprice-donation-payment-requireddeposit">eac.Scheduler.blockSchedule(toAddress, callData, callGas, callValue, windowSize, windowStart, gasPrice, donation, payment, requiredDeposit)</h3>
 <ul>
 <li><code>toAddress</code>     - an Ethereum address</li>
 <li><code>callData</code>      - hex encoded call data</li>
 <li><code>callGas</code> - <code>BigNumber</code> | String</li>
 <li><code>callValue</code> - <code>BigNumber</code> | String</li>
-<li><code>windowSize</code> - <code>BigNumber</code> | String</li>
+<li><code>windowSize</code> - <code>BigNumber</code> | Stringn</li>
 <li><code>windowStart</code> - <code>BigNumber</code> | String</li>
 <li><code>gasPrice</code> - <code>BigNumber</code> | String</li>
 <li><code>donation</code> - <code>BigNumber</code> | String</li>
@@ -199,7 +203,7 @@ Ethereum transaction. See the example at the bottom for more context.</p>
 <li><code>requiredDeposit</code> - <code>BigNumber</code> | String</li>
 </ul>
 <p>Returns a <code>Promise</code> that will resolve to the <code>receipt</code> of the transaction if successful.</p>
-<pre><code class="javascript">const endowment = eacScheduler.calcEndowment(
+<pre><code class="javascript">const endowment = eac.Util.calcEndowment(
     new BigNumber(callGas),
     new BigNumber(callValue),
     new BigNumber(gasPrice),
@@ -213,7 +217,7 @@ eacScheduler.initSender({
     value: endowment
 })
 
-eacScheduler.blockSchedule(
+const receipt = await eacScheduler.blockSchedule(
     toAddress,
     web3.fromAscii(callData),
     callGas,
