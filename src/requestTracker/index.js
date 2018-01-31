@@ -1,6 +1,6 @@
 const { BigNumber } = require("bignumber.js")
 const Constants = require("../constants")
-const Util = require("../util")
+const Util = require("../util")()
 
 class RequestTracker {
 	constructor(address, web3) {

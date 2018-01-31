@@ -3,7 +3,7 @@
 const program = require("commander")
 
 const alarmClient = require("../client/main")
-const eac = require("../index")
+const eac = require("../index")()
 
 const BigNumber = require("bignumber.js")
 const clear = require("clear")

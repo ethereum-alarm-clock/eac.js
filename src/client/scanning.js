@@ -1,5 +1,5 @@
 const { BigNumber } = require("bignumber.js")
-const eac = require("../index")
+const eac = require("../index")()
 
 const store = (conf, txRequest) => {
 	const log = conf.logger

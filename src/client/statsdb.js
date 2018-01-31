@@ -1,7 +1,7 @@
 const BigNumber = require("bignumber.js")
 const loki = require("lokijs")
 
-const eac = require("../index")
+const eac = require("../index")()
 
 /// Wrapper over a lokijs persistent storage to keep track of the stats of executing accounts.
 class StatsDB {

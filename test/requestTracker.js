@@ -2,7 +2,7 @@ const BigNumber = require("bignumber.js")
 const Deployer = require("../deploy.js")
 const expect = require("chai").expect
 
-const eac = require("../src")
+const eac = require("../src")()
 
 describe("Request Tracker", () => {
 	let rtAddr

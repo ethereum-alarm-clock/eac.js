@@ -1,5 +1,5 @@
 const repl = require("repl")
-const eac = require("../index")
+const eac = require("../index")()
 
 const start = (conf, ms) => {
 	const web3 = conf.web3

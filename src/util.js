@@ -97,19 +97,26 @@ const getTxRequestFromReceipt = receipt => {
  * @param {Web3} web3
  */
 const getChainName = web3 => {
-	const networkID = web3.version.network
-	if (networkID == 1) {
-		// return 'mainnet'
-		throw new Error("Not implemented for mainnet")
-	} else if (networkID == 3) {
-		return "ropsten"
-	} else if (networkID == 4) {
-		return "rinkeby"
-	} else if (networkID == 42) {
-		return "kovan"
-	} else {
-		throw new Error("Invalid network.")
-	}
+	return new Promise((resolve, reject) => {
+		web3.version.getNetwork((err, netID) => {
+			if (!err) {
+				if (netID == 1) {
+					// return 'mainnet'
+					reject("Not implemented for mainnet")
+				} else if (netID == 3) {
+					 resolve("ropsten")
+				} else if (netID == 4) {
+					 resolve("rinkeby")
+				} else if (netID == 42) {
+					 resolve("kovan")
+				} else if (netID > 1517361627) {
+					resolve("tester")
+				} else {
+					reject(err)
+				}
+			}
+		})
+	})
 }
 
 const waitForTransactionToBeMined = (web3, txHash, interval) => {
@@ -132,17 +139,36 @@ const waitForTransactionToBeMined = (web3, txHash, interval) => {
 	})
 }
 
-module.exports = {
-	checkNotNullAddress,
-	checkValidAddress,
-	estimateGas,
-	getABI,
-	getBalance,
-	getBlockNumber,
-	getChainName,
-	getGasPrice,
-	getTimestamp,
-	getTimestampForBlock,
-	getTxRequestFromReceipt,
-	waitForTransactionToBeMined,
+module.exports = web3 => {
+	if (!web3) {
+		return new Object({
+			checkNotNullAddress,
+			checkValidAddress,
+			estimateGas,
+			getABI,
+			getBalance,
+			getBlockNumber,
+			getChainName,
+			getGasPrice,
+			getTimestamp,
+			getTimestampForBlock,
+			getTxRequestFromReceipt,
+			waitForTransactionToBeMined,
+		})
+	}
+
+	return new Object({
+		checkNotNullAddress,
+		checkValidAddress,
+		estimateGas: opts => estimateGas(web3, opts),
+		getABI,
+		getBalance: address => getBalance(address),
+		getBlockNumber: () => getBlockNumber(web3),
+		getChainName: () => getChainName(web3),
+		getGasPrice: () => getGasPrice(web3),
+		getTimestamp: () => getTimestamp(web3),
+		getTimestampForBlock: blockNum => getTimestampForBlock(web3, blockNum),
+		getTxRequestFromReceipt,
+		waitForTransactionToBeMined: txHash => waitForTransactionToBeMined(web3, txHash)
+	})
 }

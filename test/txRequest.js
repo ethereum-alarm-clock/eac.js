@@ -3,7 +3,7 @@ const expect = require("chai").expect
 
 const Deployer = require("../deploy")
 
-const eac = require("../src")
+const eac = require("../src")()
 
 describe("TxRequest", () => {
 	let delpoyed

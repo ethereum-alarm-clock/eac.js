@@ -2,7 +2,7 @@ const Config = require("./config")
 const Repl = require("./repl")
 const Scanner = require("./scanning")
 const StatsDB = require("./statsdb")
-const eac = require("../index")
+const eac = require("../index")()
 
 const startScanning = (ms, conf) => {
 	const log = conf.logger

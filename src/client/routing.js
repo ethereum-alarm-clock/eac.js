@@ -1,7 +1,7 @@
 const BigNumber = require("bignumber.js")
 const hasPending = require("./pending.js")
 
-const { Util } = require("../index")
+const { Util } = require("../index")()
 
 /**
  * Takes in a txRequest object and routes it to the thread that will act on it,
