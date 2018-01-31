@@ -7,14 +7,12 @@ so that you will only have to feed it the variables it wants.
 
 ### Constructor
 
-Takes two arguments, a `web3` object and a `string` of the chain name
-to instantiate the contracts for.
+Returns a `Promise` that resolves a new instance of a `eac.Scheduler`
+class. Uses the canonical Ethereum Alarm Clock contracts for the same
+chain as the Web3 object was initiated on.
 
 ```javascript
-const eacScheduler = new eac.Scheduler(web3, 'ropsten')
-
-// Now using the canonical Ropsten contracts for 
-// scheduling transactions.
+const eacScheduler = await eac.scheduler()
 ```
 
 ### eac.Scheduler.getFactoryAddress()
@@ -22,17 +20,25 @@ const eacScheduler = new eac.Scheduler(web3, 'ropsten')
 Returns a `Promise` that resolves to the `address` of the 
 Request Factory being used by the Scheduler.
 
+```javascript
+const factoryAddr = eacScheduler.getFactoryAddress()
+
+const requestFactory = await eac.requestFactory()
+
+console.log(factoryAddr == requestFactory.address)
+// true
+```
+
 ### eac.Scheduler.initSender(opts)
 
 Sets the sender for the scheduling transaction. The `opts` arguments is 
 a JSON that contains the `from`, `gas`, and `value` parameters of an 
 Ethereum transaction. See the example at the bottom for more context.
+Normally in web3 you would pass this object in as the lat argument
+to a `web3.eth.sendTransaction()` call. eac.js requires you to pass
+it in before instead.
 
-### eac.Scheduler.calcEndowment(callGas, callValue, gasPrice, donation, payment)
-
-Takes in `BigNumber` arguments for `callGas`, `callValue`, `gasPrice`, `donation` and
-`payment` variables of a `eac.TxRequest` and returns the a `BigNumber` of the required
-`endowment` that must be sent to execute the transaction request.
+See the example below.
 
 ### eac.Scheduler.blockSchedule(toAddress, callData, callGas, callValue, windowSize, windowStart, gasPrice, donation, payment, requiredDeposit)
 
@@ -40,7 +46,7 @@ Takes in `BigNumber` arguments for `callGas`, `callValue`, `gasPrice`, `donation
  - `callData`      - hex encoded call data
  - `callGas` - `BigNumber` | String
  - `callValue` - `BigNumber` | String
- - `windowSize` - `BigNumber` | String
+ - `windowSize` - `BigNumber` | Stringn
  - `windowStart` - `BigNumber` | String
  - `gasPrice` - `BigNumber` | String
  - `donation` - `BigNumber` | String
@@ -50,7 +56,7 @@ Takes in `BigNumber` arguments for `callGas`, `callValue`, `gasPrice`, `donation
 Returns a `Promise` that will resolve to the `receipt` of the transaction if successful.
 
 ```javascript
-const endowment = eacScheduler.calcEndowment(
+const endowment = eac.Util.calcEndowment(
     new BigNumber(callGas),
     new BigNumber(callValue),
     new BigNumber(gasPrice),
@@ -64,7 +70,7 @@ eacScheduler.initSender({
     value: endowment
 })
 
-eacScheduler.blockSchedule(
+const receipt = await eacScheduler.blockSchedule(
     toAddress,
     web3.fromAscii(callData),
     callGas,

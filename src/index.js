@@ -29,7 +29,7 @@ module.exports = web3 => {
 		requestTracker: async () => {
 			const chainName = await util.getChainName()
 			const contracts = require(`./assets/${chainName}.json`)
-			return new RequestTracker(contracts.requestTracker, web3)
+			return new RequestTracker(contracts.requestTracker, contracts.requestFactory, web3)
 		},
 		scheduler: async () => {
 			const chainName = await util.getChainName()

@@ -19,7 +19,7 @@ const log = {
 
 // Parse the command line options using commander.
 program
-	.version("1.1.0")
+	.version("1.1.1")
 	// Client options
 	.option("-c, --client", "starts the executing client")
 	.option(

@@ -86,6 +86,28 @@ class RequestFactory {
 		return errors
 	}
 
+	getRequestCreatedLogs(startBlock, endBlock) {
+		endBlock = endBlock || 'latest'
+		const event = this.instance.RequestCreated({}, {fromBlock: startBlock, toBlock: endBlock})
+		return new Promise((resolve, reject) => {
+			event.get((err, logs) => {
+				if (!err) {
+					resolve(logs)
+				}
+				else reject(err)
+			})
+		})
+	}
+
+	async getRequests(startBlock, endBlock) {
+		const logs = await this.getRequestCreatedLogs(startBlock, endBlock)
+		let requests = new Array()
+		logs.forEach(log => {
+			requests.push(log.args.request)
+		})
+		return requests
+	}
+
 	/**
 	 * Chain inits
 	 */

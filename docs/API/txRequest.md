@@ -6,12 +6,13 @@ about the transaction request and methods for important actions.
 
 ### Constructor
 
-The constructor for the `TxRequest` class requires two arguments,
-the `address` of the transaction request and the `web3` object. It will 
-return a new instance of a `TxRequest`.
+Returns a `Promise` that resolves a new instance of a `eac.TxRequest`
+class. Uses the canonical Ethereum Alarm Clock contracts for the 
+same chain as the Web3 object was initiated on. Requires one argument,
+the address of the transaction request.
 
 ```javascript
-const txRequest = new eac.TxRequest(address, web3)
+const txRequest = await eac.transactionRequest(address)
 
 // You now have a new transaction request object, the first thing
 // you will likely want to do it is fill its data.
@@ -35,9 +36,10 @@ console.log(txRequest.windowStart) // 2300780
 ### eac.TxRequest.refreshData()
 
 Async function that will return a `Promise` that resolves to `true` if the
-data is successfully refreshed/updated. Use this method after you have already filled
-the data on a transaction request and want to update its values. For example, you
-might use it if the transaction request was recently cancelled.
+data is successfully refreshed/updated. Use this method after you 
+have already filled the data on a transaction request and want to 
+update its values. For example, you might use it if the transaction 
+request was recently cancelled.
 
 ```javascript
 console.log(txReqeuest.isCancelled) //false
@@ -169,8 +171,8 @@ send when its executed.
 
 ### eac.TxRequest.callData()
 
-Returns a `Promise` that will resolve to the `callData` that the transaction request
-will send when its executed.
+Returns a `Promise` that will resolve to the `callData` that the 
+transaction requestwill send when its executed.
 
 ### eac.TxRequest.claim(params)
 
