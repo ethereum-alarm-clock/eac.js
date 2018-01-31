@@ -6,7 +6,7 @@ const eac = require('../src')(web3)
 
 const main = async () => {
     const requestFactory = await eac.requestFactory()
-    const requests = await requestFactory.getRequests(5660000)
+    const requests = await requestFactory.getRequests(5665000)
     console.log(requests)
 }
 

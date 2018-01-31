@@ -3,7 +3,7 @@ const Constants = require("../constants")
 const Util = require("../util")()
 
 class RequestTracker {
-	constructor(address, web3) {
+	constructor(address, requestFactoryAddress, web3) {
 		if (!Util.checkNotNullAddress(address)) {
 			throw new Error(
 				"Attempted to instantiate a RequestTracker class from a null address."
@@ -13,6 +13,7 @@ class RequestTracker {
 		this.instance = this.web3.eth
 			.contract(Util.getABI("RequestTracker"))
 			.at(address)
+		this.setFactory(requestFactoryAddress)
 	}
 
 	get address() {

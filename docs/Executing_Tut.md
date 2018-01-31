@@ -73,15 +73,16 @@ and executing on the Ethereum Alarm Clock contracts. The EAC-centric commands
 you can pass to this REPL are below:
 
 ```rust
-.dumpCache    Dumps your cache storage.
-.getBalance   Get the balance of your accounts.
-.getBlock     Get the latest blockNum and timestamp.
-.getStats     Get some interesting stats on your executing accounts.
-.logLevel     Defines the level to log, 1 - debug/cache, 2 - info, 3 - error.
-.start        Starts the execution client.
-.stop         Stops the execution client.
-.sweepCache   Sweeps your cache of expired txRequests.
-.testTx       Send a test transaction to the network (requires unlocked local account).
+.dumpCache          Dumps your cache storage.
+.getBalance         Get the balance of your accounts.
+.getBlock           Get the latest blockNum and timestamp.
+.getStats           Get some interesting stats on your executing accounts.
+.logLevel <num>     Defines the level to log, 1 - debug/cache, 2 - info, 3 - error.
+.requestInfo <addr> Retrieves some info about the transaction request at <addr>.
+.start              Starts the execution client.
+.stop               Stops the execution client.
+.sweepCache         Sweeps your cache of expired txRequests.
+.testTx             Send a test transaction to the network (requires unlocked local account).
 ```
 
 The most important commands are probably `.start` and `.stop` which 

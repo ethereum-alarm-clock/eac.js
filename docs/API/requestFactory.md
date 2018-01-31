@@ -4,52 +4,30 @@ Exposes utilities for interacting with the Request Factory contract.
 
 ### Constructor
 
-Creates a new instance of a `eac.RequestFactory` and takes two arguments, the
-first is the `address` of the request factory contract and the second is a `web3` object.
+Returns a `Promise` that resolves a new instance of a `eac.RequestFactory`
+class. Uses the canonical Ethereum Alarm Clock contracts for the same 
+chain as the Web3 object was initiated on.
 
 ```javascript
-const requestFactory = new eac.RequestFactory(address, web3)
-```
-
-You can also instantiate a new requestFactory using the convenience functions.
-
-### eac.RequestFactory.initMainnet(web3)
-
-Takes a `web3` object and returns the new instance of a `eac.RequestFactory` instantiated for 
-the mainnet chain.
-
-### eac.RequestFactory.initRopsten(web3)
-
-Takes a `web3` object and returns the new instance of a `eac.RequestFactory` instatiated for the ropsten
-chain.
-
-```javascript
-const requestFactory = eac.RequestFactory.initRopsten(web3)
-
-// You now have a fully instantiated instance which will
-// automatically use the canonical Ropsten contracts.
+// Inside of an async function:
+const requestFactory = await eac.requestFactory()
 ```
 
 ### eac.RequestFactory.getTrackerAddress()
 
 Returns the `address` of the tracker that the request factory is using
-to track new transaction requests. Can then pass the address to create a new instance of a `eac.RequestTracker`.
+to track new transaction requests. 
 
 ```javascript
 const trackerAddr = requestFactory.getTrackerAddress()
-const requestTracker = new eac.RequestTracker(trackerAddr, web3)
-requestTracker.setFactory(requestFactory.address)
-
-// You now have a requestTracker that is the one connected to the
-// requestFactory.
 ```
 
 ### eac.RequestFactory.isKnownRequest(requestAddr)
 
-Takes a `TxRequest` address and returns a `Promise` that will resolve `true` if the transaction request
-is registed with the factory and `false` if it's not. This function is used
-by clients to verify that the address was registered through the watched
-contracts.
+Takes a `TxRequest` address and returns a `Promise` that will resolve `true` if the 
+transaction request is registed with the factory and `false` if it's not. 
+This function is used by clients to verify that the address was registered through
+the watched contracts.
 
 ```javascript
 // Verify that the request is known to the factory we are validating with.
@@ -112,4 +90,40 @@ if (isValid.indexOf(false) != -1) {
     const errorMsgs = requestFactory.parseIsValid(isValid)
     throw new Error(errorMsgs)
 }
+```
+
+### eac.RequestFactory.getRequestCreatedLogs(startBlock[, endBlock])
+
+Takes a `number` `startBlock` and optional `number` `endBlock` and returns
+the raw logs for the requests created through the request factory between
+these block times. If `endBlock` is not provided it will return all logs 
+up until the `latest` block. Returns a `Promise` that resolves to an array
+of the logs.
+
+```javascript
+const logs = await requestFactory.getRequestCreatedLogs(5665000)
+console.log(logs)
+
+// [ { address: '0x209270d49a3673e8d6163849fa0539800cfeeb9c',
+//     blockHash: '0x94c1a6f26a765e47e72e77ce60d8c7ac4cb9dc5858e54bd04fffbc7ec4ce838e',
+//     blockNumber: 5665267,
+//     logIndex: 1,
+//     transactionHash: '0x1dfbd5f4e249fb211e9d4a0b47de54ea0380fc703773b0c393342de123be3d31',
+//     transactionIndex: 1,
+//     transactionLogIndex: '0x0',
+//     type: 'mined',
+//     event: 'RequestCreated',
+//     args: { request: '0x720704a706d8d6b01167d3a5723c1fa50b1aec28' } } ]
+```
+
+### eac.RequestFactory.getRequests(startBlock[, endBlock])
+
+Similar to the previous function but returns an array of only the
+addresses of each transaction request.
+
+```javascript
+const txRequests = await requestFactory.getRequests(5665000)
+console.log(txRequests)
+
+// [ '0x720704a706d8d6b01167d3a5723c1fa50b1aec28' ]
 ```
