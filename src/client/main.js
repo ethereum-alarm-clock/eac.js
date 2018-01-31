@@ -51,7 +51,7 @@ const main = async (
 ) => {
 	const eac = require("../index")(web3)
 	// Assigns chain to the name of the network ID
-	const chain = eac.Util.getChainName()
+	const chain = await eac.Util.getChainName()
 
 	// Loads the contracts
 	let requestFactory, requestTracker

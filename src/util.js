@@ -179,7 +179,7 @@ module.exports = web3 => {
 		checkValidAddress,
 		estimateGas: opts => estimateGas(web3, opts),
 		getABI,
-		getBalance: address => getBalance(address),
+		getBalance: address => getBalance(web3, address),
 		getBlockNumber: () => getBlockNumber(web3),
 		getChainName: () => getChainName(web3),
 		getGasPrice: () => getGasPrice(web3),

@@ -114,10 +114,13 @@ const scanCache = async conf => {
 
 	const allTxRequests = conf.cache
 		.stored()
-		.map(address => await eac.transactionRequest(address))
+		.map(address => eac.transactionRequest(address))
 
-	allTxRequests.forEach(txRequest => {
-		txRequest.refreshData().then(_ => routeTxRequest(conf, txRequest))
+	Promise.all(allTxRequests)
+	.then(txRequests => {
+		txRequests.forEach(txRequest => {
+			txRequest.refreshData().then(_ => routeTxRequest(conf, txRequest))
+		})
 	})
 }
 
