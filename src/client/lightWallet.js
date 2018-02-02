@@ -1,5 +1,6 @@
 const fs = require("fs")
-const { keystore } = require('eth-lightwallet')
+const { keystore, signing } = require('eth-lightwallet')
+const Transaction = require("ethereumjs-tx")
 const Promise = require('bluebird')
 
 // / Wrapper class over the essiential functionality of the light wallet
@@ -10,11 +11,11 @@ class LightWallet {
     this.web3 = web3
     this.wallet = null
     this.nonce = 0
+    this.password = null
   }
 
   async create(password, nAccounts) {
     const seedPhrase = keystore.generateRandomSeed()
-    console.log(seedPhrase)
     const hdPathString = "m/0'/0'/0'"
 
     await this.createVault(password, seedPhrase, hdPathString, nAccounts)
@@ -33,6 +34,7 @@ class LightWallet {
     wallet.generateNewAddress(key, nAccounts)
 
     this.wallet = wallet
+    this.password = password
   }
 
   async encryptAndStore(file) {
@@ -53,6 +55,11 @@ class LightWallet {
     })
   }
 
+  async getPrivateDerivedKey(password, salt) {
+    const deriveKeyFromPasswordAndSalt = Promise.promisify(keystore.deriveKeyFromPasswordAndSalt)
+    return deriveKeyFromPasswordAndSalt(password, salt)
+  }
+
   async decryptAndLoad(file, password) {
     if (this.wallet) {
       console.log("Wallet is already loaded! Returning without loading new wallet...")
@@ -62,8 +69,7 @@ class LightWallet {
     const encryptedWalletFile = fs.readFileSync(file, 'utf-8')
     const encryptedWallet = JSON.parse(encryptedWalletFile)
 
-    const deriveKeyFromPasswordAndSalt = Promise.promisify(keystore.deriveKeyFromPasswordAndSalt)
-    const key = await deriveKeyFromPasswordAndSalt(password, encryptedWallet.salt)
+    const key = await this.getPrivateDerivedKey(password, encryptedWallet.salt)
     const paddedSeed = keystore._decryptString(encryptedWallet.encSeed, key)
     const seed = paddedSeed.trim()
     
@@ -81,23 +87,28 @@ class LightWallet {
       console.log("Index is outside of range of addresses in this wallet!")
       return
     }
-    const signTransaction = Promise.promisify(this.wallet.signTransaction, { context: this.wallet })
+
     const sendRawTransaction = Promise.promisify(this.web3.eth.sendRawTransaction)
     const from = this.getAccounts()[index]
     const txCount = this.web3.eth.getTransactionCount(from)
 
     const txParameters = {
-      nonce: txCount + 1,
+      nonce: txCount,
       from,
       to,
-      gasPrice,
-      gasLimit,
-      value,
+      gasPrice: this.web3.toHex(gasPrice),
+      gasLimit: this.web3.toHex(gasLimit),
+      value: this.web3.toHex(value),
       data
     }
-    
-    const signedTx = await signTransaction(txParameters)
-    return sendRawTransaction(signedTx)
+
+    const tx = new Transaction(txParameters)
+    const privateDerivedKey = await this.getPrivateDerivedKey(this.password, this.wallet.salt)
+    const privateKey = this.wallet.exportPrivateKey(from, privateDerivedKey)
+   
+    tx.sign(new Buffer(privateKey, 'hex'))
+
+    return sendRawTransaction('0x' + tx.serialize().toString('hex'))
   }
 
   getAccounts() {
