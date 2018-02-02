@@ -10,7 +10,7 @@ const ethUtil = require("ethereumjs-util")
 
 // Parse the command line options using commander.
 program
-  .version("1.1.3")
+  .version("1.1.4")
   // Client options
   .option("-c, --client", "starts the executing client")
   .option(
