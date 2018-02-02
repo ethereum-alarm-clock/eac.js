@@ -1,68 +1,65 @@
 const mem_cache = require("memory-cache")
 const _ = require("lodash")
 
-//// wrapper over memory-cache
+// // wrapper over memory-cache
 class Cache {
-	constructor(logger) {
-		this.log = logger
-		this.cache = new mem_cache.Cache()
-		this.mem = []
-	}
+  constructor(logger) {
+    this.log = logger
+    this.cache = new mem_cache.Cache()
+    this.mem = []
+  }
 
-	set(k, v) {
-		if (_.indexOf(this.mem, k) === -1) {
-			this.mem.push(k)
-		}
-		const timeout = 200 * 60 * 1000 // deletes entries after 200 minutes
-		this.cache.put(k, v) //, timeout, this.del(k))
-		this.log.cache(`stored ${k} with value ${v}`)
-	}
+  set(k, v) {
+    if (_.indexOf(this.mem, k) === -1) {
+      this.mem.push(k)
+    }
+    const timeout = 200 * 60 * 1000 // deletes entries after 200 minutes
+    this.cache.put(k, v) // , timeout, this.del(k))
+    this.log.cache(`stored ${k} with value ${v}`)
+  }
 
-	get(k) {
-		/// FIXME more elegant error handling for this...
-		if (this.cache.get(k) === null)
-			throw new Error("attempted to access key entry that does not exist")
-		this.log.cache(`accessed ${k}`)
-		return this.cache.get(k)
-	}
+  get(k) {
+    // / FIXME more elegant error handling for this...
+    if (this.cache.get(k) === null) { throw new Error("attempted to access key entry that does not exist") }
+    this.log.cache(`accessed ${k}`)
+    return this.cache.get(k)
+  }
 
-	has(k) {
-		if (this.cache.get(k) === null) {
-			return false
-		}
-		return true
-	}
+  has(k) {
+    if (this.cache.get(k) === null) {
+      return false
+    }
+    return true
+  }
 
-	del(k) {
-		// mutates the this.mem array to remove the value
-		_.remove(this.mem, addr => {
-			return addr === k
-		})
-		this.cache.del(k)
-		this.log.cache(`deleted ${k}`)
-	}
+  del(k) {
+    // mutates the this.mem array to remove the value
+    _.remove(this.mem, addr => addr === k)
+    this.cache.del(k)
+    this.log.cache(`deleted ${k}`)
+  }
 
-	len() {
-		return this.cache.size()
-	}
+  len() {
+    return this.cache.size()
+  }
 
-	stored() {
-		return this.mem
-	}
+  stored() {
+    return this.mem
+  }
 
-	isEmpty() {
-		if (this.len() === 0) return true
-		return false
-	}
+  isEmpty() {
+    if (this.len() === 0) return true
+    return false
+  }
 
-	sweepExpired() {
-		this.mem.forEach(txRequestAddress => {
-			if (this.get(txRequestAddress) === 99) {
-				// expired
-				this.del(txRequestAddress)
-			}
-		})
-	}
+  sweepExpired() {
+    this.mem.forEach((txRequestAddress) => {
+      if (this.get(txRequestAddress) === 99) {
+        // expired
+        this.del(txRequestAddress)
+      }
+    })
+  }
 }
 
 module.exports.Cache = Cache
