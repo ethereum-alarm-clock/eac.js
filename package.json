@@ -40,7 +40,7 @@
     "web3": "^0.20.4",
     "websocket": "^1.0.25"
   },
-  "preferGlobal": "true",
+  "preferGlobal": true,
   "bin": "src/cli/eac.js",
   "pkg": {
     "scripts": "build/contracts/*.json",
