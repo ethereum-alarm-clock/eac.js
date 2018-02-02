@@ -76,11 +76,8 @@ const main = async (
     web3, // conf.web3
     eac, // conf.eac
     provider, // conf.provider
-    walletFile, // conf.wallet
-    pw // wallet password
   )
-
-  conf.wallet = false
+  await conf.instantiateWallet(walletFile, pw)
 
   conf.client = "parity"
   conf.chain = chain
@@ -88,18 +85,28 @@ const main = async (
   // Creates StatsDB
   conf.statsdb = new StatsDB(conf.web3)
 
-  console.log("Wallet support: Disabled")
-  console.log("\nExecuting from account:")
-
-  const account = web3.eth.accounts[0]
-  /* eslint-disable */
-  web3.eth.defaultAccount = account
-  /* eslin-enable */
-  if (!eac.Util.checkValidAddress(web3.eth.defaultAccount)) {
-    throw new Error("Wallet is disabled but you do not have a local account unlocked.")
+  // Determines wallet support
+  // Determines wallet support
+  if (conf.wallet) {
+    console.log('Wallet support: Enabled')
+    console.log('\nExecuting from accounts:')
+    conf.wallet.getAccounts().forEach(async account => {
+        console.log(`${account} | Balance: ${web3.fromWei(await eac.Util.getBalance(account))}`)
+    })
+    conf.statsdb.initialize(conf.wallet.getAccounts())
+  } else { 
+    console.log('Wallet support: Disabled')
+    // Loads the default account.
+    const account = web3.eth.accounts[0]
+    /* eslint-disable */
+    web3.eth.defaultAccount = account
+    /* eslin-enable */
+    if (!eac.Util.checkValidAddress(web3.eth.defaultAccount)) {
+      throw new Error("Wallet is disabled but you do not have a local account unlocked.")
+    }
+    console.log(`\nExecuting from account: ${account} | Balance: ${web3.fromWei(await eac.Util.getBalance(account))}`)
+    conf.statsdb.initialize([account])
   }
-  console.log(`${account} | Balance: ${web3.fromWei(await eac.Util.getBalance(account))}`)
-  conf.statsdb.initialize([account])
 
   // Begin
   conf.scanning = false

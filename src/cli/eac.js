@@ -2,6 +2,8 @@
 
 const program = require("commander")
 const alarmClient = require("../client/main")
+const createWallet = require('../wallet/createWallet.js')
+const drainWallet = require('../wallet/drainWallet.js')
 const BigNumber = require("bignumber.js")
 const clear = require("clear")
 const ora = require("ora")
@@ -11,29 +13,31 @@ const ethUtil = require("ethereumjs-util")
 // Parse the command line options using commander.
 program
   .version("1.1.3")
-  // Client options
-  .option("-c, --client", "starts the executing client")
   .option(
-    "--scan <spread>",
-    "sets the scanning spread (ie +- from current block",
-    75
+  "--scan <spread>",
+  "sets the scanning spread (ie +- from current block",
+  75
   )
   .option(
-    "-m, --milliseconds <ms>",
-    "tells the client to scan every <ms> seconds",
-    4000
+  "-m, --milliseconds <ms>",
+  "tells the client to scan every <ms> seconds",
+  4000
   )
   .option("--logfile [path]", "specifies the output logifle", "default")
   .option("--logLevel [0,1,2,3]", "sets the log level", 2)
   .option(
-    "--provider <string>",
-    "set the HttpProvider to use",
-    "http://localhost:8545"
+  "--provider <string>",
+  "set the HttpProvider to use",
+  "http://localhost:8545"
   )
-  // Scheduling options
   .option("-s, --schedule", "schedules a transactions")
   .option("--block")
   .option("--timestamp")
+  .option('-w, --wallet [path]', 'specify the path to the keyfile you would like to unlock')
+  .option('-p, --password [string]', 'the password to unlock your keystore file')
+  .option("-c, --client", "starts the executing client")
+  .option('--createWallet', 'guides you through creating a new wallet.')
+  .option('--drainWallet <target>', 'sends the target address all ether in the wallet')
   .parse(process.argv)
 
 // Create the web3 object by using the chosen provider, defaults to localhost:8545
@@ -45,7 +49,43 @@ const web3 = new Web3(provider)
 const eac = require('../index')(web3)
 
 const main = async (_) => {
-  if (program.client) {
+  if (program.createWallet) {
+
+    const numAccounts = readlineSync.question('How many accounts would you like in your wallet? [1 - 10]\n> ')
+
+    function isNumber(n) { return !isNaN(parseFloat(n)) && !isNaN(n - 0) }
+
+    if (!isNumber(numAccounts) || numAccounts > 10 || numAccounts <= 0) {
+      console.error('  error: must specify a number between 1 - 10 for number of accounts')
+      process.exit(1)
+    }
+
+    const file = readlineSync.question('Where would you like to save the encrypted keys? Please provide a valid filename or path.\n> ')
+    const password = readlineSync.question("Please enter a password for the keyfile. Write this down!\n> ")
+
+    createWallet(web3, numAccounts, file, password)
+  } else if (program.drainWallet) {
+    if (!program.wallet
+      || !program.password) {
+      console.log('\n  error: must supply the `--wallet <keyfile>` and `--password <pw>` flags\n')
+      process.exit(1)
+    }
+
+    if (!ethUtil.isValidAddress(program.drainWallet)) {
+      console.log(`\n  error: input ${program.drainWallet} not valid Ethereum address`)
+      process.exit(1)
+    }
+
+    const spinner = ora('Sending transactions...').start()
+    const gasPrice = await web3.eth.getGasPrice()
+
+    try {
+      await drainWallet(web3, gasPrice, program.drainWallet, program.wallet, program.password)
+      spinner.succeed('Wallet drained!')
+    } catch (err) {
+      spinner.fail(err)
+    }
+  } else if (program.client) {
     clear()
     console.log("⏰ ⏰ ⏰ Welcome to the Ethereum Alarm Clock client ⏰ ⏰ ⏰\n")
 
@@ -217,16 +257,16 @@ Endowment: ${web3.fromWei(endowment.toString())}
     temporalUnit === 1
       ? eacScheduler
         .blockSchedule(
-          toAddress,
-          callData,
-          callGas,
-          callValue,
-          windowSize,
-          windowStart,
-          gasPrice,
-          fee,
-          bounty,
-          requiredDeposit
+        toAddress,
+        callData,
+        callGas,
+        callValue,
+        windowSize,
+        windowStart,
+        gasPrice,
+        fee,
+        bounty,
+        requiredDeposit
         )
         .then((receipt) => {
           if (receipt.status !== '0x1') {
@@ -241,16 +281,16 @@ Endowment: ${web3.fromWei(endowment.toString())}
         })
       : eacScheduler
         .timestampSchedule(
-          toAddress,
-          callData,
-          callGas,
-          callValue,
-          windowSize,
-          windowStart,
-          gasPrice,
-          fee,
-          bounty,
-          requiredDeposit
+        toAddress,
+        callData,
+        callGas,
+        callValue,
+        windowSize,
+        windowStart,
+        gasPrice,
+        fee,
+        bounty,
+        requiredDeposit
         )
         .then((receipt) => {
           if (receipt.status !== '0x1') {

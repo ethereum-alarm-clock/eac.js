@@ -11,9 +11,7 @@ class Config {
     tracker,
     web3,
     eac,
-    provider,
-    walletFile,
-    password
+    provider
   ) {
     this.scanSpread = scanSpread
     this.logger = new Logger(logfile, logLevel)
@@ -24,18 +22,15 @@ class Config {
     this.web3 = web3
     this.eac = eac
     this.provider = provider
-    if (walletFile) {
-      this.wallet = this.instantiateWallet(walletFile, password)
-    }
   }
 
-  instantiateWallet(walletFile, password) {
-    if (walletFile === "none") {
+  async instantiateWallet(file, password) {
+    if (file === "none") {
       return false
     }
     const wallet = new LightWallet(this.web3)
-    wallet.decryptAndLoad(walletFile, password)
-    return wallet
+    await wallet.decryptAndLoad(file, password)
+    this.wallet = wallet 
   }
 }
 
