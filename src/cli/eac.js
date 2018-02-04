@@ -12,7 +12,7 @@ const ethUtil = require("ethereumjs-util")
 
 // Parse the command line options using commander.
 program
-  .version("1.1.3")
+  .version("1.1.4")
   .option(
   "--scan <spread>",
   "sets the scanning spread (ie +- from current block",

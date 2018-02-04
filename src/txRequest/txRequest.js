@@ -295,6 +295,81 @@ class TxRequest {
   }
 
   /**
+   * Proxy
+   * @param {string} toAddress Ethereum address
+   * @param {string} data Hex encoded data for the transaction to proxy
+   * @param {Object} params Transaction object including `from`, `gas`, `gasPrice` and `value`.
+   */
+  proxy(toAddress, data, params) {
+    return new Promise((resolve, reject) => {
+      this.instance.proxy(toAddress, data, params, (err, txHash) => {
+        if (err) reject(err)
+        else {
+          Util.waitForTransactionToBeMined(this.web3, txHash)
+            .then(resolve) // resolves the receipt
+            .catch(reject) // rejects the error
+        }
+      })
+    })
+  }
+
+  /**
+   * Pull Payments
+   */
+
+  refundClaimDeposit(params) {
+    return new Promise((resolve, reject) => {
+      this.instance.refundClaimDeposit(params, (err, txHash) => {
+        if (err) reject(err)
+        else {
+          Util.waitForTransactionToBeMined(this.web3, txHash)
+            .then(resolve)
+            .catch(reject)
+        }
+      })
+    })
+  }
+
+  sendFee(params) {
+    return new Promise((resolve, reject) => {
+      this.instance.sendFee(params, (err, txHash) => {
+        if (err) reject(err)
+        else {
+          Util.waitForTransactionToBeMined(this.web3, txHash)
+            .then(resolve)
+            .catch(reject)
+        }
+      })
+    })
+  }
+
+  sendBounty(params) {
+    return new Promise((resolve, reject) => {
+      this.instance.sendBounty(params, (err, txHash) => {
+        if (err) reject(err)
+        else {
+          Util.waitForTransactionToBeMined(this.web3, txHash)
+            .then(resolve)
+            .catch(reject)
+        }
+      })
+    })
+  }
+
+  sendOwnerEther(params) {
+    return new Promise((resolve, reject) => {
+      this.instance.sendOwnerEther(params, (err, txHash) => {
+        if (err) reject(err)
+        else {
+          Util.waitForTransactionToBeMined(this.web3, txHash)
+            .then(resolve)
+            .catch(reject)
+        }
+      })
+    })
+  }
+
+  /**
    * Misc.
    */
 
