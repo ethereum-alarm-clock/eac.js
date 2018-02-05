@@ -34,6 +34,7 @@ program
   .option("-s, --schedule", "schedules a transactions")
   .option("--block")
   .option("--timestamp")
+  .option("--autostart", "starts scanning automatically")
   .parse(process.argv)
 
 // Create the web3 object by using the chosen provider, defaults to localhost:8545
@@ -63,7 +64,8 @@ const main = async (_) => {
       program.logfile,
       program.logLevel, // 1 = debug, 2 = info, 3 = error
       program.wallet,
-      program.password
+      program.password,
+      program.autostart
     ).catch((err) => {
       throw err
     })
