@@ -39,6 +39,7 @@ const startScanning = (ms, conf) => {
  * @param {String} chain The name of the chain, accepted values are 'ropsten', 'rinkeby' and 'kovan'.
  * @param {String} walletFile Path to the encrypted wallet file.
  * @param {String} pw Password to decrypt wallet.
+ * @param {Boolean} autoStart Enables automatic scanning.
  */
 const main = async (
   web3,
@@ -49,7 +50,8 @@ const main = async (
   logfile,
   logLevel,
   walletFile,
-  pw
+  pw,
+  autostart
 ) => {
   // Assigns chain to the name of the network ID
   const chain = await eac.Util.getChainName()
@@ -77,7 +79,8 @@ const main = async (
     eac, // conf.eac
     provider, // conf.provider
     walletFile, // conf.wallet
-    pw // wallet password
+    pw,
+    autostart // wallet password
   )
 
   conf.wallet = false
@@ -102,7 +105,6 @@ const main = async (
   conf.statsdb.initialize([account])
 
   // Begin
-  conf.scanning = false
   startScanning(ms, conf)
 
   // Waits a bit before starting the repl so that the accounts have time to print.
