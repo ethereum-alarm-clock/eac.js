@@ -83,10 +83,11 @@ class RequestFactory {
   }
 
   getRequestCreatedLogs(startBlock, endBlock) {
+    const start = startBlock || "0"
     const end = endBlock || "latest"
     const event = this.instance.RequestCreated(
       {},
-      { fromBlock: startBlock, toBlock: end }
+      { fromBlock: start, toBlock: end }
     )
     return new Promise((resolve, reject) => {
       event.get((err, logs) => {
