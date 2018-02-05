@@ -11,7 +11,10 @@ class Config {
     tracker,
     web3,
     eac,
-    provider
+    provider,
+    walletFile,
+    password,
+    autostart
   ) {
     this.scanSpread = scanSpread
     this.logger = new Logger(logfile, logLevel)
@@ -22,6 +25,10 @@ class Config {
     this.web3 = web3
     this.eac = eac
     this.provider = provider
+    this.scanning = autostart
+    if (walletFile) {
+      this.wallet = this.instantiateWallet(walletFile, password)
+    }
   }
 
   async instantiateWallet(file, password) {
