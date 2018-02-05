@@ -31,13 +31,13 @@ class Config {
     }
   }
 
-  instantiateWallet(walletFile, password) {
-    if (walletFile === "none") {
+  async instantiateWallet(file, password) {
+    if (file === "none") {
       return false
     }
     const wallet = new LightWallet(this.web3)
-    wallet.decryptAndLoad(walletFile, password)
-    return wallet
+    await wallet.decryptAndLoad(file, password)
+    this.wallet = wallet 
   }
 }
 
