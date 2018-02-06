@@ -82,13 +82,13 @@ class RequestFactory {
     return errors
   }
 
-  async getRequestCreatedLogs(startBlock, endBlock) {
+  async getRequestCreatedLogs(filter, startBlock, endBlock) {
+    const f = filter || {}
     const curBlock = await Util.getBlockNumber(this.web3)
-    console.log(curBlock)
-    const start = startBlock || 0//curBlock.sub(5000).toString()
+    const start = startBlock || curBlock - 5000 > 0 ? curBlock - 5000 : 0
     const end = endBlock || "latest"
     const event = this.instance.RequestCreated(
-      {},
+      f,
       { fromBlock: start, toBlock: end }
     )
     return new Promise((resolve, reject) => {
@@ -101,7 +101,7 @@ class RequestFactory {
   }
 
   async getRequests(startBlock, endBlock) {
-    const logs = await this.getRequestCreatedLogs(startBlock, endBlock)
+    const logs = await this.getRequestCreatedLogs({}, startBlock, endBlock)
     const requests = []
     logs.forEach((log) => {
       requests.push(log.args.request)
@@ -110,7 +110,14 @@ class RequestFactory {
   }
 
   async getRequestsByOwner(owner, startBlock, endBlock) {
-    return 0
+    const logs = await this.getRequestCreatedLogs({
+      owner: owner
+    }, startBlock, endBlock)
+    const requests = []
+    logs.forEach((log) => {
+      requests.push(log.args.request)
+    })
+    return requests
   }
 
   /**
