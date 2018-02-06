@@ -1,10 +1,11 @@
 const BigNumber = require('bignumber.js')
 const LightWallet = require('../client/lightWallet.js')
+const { Util } = require('../index')()
 
 // @returns Promise<[txObjs]>
-const drainWallet = (web3, gasPrice, target, file, password) => {
+const drainWallet = async (web3, gasPrice, target, file, password) => {
     const wallet = new LightWallet(web3)
-    wallet.decryptAndLoad(file, password)
+    await wallet.decryptAndLoad(file, password)
 
     const gas = '21000'
     const gasCost = new BigNumber(gas).times(gasPrice)
@@ -12,23 +13,25 @@ const drainWallet = (web3, gasPrice, target, file, password) => {
     return Promise.all(
         wallet.getAccounts().map(account => {
             return new Promise((resolve, reject) => {
-                web3.eth.getBalance(account)
+                Util.getBalance(web3, account)
                 .then(bal => {
                     bal = new BigNumber(bal)
                     const amt = bal.minus(gasCost)
-                    web3.eth.sendTransaction({
-                        from: account,
-                        to: target,
-                        value: amt.toString(),
-                        gas: gas,
-                        gasPrice: gasPrice,
+                    wallet.sendFromIndex(
+                        wallet.getAccounts().indexOf(account),
+                        target,
+                        amt.toString(),
+                        gas,
+                        gasPrice,
+                        ""
+                    )
+                    .then(txHash => {
+                        Util.waitForTransactionToBeMined(web3, txHash)
+                        .then(resolve) // with the receipt
+                        .catch(reject)
                     })
-                    .then(txObj => {
-                        resolve(txObj)
-                    })
-                    .catch(err => reject(err))
+                    .catch(reject)
                 })
-                .catch(err => reject(err))
             })
         })
     )

@@ -1,18 +1,18 @@
 {
   "contractName": "ExecutionLib",
   "abi": [],
-  "bytecode": "0x60606040523415600e57600080fd5b603580601b6000396000f3006060604052600080fd00a165627a7a72305820bb1b92eae50c2cab280f0d1e9eca938c60f5770f86db0a68fec1430f7307b4bd0029",
-  "deployedBytecode": "0x6060604052600080fd00a165627a7a72305820bb1b92eae50c2cab280f0d1e9eca938c60f5770f86db0a68fec1430f7307b4bd0029",
-  "sourceMap": "123:1937:21:-;;;;;;;;;;;;;;;;;",
-  "deployedSourceMap": "123:1937:21:-;;;;;",
-  "source": "pragma solidity ^0.4.18;\n\n/**\n * @title ExecutionLib\n * @dev Contains the logic for executing a scheduled transaction.\n */\nlibrary ExecutionLib {\n\n    struct ExecutionData {\n        address toAddress;                  /// The destination of the transaction.\n        bytes callData;                     /// The bytecode that will be sent with the transaction.\n        uint callValue;                     /// The wei value that will be sent with the transaction.\n        uint callGas;                       /// The amount of gas to be sent with the transaction.\n        uint gasPrice;                      /// The gasPrice that should be set for the transaction.\n    }\n\n    /**\n     * @dev Send the transaction according to the parameters outlined in ExecutionData.\n     * @param self The ExecutionData object.\n     */\n    function sendTransaction(ExecutionData storage self)\n        internal returns (bool)\n    {\n        /// Should never actually reach this require check, but here in case.\n        require( self.gasPrice == tx.gasprice );\n        return self.toAddress.call.value(self.callValue)\n                                  .gas(self.callGas)\n                                  (self.callData);\n    }\n\n\n    /**\n     * Returns the maximum possible gas consumption that a transaction request\n     * may consume.  The EXTRA_GAS value represents the overhead involved in\n     * request execution.\n     */\n    function CALL_GAS_CEILING(uint EXTRA_GAS) \n        internal view returns (uint)\n    {\n        return block.gaslimit - EXTRA_GAS;\n    }\n\n    /*\n     * @dev Validation: ensure that the callGas is not above the total possible gas\n     * for a call.\n     */\n     function validateCallGas(uint callGas, uint EXTRA_GAS)\n        internal view returns (bool)\n    {\n        return callGas < CALL_GAS_CEILING(EXTRA_GAS);\n    }\n\n    /*\n     * @dev Validation: ensure that the toAddress is not set to the empty address.\n     */\n     function validateToAddress(address toAddress)\n        internal pure returns (bool)\n    {\n        return toAddress != 0x0;\n    }\n}\n",
+  "bytecode": "0x60606040523415600e57600080fd5b603580601b6000396000f3006060604052600080fd00a165627a7a723058209ee73a76987e121bf2088cb34feac42261635000cf8c3efecb7e628f6795684b0029",
+  "deployedBytecode": "0x6060604052600080fd00a165627a7a723058209ee73a76987e121bf2088cb34feac42261635000cf8c3efecb7e628f6795684b0029",
+  "sourceMap": "122:1937:12:-;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "122:1937:12:-;;;;;",
+  "source": "pragma solidity 0.4.19;\n\n/**\n * @title ExecutionLib\n * @dev Contains the logic for executing a scheduled transaction.\n */\nlibrary ExecutionLib {\n\n    struct ExecutionData {\n        address toAddress;                  /// The destination of the transaction.\n        bytes callData;                     /// The bytecode that will be sent with the transaction.\n        uint callValue;                     /// The wei value that will be sent with the transaction.\n        uint callGas;                       /// The amount of gas to be sent with the transaction.\n        uint gasPrice;                      /// The gasPrice that should be set for the transaction.\n    }\n\n    /**\n     * @dev Send the transaction according to the parameters outlined in ExecutionData.\n     * @param self The ExecutionData object.\n     */\n    function sendTransaction(ExecutionData storage self)\n        internal returns (bool)\n    {\n        /// Should never actually reach this require check, but here in case.\n        require( self.gasPrice == tx.gasprice );\n        return self.toAddress.call.value(self.callValue)\n                                  .gas(self.callGas)\n                                  (self.callData);\n    }\n\n\n    /**\n     * Returns the maximum possible gas consumption that a transaction request\n     * may consume.  The EXTRA_GAS value represents the overhead involved in\n     * request execution.\n     */\n    function CALL_GAS_CEILING(uint EXTRA_GAS) \n        internal view returns (uint)\n    {\n        return block.gaslimit - EXTRA_GAS;\n    }\n\n    /*\n     * @dev Validation: ensure that the callGas is not above the total possible gas\n     * for a call.\n     */\n     function validateCallGas(uint callGas, uint EXTRA_GAS)\n        internal view returns (bool)\n    {\n        return callGas < CALL_GAS_CEILING(EXTRA_GAS);\n    }\n\n    /*\n     * @dev Validation: ensure that the toAddress is not set to the empty address.\n     */\n     function validateToAddress(address toAddress)\n        internal pure returns (bool)\n    {\n        return toAddress != 0x0;\n    }\n}\n",
   "sourcePath": "contracts/Library/ExecutionLib.sol",
   "ast": {
     "attributes": {
       "absolutePath": "contracts/Library/ExecutionLib.sol",
       "exportedSymbols": {
         "ExecutionLib": [
-          6027
+          3580
         ]
       }
     },
@@ -21,14 +21,13 @@
         "attributes": {
           "literals": [
             "solidity",
-            "^",
             "0.4",
-            ".18"
+            ".19"
           ]
         },
-        "id": 5943,
+        "id": 3496,
         "name": "PragmaDirective",
-        "src": "0:24:21"
+        "src": "0:23:12"
       },
       {
         "attributes": {
@@ -42,17 +41,17 @@
           "documentation": "@title ExecutionLib\n@dev Contains the logic for executing a scheduled transaction.",
           "fullyImplemented": true,
           "linearizedBaseContracts": [
-            6027
+            3580
           ],
           "name": "ExecutionLib",
-          "scope": 6028
+          "scope": 3581
         },
         "children": [
           {
             "attributes": {
               "canonicalName": "ExecutionLib.ExecutionData",
               "name": "ExecutionData",
-              "scope": 6027,
+              "scope": 3580,
               "visibility": "public"
             },
             "children": [
@@ -60,7 +59,7 @@
                 "attributes": {
                   "constant": false,
                   "name": "toAddress",
-                  "scope": 5954,
+                  "scope": 3507,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "address",
@@ -73,20 +72,20 @@
                       "name": "address",
                       "type": "address"
                     },
-                    "id": 5944,
+                    "id": 3497,
                     "name": "ElementaryTypeName",
-                    "src": "182:7:21"
+                    "src": "181:7:12"
                   }
                 ],
-                "id": 5945,
+                "id": 3498,
                 "name": "VariableDeclaration",
-                "src": "182:17:21"
+                "src": "181:17:12"
               },
               {
                 "attributes": {
                   "constant": false,
                   "name": "callData",
-                  "scope": 5954,
+                  "scope": 3507,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "bytes storage pointer",
@@ -99,20 +98,20 @@
                       "name": "bytes",
                       "type": "bytes storage pointer"
                     },
-                    "id": 5946,
+                    "id": 3499,
                     "name": "ElementaryTypeName",
-                    "src": "266:5:21"
+                    "src": "265:5:12"
                   }
                 ],
-                "id": 5947,
+                "id": 3500,
                 "name": "VariableDeclaration",
-                "src": "266:14:21"
+                "src": "265:14:12"
               },
               {
                 "attributes": {
                   "constant": false,
                   "name": "callValue",
-                  "scope": 5954,
+                  "scope": 3507,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "uint256",
@@ -125,20 +124,20 @@
                       "name": "uint",
                       "type": "uint256"
                     },
-                    "id": 5948,
+                    "id": 3501,
                     "name": "ElementaryTypeName",
-                    "src": "367:4:21"
+                    "src": "366:4:12"
                   }
                 ],
-                "id": 5949,
+                "id": 3502,
                 "name": "VariableDeclaration",
-                "src": "367:14:21"
+                "src": "366:14:12"
               },
               {
                 "attributes": {
                   "constant": false,
                   "name": "callGas",
-                  "scope": 5954,
+                  "scope": 3507,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "uint256",
@@ -151,20 +150,20 @@
                       "name": "uint",
                       "type": "uint256"
                     },
-                    "id": 5950,
+                    "id": 3503,
                     "name": "ElementaryTypeName",
-                    "src": "469:4:21"
+                    "src": "468:4:12"
                   }
                 ],
-                "id": 5951,
+                "id": 3504,
                 "name": "VariableDeclaration",
-                "src": "469:12:21"
+                "src": "468:12:12"
               },
               {
                 "attributes": {
                   "constant": false,
                   "name": "gasPrice",
-                  "scope": 5954,
+                  "scope": 3507,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "uint256",
@@ -177,19 +176,19 @@
                       "name": "uint",
                       "type": "uint256"
                     },
-                    "id": 5952,
+                    "id": 3505,
                     "name": "ElementaryTypeName",
-                    "src": "568:4:21"
+                    "src": "567:4:12"
                   }
                 ],
-                "id": 5953,
+                "id": 3506,
                 "name": "VariableDeclaration",
-                "src": "568:13:21"
+                "src": "567:13:12"
               }
             ],
-            "id": 5954,
+            "id": 3507,
             "name": "StructDefinition",
-            "src": "151:515:21"
+            "src": "150:515:12"
           },
           {
             "attributes": {
@@ -201,7 +200,7 @@
               ],
               "name": "sendTransaction",
               "payable": false,
-              "scope": 6027,
+              "scope": 3580,
               "stateMutability": "nonpayable",
               "superFunction": null,
               "visibility": "internal"
@@ -213,7 +212,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "self",
-                      "scope": 5985,
+                      "scope": 3538,
                       "stateVariable": false,
                       "storageLocation": "storage",
                       "type": "struct ExecutionLib.ExecutionData storage pointer",
@@ -225,22 +224,22 @@
                         "attributes": {
                           "contractScope": null,
                           "name": "ExecutionData",
-                          "referencedDeclaration": 5954,
+                          "referencedDeclaration": 3507,
                           "type": "struct ExecutionLib.ExecutionData storage pointer"
                         },
-                        "id": 5955,
+                        "id": 3508,
                         "name": "UserDefinedTypeName",
-                        "src": "846:13:21"
+                        "src": "845:13:12"
                       }
                     ],
-                    "id": 5956,
+                    "id": 3509,
                     "name": "VariableDeclaration",
-                    "src": "846:26:21"
+                    "src": "845:26:12"
                   }
                 ],
-                "id": 5957,
+                "id": 3510,
                 "name": "ParameterList",
-                "src": "845:28:21"
+                "src": "844:28:12"
               },
               {
                 "children": [
@@ -248,7 +247,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 5985,
+                      "scope": 3538,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bool",
@@ -261,19 +260,19 @@
                           "name": "bool",
                           "type": "bool"
                         },
-                        "id": 5958,
+                        "id": 3511,
                         "name": "ElementaryTypeName",
-                        "src": "900:4:21"
+                        "src": "899:4:12"
                       }
                     ],
-                    "id": 5959,
+                    "id": 3512,
                     "name": "VariableDeclaration",
-                    "src": "900:4:21"
+                    "src": "899:4:12"
                   }
                 ],
-                "id": 5960,
+                "id": 3513,
                 "name": "ParameterList",
-                "src": "899:6:21"
+                "src": "898:6:12"
               },
               {
                 "children": [
@@ -305,13 +304,13 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 9130,
+                              "referencedDeclaration": 6260,
                               "type": "function (bool) pure",
                               "value": "require"
                             },
-                            "id": 5961,
+                            "id": 3514,
                             "name": "Identifier",
-                            "src": "998:7:21"
+                            "src": "997:7:12"
                           },
                           {
                             "attributes": {
@@ -336,7 +335,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "gasPrice",
-                                  "referencedDeclaration": 5953,
+                                  "referencedDeclaration": 3506,
                                   "type": "uint256"
                                 },
                                 "children": [
@@ -346,18 +345,18 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 5956,
+                                      "referencedDeclaration": 3509,
                                       "type": "struct ExecutionLib.ExecutionData storage pointer",
                                       "value": "self"
                                     },
-                                    "id": 5962,
+                                    "id": 3515,
                                     "name": "Identifier",
-                                    "src": "1007:4:21"
+                                    "src": "1006:4:12"
                                   }
                                 ],
-                                "id": 5963,
+                                "id": 3516,
                                 "name": "MemberAccess",
-                                "src": "1007:13:21"
+                                "src": "1006:13:12"
                               },
                               {
                                 "attributes": {
@@ -377,37 +376,37 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 9137,
+                                      "referencedDeclaration": 6267,
                                       "type": "tx",
                                       "value": "tx"
                                     },
-                                    "id": 5964,
+                                    "id": 3517,
                                     "name": "Identifier",
-                                    "src": "1024:2:21"
+                                    "src": "1023:2:12"
                                   }
                                 ],
-                                "id": 5965,
+                                "id": 3518,
                                 "name": "MemberAccess",
-                                "src": "1024:11:21"
+                                "src": "1023:11:12"
                               }
                             ],
-                            "id": 5966,
+                            "id": 3519,
                             "name": "BinaryOperation",
-                            "src": "1007:28:21"
+                            "src": "1006:28:12"
                           }
                         ],
-                        "id": 5967,
+                        "id": 3520,
                         "name": "FunctionCall",
-                        "src": "998:39:21"
+                        "src": "997:39:12"
                       }
                     ],
-                    "id": 5968,
+                    "id": 3521,
                     "name": "ExpressionStatement",
-                    "src": "998:39:21"
+                    "src": "997:39:12"
                   },
                   {
                     "attributes": {
-                      "functionReturnParameters": 5960
+                      "functionReturnParameters": 3513
                     },
                     "children": [
                       {
@@ -514,7 +513,7 @@
                                                   "isPure": false,
                                                   "lValueRequested": false,
                                                   "member_name": "toAddress",
-                                                  "referencedDeclaration": 5945,
+                                                  "referencedDeclaration": 3498,
                                                   "type": "address"
                                                 },
                                                 "children": [
@@ -524,28 +523,28 @@
                                                       "overloadedDeclarations": [
                                                         null
                                                       ],
-                                                      "referencedDeclaration": 5956,
+                                                      "referencedDeclaration": 3509,
                                                       "type": "struct ExecutionLib.ExecutionData storage pointer",
                                                       "value": "self"
                                                     },
-                                                    "id": 5969,
+                                                    "id": 3522,
                                                     "name": "Identifier",
-                                                    "src": "1054:4:21"
+                                                    "src": "1053:4:12"
                                                   }
                                                 ],
-                                                "id": 5970,
+                                                "id": 3523,
                                                 "name": "MemberAccess",
-                                                "src": "1054:14:21"
+                                                "src": "1053:14:12"
                                               }
                                             ],
-                                            "id": 5971,
+                                            "id": 3524,
                                             "name": "MemberAccess",
-                                            "src": "1054:19:21"
+                                            "src": "1053:19:12"
                                           }
                                         ],
-                                        "id": 5972,
+                                        "id": 3525,
                                         "name": "MemberAccess",
-                                        "src": "1054:25:21"
+                                        "src": "1053:25:12"
                                       },
                                       {
                                         "attributes": {
@@ -555,7 +554,7 @@
                                           "isPure": false,
                                           "lValueRequested": false,
                                           "member_name": "callValue",
-                                          "referencedDeclaration": 5949,
+                                          "referencedDeclaration": 3502,
                                           "type": "uint256"
                                         },
                                         "children": [
@@ -565,28 +564,28 @@
                                               "overloadedDeclarations": [
                                                 null
                                               ],
-                                              "referencedDeclaration": 5956,
+                                              "referencedDeclaration": 3509,
                                               "type": "struct ExecutionLib.ExecutionData storage pointer",
                                               "value": "self"
                                             },
-                                            "id": 5973,
+                                            "id": 3526,
                                             "name": "Identifier",
-                                            "src": "1080:4:21"
+                                            "src": "1079:4:12"
                                           }
                                         ],
-                                        "id": 5974,
+                                        "id": 3527,
                                         "name": "MemberAccess",
-                                        "src": "1080:14:21"
+                                        "src": "1079:14:12"
                                       }
                                     ],
-                                    "id": 5975,
+                                    "id": 3528,
                                     "name": "FunctionCall",
-                                    "src": "1054:41:21"
+                                    "src": "1053:41:12"
                                   }
                                 ],
-                                "id": 5976,
+                                "id": 3529,
                                 "name": "MemberAccess",
-                                "src": "1054:80:21"
+                                "src": "1053:80:12"
                               },
                               {
                                 "attributes": {
@@ -596,7 +595,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "callGas",
-                                  "referencedDeclaration": 5951,
+                                  "referencedDeclaration": 3504,
                                   "type": "uint256"
                                 },
                                 "children": [
@@ -606,23 +605,23 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 5956,
+                                      "referencedDeclaration": 3509,
                                       "type": "struct ExecutionLib.ExecutionData storage pointer",
                                       "value": "self"
                                     },
-                                    "id": 5977,
+                                    "id": 3530,
                                     "name": "Identifier",
-                                    "src": "1135:4:21"
+                                    "src": "1134:4:12"
                                   }
                                 ],
-                                "id": 5978,
+                                "id": 3531,
                                 "name": "MemberAccess",
-                                "src": "1135:12:21"
+                                "src": "1134:12:12"
                               }
                             ],
-                            "id": 5979,
+                            "id": 3532,
                             "name": "FunctionCall",
-                            "src": "1054:94:21"
+                            "src": "1053:94:12"
                           },
                           {
                             "attributes": {
@@ -632,7 +631,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "callData",
-                              "referencedDeclaration": 5947,
+                              "referencedDeclaration": 3500,
                               "type": "bytes storage ref"
                             },
                             "children": [
@@ -642,38 +641,38 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 5956,
+                                  "referencedDeclaration": 3509,
                                   "type": "struct ExecutionLib.ExecutionData storage pointer",
                                   "value": "self"
                                 },
-                                "id": 5980,
+                                "id": 3533,
                                 "name": "Identifier",
-                                "src": "1184:4:21"
+                                "src": "1183:4:12"
                               }
                             ],
-                            "id": 5981,
+                            "id": 3534,
                             "name": "MemberAccess",
-                            "src": "1184:13:21"
+                            "src": "1183:13:12"
                           }
                         ],
-                        "id": 5982,
+                        "id": 3535,
                         "name": "FunctionCall",
-                        "src": "1054:144:21"
+                        "src": "1053:144:12"
                       }
                     ],
-                    "id": 5983,
+                    "id": 3536,
                     "name": "Return",
-                    "src": "1047:151:21"
+                    "src": "1046:151:12"
                   }
                 ],
-                "id": 5984,
+                "id": 3537,
                 "name": "Block",
-                "src": "910:295:21"
+                "src": "909:295:12"
               }
             ],
-            "id": 5985,
+            "id": 3538,
             "name": "FunctionDefinition",
-            "src": "821:384:21"
+            "src": "820:384:12"
           },
           {
             "attributes": {
@@ -685,7 +684,7 @@
               ],
               "name": "CALL_GAS_CEILING",
               "payable": false,
-              "scope": 6027,
+              "scope": 3580,
               "stateMutability": "view",
               "superFunction": null,
               "visibility": "internal"
@@ -697,7 +696,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "EXTRA_GAS",
-                      "scope": 5998,
+                      "scope": 3551,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -710,19 +709,19 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 5986,
+                        "id": 3539,
                         "name": "ElementaryTypeName",
-                        "src": "1436:4:21"
+                        "src": "1435:4:12"
                       }
                     ],
-                    "id": 5987,
+                    "id": 3540,
                     "name": "VariableDeclaration",
-                    "src": "1436:14:21"
+                    "src": "1435:14:12"
                   }
                 ],
-                "id": 5988,
+                "id": 3541,
                 "name": "ParameterList",
-                "src": "1435:16:21"
+                "src": "1434:16:12"
               },
               {
                 "children": [
@@ -730,7 +729,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 5998,
+                      "scope": 3551,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -743,25 +742,25 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 5989,
+                        "id": 3542,
                         "name": "ElementaryTypeName",
-                        "src": "1484:4:21"
+                        "src": "1483:4:12"
                       }
                     ],
-                    "id": 5990,
+                    "id": 3543,
                     "name": "VariableDeclaration",
-                    "src": "1484:4:21"
+                    "src": "1483:4:12"
                   }
                 ],
-                "id": 5991,
+                "id": 3544,
                 "name": "ParameterList",
-                "src": "1483:6:21"
+                "src": "1482:6:12"
               },
               {
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 5991
+                      "functionReturnParameters": 3544
                     },
                     "children": [
                       {
@@ -797,18 +796,18 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 9119,
+                                  "referencedDeclaration": 6249,
                                   "type": "block",
                                   "value": "block"
                                 },
-                                "id": 5992,
+                                "id": 3545,
                                 "name": "Identifier",
-                                "src": "1511:5:21"
+                                "src": "1510:5:12"
                               }
                             ],
-                            "id": 5993,
+                            "id": 3546,
                             "name": "MemberAccess",
-                            "src": "1511:14:21"
+                            "src": "1510:14:12"
                           },
                           {
                             "attributes": {
@@ -816,33 +815,33 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 5987,
+                              "referencedDeclaration": 3540,
                               "type": "uint256",
                               "value": "EXTRA_GAS"
                             },
-                            "id": 5994,
+                            "id": 3547,
                             "name": "Identifier",
-                            "src": "1528:9:21"
+                            "src": "1527:9:12"
                           }
                         ],
-                        "id": 5995,
+                        "id": 3548,
                         "name": "BinaryOperation",
-                        "src": "1511:26:21"
+                        "src": "1510:26:12"
                       }
                     ],
-                    "id": 5996,
+                    "id": 3549,
                     "name": "Return",
-                    "src": "1504:33:21"
+                    "src": "1503:33:12"
                   }
                 ],
-                "id": 5997,
+                "id": 3550,
                 "name": "Block",
-                "src": "1494:50:21"
+                "src": "1493:50:12"
               }
             ],
-            "id": 5998,
+            "id": 3551,
             "name": "FunctionDefinition",
-            "src": "1410:134:21"
+            "src": "1409:134:12"
           },
           {
             "attributes": {
@@ -854,7 +853,7 @@
               ],
               "name": "validateCallGas",
               "payable": false,
-              "scope": 6027,
+              "scope": 3580,
               "stateMutability": "view",
               "superFunction": null,
               "visibility": "internal"
@@ -866,7 +865,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "callGas",
-                      "scope": 6014,
+                      "scope": 3567,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -879,20 +878,20 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 5999,
+                        "id": 3552,
                         "name": "ElementaryTypeName",
-                        "src": "1694:4:21"
+                        "src": "1693:4:12"
                       }
                     ],
-                    "id": 6000,
+                    "id": 3553,
                     "name": "VariableDeclaration",
-                    "src": "1694:12:21"
+                    "src": "1693:12:12"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "EXTRA_GAS",
-                      "scope": 6014,
+                      "scope": 3567,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -905,19 +904,19 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 6001,
+                        "id": 3554,
                         "name": "ElementaryTypeName",
-                        "src": "1708:4:21"
+                        "src": "1707:4:12"
                       }
                     ],
-                    "id": 6002,
+                    "id": 3555,
                     "name": "VariableDeclaration",
-                    "src": "1708:14:21"
+                    "src": "1707:14:12"
                   }
                 ],
-                "id": 6003,
+                "id": 3556,
                 "name": "ParameterList",
-                "src": "1693:30:21"
+                "src": "1692:30:12"
               },
               {
                 "children": [
@@ -925,7 +924,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 6014,
+                      "scope": 3567,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bool",
@@ -938,25 +937,25 @@
                           "name": "bool",
                           "type": "bool"
                         },
-                        "id": 6004,
+                        "id": 3557,
                         "name": "ElementaryTypeName",
-                        "src": "1755:4:21"
+                        "src": "1754:4:12"
                       }
                     ],
-                    "id": 6005,
+                    "id": 3558,
                     "name": "VariableDeclaration",
-                    "src": "1755:4:21"
+                    "src": "1754:4:12"
                   }
                 ],
-                "id": 6006,
+                "id": 3559,
                 "name": "ParameterList",
-                "src": "1754:6:21"
+                "src": "1753:6:12"
               },
               {
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 6006
+                      "functionReturnParameters": 3559
                     },
                     "children": [
                       {
@@ -980,13 +979,13 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 6000,
+                              "referencedDeclaration": 3553,
                               "type": "uint256",
                               "value": "callGas"
                             },
-                            "id": 6007,
+                            "id": 3560,
                             "name": "Identifier",
-                            "src": "1782:7:21"
+                            "src": "1781:7:12"
                           },
                           {
                             "attributes": {
@@ -1014,13 +1013,13 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 5998,
+                                  "referencedDeclaration": 3551,
                                   "type": "function (uint256) view returns (uint256)",
                                   "value": "CALL_GAS_CEILING"
                                 },
-                                "id": 6008,
+                                "id": 3561,
                                 "name": "Identifier",
-                                "src": "1792:16:21"
+                                "src": "1791:16:12"
                               },
                               {
                                 "attributes": {
@@ -1028,38 +1027,38 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 6002,
+                                  "referencedDeclaration": 3555,
                                   "type": "uint256",
                                   "value": "EXTRA_GAS"
                                 },
-                                "id": 6009,
+                                "id": 3562,
                                 "name": "Identifier",
-                                "src": "1809:9:21"
+                                "src": "1808:9:12"
                               }
                             ],
-                            "id": 6010,
+                            "id": 3563,
                             "name": "FunctionCall",
-                            "src": "1792:27:21"
+                            "src": "1791:27:12"
                           }
                         ],
-                        "id": 6011,
+                        "id": 3564,
                         "name": "BinaryOperation",
-                        "src": "1782:37:21"
+                        "src": "1781:37:12"
                       }
                     ],
-                    "id": 6012,
+                    "id": 3565,
                     "name": "Return",
-                    "src": "1775:44:21"
+                    "src": "1774:44:12"
                   }
                 ],
-                "id": 6013,
+                "id": 3566,
                 "name": "Block",
-                "src": "1765:61:21"
+                "src": "1764:61:12"
               }
             ],
-            "id": 6014,
+            "id": 3567,
             "name": "FunctionDefinition",
-            "src": "1669:157:21"
+            "src": "1668:157:12"
           },
           {
             "attributes": {
@@ -1071,7 +1070,7 @@
               ],
               "name": "validateToAddress",
               "payable": false,
-              "scope": 6027,
+              "scope": 3580,
               "stateMutability": "pure",
               "superFunction": null,
               "visibility": "internal"
@@ -1083,7 +1082,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "toAddress",
-                      "scope": 6026,
+                      "scope": 3579,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1096,19 +1095,19 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 6015,
+                        "id": 3568,
                         "name": "ElementaryTypeName",
-                        "src": "1958:7:21"
+                        "src": "1957:7:12"
                       }
                     ],
-                    "id": 6016,
+                    "id": 3569,
                     "name": "VariableDeclaration",
-                    "src": "1958:17:21"
+                    "src": "1957:17:12"
                   }
                 ],
-                "id": 6017,
+                "id": 3570,
                 "name": "ParameterList",
-                "src": "1957:19:21"
+                "src": "1956:19:12"
               },
               {
                 "children": [
@@ -1116,7 +1115,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 6026,
+                      "scope": 3579,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bool",
@@ -1129,25 +1128,25 @@
                           "name": "bool",
                           "type": "bool"
                         },
-                        "id": 6018,
+                        "id": 3571,
                         "name": "ElementaryTypeName",
-                        "src": "2008:4:21"
+                        "src": "2007:4:12"
                       }
                     ],
-                    "id": 6019,
+                    "id": 3572,
                     "name": "VariableDeclaration",
-                    "src": "2008:4:21"
+                    "src": "2007:4:12"
                   }
                 ],
-                "id": 6020,
+                "id": 3573,
                 "name": "ParameterList",
-                "src": "2007:6:21"
+                "src": "2006:6:12"
               },
               {
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 6020
+                      "functionReturnParameters": 3573
                     },
                     "children": [
                       {
@@ -1171,13 +1170,13 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 6016,
+                              "referencedDeclaration": 3569,
                               "type": "address",
                               "value": "toAddress"
                             },
-                            "id": 6021,
+                            "id": 3574,
                             "name": "Identifier",
-                            "src": "2035:9:21"
+                            "src": "2034:9:12"
                           },
                           {
                             "attributes": {
@@ -1192,56 +1191,56 @@
                               "type": "int_const 0",
                               "value": "0x0"
                             },
-                            "id": 6022,
+                            "id": 3575,
                             "name": "Literal",
-                            "src": "2048:3:21"
+                            "src": "2047:3:12"
                           }
                         ],
-                        "id": 6023,
+                        "id": 3576,
                         "name": "BinaryOperation",
-                        "src": "2035:16:21"
+                        "src": "2034:16:12"
                       }
                     ],
-                    "id": 6024,
+                    "id": 3577,
                     "name": "Return",
-                    "src": "2028:23:21"
+                    "src": "2027:23:12"
                   }
                 ],
-                "id": 6025,
+                "id": 3578,
                 "name": "Block",
-                "src": "2018:40:21"
+                "src": "2017:40:12"
               }
             ],
-            "id": 6026,
+            "id": 3579,
             "name": "FunctionDefinition",
-            "src": "1931:127:21"
+            "src": "1930:127:12"
           }
         ],
-        "id": 6027,
+        "id": 3580,
         "name": "ContractDefinition",
-        "src": "123:1937:21"
+        "src": "122:1937:12"
       }
     ],
-    "id": 6028,
+    "id": 3581,
     "name": "SourceUnit",
-    "src": "0:2061:21"
+    "src": "0:2060:12"
   },
   "compiler": {
     "name": "solc",
-    "version": "0.4.18+commit.9cf6e910.Emscripten.clang"
+    "version": "0.4.19+commit.c4cbbb05.Emscripten.clang"
   },
   "networks": {
     "3": {
       "events": {},
       "links": {},
-      "address": "0x73586f18d802be9144a375f99be6d66d13377d7e"
+      "address": "0x1a5719a21f34d55a97393b7921830fca8b05ea65"
     },
-    "4": {
+    "42": {
       "events": {},
       "links": {},
-      "address": "0xf57403ff40173f92729251dab6b28ae8b0d35a21"
+      "address": "0xbb6cb59179aa8fff5b71cdd6c97144d569986d57"
     }
   },
   "schemaVersion": "1.0.1",
-  "updatedAt": "2018-01-14T21:26:13.779Z"
+  "updatedAt": "2018-02-05T22:11:17.903Z"
 }

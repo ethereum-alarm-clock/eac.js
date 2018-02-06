@@ -3,6 +3,7 @@
 const program = require("commander")
 const alarmClient = require("../client/main")
 const createWallet = require('../wallet/createWallet.js')
+const fundAccounts = require('../wallet/fundWallet')
 const drainWallet = require('../wallet/drainWallet.js')
 const BigNumber = require("bignumber.js")
 const clear = require("clear")
@@ -12,7 +13,7 @@ const ethUtil = require("ethereumjs-util")
 
 // Parse the command line options using commander.
 program
-  .version("1.2.1")
+  .version("1.3.0")
   .option(
   "--scan <spread>",
   "sets the scanning spread (ie +- from current block",
@@ -37,6 +38,7 @@ program
   .option('-p, --password [string]', 'the password to unlock your keystore file')
   .option("-c, --client", "starts the executing client")
   .option('--createWallet', 'guides you through creating a new wallet.')
+  .option('--fundWallet <ether amt>', 'funds each account in wallet the <ether amt>')
   .option('--drainWallet <target>', 'sends the target address all ether in the wallet')
   .option("--autostart", "starts scanning automatically")
   .parse(process.argv)
@@ -65,6 +67,29 @@ const main = async (_) => {
     const password = readlineSync.question("Please enter a password for the keyfile. Write this down!\n> ")
 
     createWallet(web3, numAccounts, file, password)
+
+  } else if (program.fundWallet) {
+    if (!program.wallet
+      || ! program.password) {
+      console.log('\n  error: must supply the `--wallet <keyfile>` and `--password <pw>` flags\n')
+      process.exit(1)
+      }
+
+    if (!await eac.Util.checkForUnlockedAccount()) process.exit(1)
+
+    const spinner = ora('Sending the funding transactions...').start()
+    fundAccounts(web3, program.fundWallet, program.wallet, program.password)
+    // .then(Res => console.log(Res))
+    .then(res => {
+      res.forEach(txObj => {
+        if (txObj.status != '0x1') {
+          console.log(`\n  error: funding to ${txObj.to} failed... must retry manually\n`)
+        }
+      })
+      spinner.succeed('Accounts funded!')
+    })
+    .catch(err => spinner.fail(err))
+
   } else if (program.drainWallet) {
     if (!program.wallet
       || !program.password) {
@@ -78,7 +103,7 @@ const main = async (_) => {
     }
 
     const spinner = ora('Sending transactions...').start()
-    const gasPrice = await web3.eth.getGasPrice()
+    const gasPrice = await eac.Util.getGasPrice()
 
     try {
       await drainWallet(web3, gasPrice, program.drainWallet, program.wallet, program.password)

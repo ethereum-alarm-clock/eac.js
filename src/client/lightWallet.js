@@ -3,9 +3,9 @@ const { keystore, signing } = require('eth-lightwallet')
 const Transaction = require("ethereumjs-tx")
 const Promise = require('bluebird')
 
-// / Wrapper class over the essiential functionality of the light wallet
-// / provided in web3 library. Uses its own instance of web3 to stay
-// / sanitary.
+// Wrapper class over the essiential functionality of the light wallet
+// provided in web3 library. Uses its own instance of web3 to stay
+// sanitary.
 class LightWallet {
   constructor(web3) {
     this.web3 = web3
@@ -51,7 +51,7 @@ class LightWallet {
         throw err
       }
 
-      await fs.writeFile(file, JSON.stringify(this.wallet))
+      fs.writeFileSync(file, JSON.stringify(this.wallet))
     })
   }
 
@@ -76,12 +76,13 @@ class LightWallet {
     await this.createVault(password, seed, encryptedWallet.hdPathString, encryptedWallet.hdIndex, encryptedWallet.salt)
   }    
 
-  // / Cycles through accounts and sends the transaction from next up.
+  // Cycles through accounts and sends the transaction from next up.
   async sendFromNext(recip, val, gasLimit, gasPrice, data) {
     const next = this.nonce++ % this.getAccounts().length
     return this.sendFromIndex(next, recip, val, gasLimit, gasPrice, data)
   }
 
+  // Return a txHash
   async sendFromIndex(index, to, value, gasLimit, gasPrice, data) {
     if (index > this.wallet.length) {
       console.log("Index is outside of range of addresses in this wallet!")

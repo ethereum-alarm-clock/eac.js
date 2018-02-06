@@ -82,8 +82,10 @@ class RequestFactory {
     return errors
   }
 
-  getRequestCreatedLogs(startBlock, endBlock) {
-    const start = startBlock || "0"
+  async getRequestCreatedLogs(startBlock, endBlock) {
+    const curBlock = await Util.getBlockNumber(this.web3)
+    console.log(curBlock)
+    const start = startBlock || 0//curBlock.sub(5000).toString()
     const end = endBlock || "latest"
     const event = this.instance.RequestCreated(
       {},
@@ -105,6 +107,10 @@ class RequestFactory {
       requests.push(log.args.request)
     })
     return requests
+  }
+
+  async getRequestsByOwner(owner, startBlock, endBlock) {
+    return 0
   }
 
   /**

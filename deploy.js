@@ -140,7 +140,7 @@ async function main() {
             linkLibrary(BlockScheduler, requestScheduleLib)
             linkLibrary(BlockScheduler, requestLib)
             linkLibrary(BlockScheduler, mathLib)
-            return BlockScheduler.new(requestFactory.address, ___)
+            return BlockScheduler.new(requestFactory.address, web3.eth.defaultAccount, ___)
         })
         .then(instance => {
             blockScheduler = instance
@@ -149,7 +149,7 @@ async function main() {
             linkLibrary(TimestampScheduler, requestScheduleLib)
             linkLibrary(TimestampScheduler, requestLib)
             linkLibrary(TimestampScheduler, mathLib)
-            return TimestampScheduler.new(requestFactory.address, ___)
+            return TimestampScheduler.new(requestFactory.address, web3.eth.defaultAccount, ___)
         })
         .then(instance => {
             timestampScheduler = instance
@@ -179,6 +179,8 @@ async function main() {
 }
 
 module.exports = main
+
+main()
 
 // Some Utils that can be abstracted to another module later
 const linkLibrary = (contract, lib) => {

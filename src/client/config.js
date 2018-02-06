@@ -26,8 +26,40 @@ class Config {
     this.eac = eac
     this.provider = provider
     this.scanning = autostart
+  }
+
+  static async create(
+    scanSpread,
+    logfile,
+    logLevel,
+    factory,
+    tracker,
+    web3,
+    eac,
+    provider,
+    walletFile,
+    password,
+    autostart
+  ) {
+    let conf = new Config(
+      scanSpread,
+      logfile,
+      logLevel,
+      factory,
+      tracker,
+      web3,
+      eac,
+      provider,
+      walletFile,
+      password,
+      autostart
+    )
     if (walletFile) {
-      this.wallet = this.instantiateWallet(walletFile, password)
+      await conf.instantiateWallet(walletFile, password)
+      return conf
+    } else {
+      conf.wallet = false
+      return conf
     }
   }
 

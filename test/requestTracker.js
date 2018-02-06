@@ -28,16 +28,16 @@ describe("Request Tracker", () => {
 		const windowSize = 255
 		const windowStart = (await eac.Util.getBlockNumber()) + 25
 		const gasPrice = web3.toWei("55", "gwei")
-		const donation = web3.toWei("120", "finney")
-		const payment = web3.toWei("250", "finney")
+		const fee = web3.toWei("120", "finney")
+		const bount = web3.toWei("250", "finney")
 		const requiredDeposit = web3.toWei("50", "finney")
 
 		const endowment = eac.Util.calcEndowment(
 			new BigNumber(callGas),
 			new BigNumber(callValue),
 			new BigNumber(gasPrice),
-			new BigNumber(donation),
-			new BigNumber(payment)
+			new BigNumber(fee),
+			new BigNumber(bount)
 		)
 
 		eacScheduler.initSender({
@@ -54,8 +54,8 @@ describe("Request Tracker", () => {
 			windowSize,
 			windowStart,
 			gasPrice,
-			donation,
-			payment,
+			fee,
+			bount,
 			requiredDeposit
 		)
 
