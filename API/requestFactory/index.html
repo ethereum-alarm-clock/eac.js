@@ -88,9 +88,11 @@
         
             <li><a class="toctree-l4" href="#eacrequestfactoryparseisvalidisvalid">eac.RequestFactory.parseIsValid(isValid)</a></li>
         
-            <li><a class="toctree-l4" href="#eacrequestfactorygetrequestcreatedlogsstartblock-endblock">eac.RequestFactory.getRequestCreatedLogs(startBlock[, endBlock])</a></li>
+            <li><a class="toctree-l4" href="#eacrequestfactorygetrequestcreatedlogsfilterstartblock-endblock">eac.RequestFactory.getRequestCreatedLogs(filter[,startBlock[, endBlock]])</a></li>
         
             <li><a class="toctree-l4" href="#eacrequestfactorygetrequestsstartblock-endblock">eac.RequestFactory.getRequests(startBlock[, endBlock])</a></li>
+        
+            <li><a class="toctree-l4" href="#eacrequestfactorygetrequestsbyownerowner-startblock-endblock">eac.RequestFactory.getRequestsByOwner(owner[, startBlock[, endBlock])</a></li>
         
         </ul>
     
@@ -239,7 +241,7 @@ if (isValid.indexOf(false) != -1) {
 }
 </code></pre>
 
-<h3 id="eacrequestfactorygetrequestcreatedlogsstartblock-endblock">eac.RequestFactory.getRequestCreatedLogs(startBlock[, endBlock])</h3>
+<h3 id="eacrequestfactorygetrequestcreatedlogsfilterstartblock-endblock">eac.RequestFactory.getRequestCreatedLogs(filter[,startBlock[, endBlock]])</h3>
 <p>Takes a <code>number</code> <code>startBlock</code> and optional <code>number</code> <code>endBlock</code> and returns
 the raw logs for the requests created through the request factory between
 these block times. If <code>endBlock</code> is not provided it will return all logs 
@@ -257,16 +259,37 @@ console.log(logs)
 //     transactionLogIndex: '0x0',
 //     type: 'mined',
 //     event: 'RequestCreated',
-//     args: { request: '0x720704a706d8d6b01167d3a5723c1fa50b1aec28' } } ]
+//     args: { request: '0x720704a706d8d6b01167d3a5723c1fa50b1aec28',
+//             owner: '0x92cb33fe17a75f0088a14c7718a29321fba026cd' } 
+// } ]
 </code></pre>
 
 <h3 id="eacrequestfactorygetrequestsstartblock-endblock">eac.RequestFactory.getRequests(startBlock[, endBlock])</h3>
 <p>Similar to the previous function but returns an array of only the
-addresses of each transaction request.</p>
+addresses of each transaction request. If not <code>starBlock</code> or <code>endBlock</code>
+is provided,  will use <code>current block - 5000</code> for startBlock and <code>latest</code>
+for endBlock.</p>
 <pre><code class="javascript">const txRequests = await requestFactory.getRequests(5665000)
 console.log(txRequests)
 
 // [ '0x720704a706d8d6b01167d3a5723c1fa50b1aec28' ]
+</code></pre>
+
+<h3 id="eacrequestfactorygetrequestsbyownerowner-startblock-endblock">eac.RequestFactory.getRequestsByOwner(owner[, startBlock[, endBlock])</h3>
+<p>Takes required argument <code>owner</code> which is a valid ethereum address
+and optional parameters <code>startBlock</code> and <code>endBlock</code>. If <code>startBlock</code> or
+<code>endBlock</code> are not provided uses the same defaults as <code>this.getRequests()</code>. Returns a <code>Promise</code> which resolves to an array of transaction requests
+addresses which are "owned" (created by) the passed in address. If the 
+<code>owner</code> address has not created any transaction requests then it will
+return an empty array.</p>
+<pre><code class="javascript">const owner = &quot;0x92cb33fe17a75f0088a14c7718a29321fba026cd&quot;
+const txRequests = await requestFactory.getRequestsByOwner(owner)
+
+console.log(txRequests)
+// [ '0xe8cf252bed6c94d7119d0154d9318aa03c6ff38c' ]
+
+// Then you can use it
+const myRequest = await eac.transactionRequest(txRequests[0])
 </code></pre>
               
             </div>
