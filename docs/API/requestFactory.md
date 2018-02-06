@@ -92,7 +92,7 @@ if (isValid.indexOf(false) != -1) {
 }
 ```
 
-### eac.RequestFactory.getRequestCreatedLogs(startBlock[, endBlock])
+### eac.RequestFactory.getRequestCreatedLogs(filter[,startBlock[, endBlock]])
 
 Takes a `number` `startBlock` and optional `number` `endBlock` and returns
 the raw logs for the requests created through the request factory between
@@ -113,17 +113,40 @@ console.log(logs)
 //     transactionLogIndex: '0x0',
 //     type: 'mined',
 //     event: 'RequestCreated',
-//     args: { request: '0x720704a706d8d6b01167d3a5723c1fa50b1aec28' } } ]
+//     args: { request: '0x720704a706d8d6b01167d3a5723c1fa50b1aec28',
+//             owner: '0x92cb33fe17a75f0088a14c7718a29321fba026cd' } 
+// } ]
 ```
 
 ### eac.RequestFactory.getRequests(startBlock[, endBlock])
 
 Similar to the previous function but returns an array of only the
-addresses of each transaction request.
+addresses of each transaction request. If not `starBlock` or `endBlock`
+is provided,  will use `current block - 5000` for startBlock and `latest`
+for endBlock.
 
 ```javascript
 const txRequests = await requestFactory.getRequests(5665000)
 console.log(txRequests)
 
 // [ '0x720704a706d8d6b01167d3a5723c1fa50b1aec28' ]
+```
+
+### eac.RequestFactory.getRequestsByOwner(owner[, startBlock[, endBlock])
+Takes required argument `owner` which is a valid ethereum address
+and optional parameters `startBlock` and `endBlock`. If `startBlock` or
+`endBlock` are not provided uses the same defaults as `this.getRequests()`. Returns a `Promise` which resolves to an array of transaction requests
+addresses which are "owned" (created by) the passed in address. If the 
+`owner` address has not created any transaction requests then it will
+return an empty array.
+
+```javascript
+const owner = "0x92cb33fe17a75f0088a14c7718a29321fba026cd"
+const txRequests = await requestFactory.getRequestsByOwner(owner)
+
+console.log(txRequests)
+// [ '0xe8cf252bed6c94d7119d0154d9318aa03c6ff38c' ]
+
+// Then you can use it
+const myRequest = await eac.transactionRequest(txRequests[0])
 ```

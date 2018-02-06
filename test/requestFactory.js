@@ -204,9 +204,10 @@ describe("Request Factory", () => {
         
 
         const test1 = await requestFactory.getRequestsByOwner(owner)
-        console.log(test1)
+        expect(test1[0])
+        .to.equal(requests[0])
 
         const test2 = await requestFactory.getRequestsByOwner("0x92cb33fe17a75f0088a14c7718a29321fba026cd")
-        console.log(test2)
+        expect(test2.length).to.equal(0)
     })
 })
