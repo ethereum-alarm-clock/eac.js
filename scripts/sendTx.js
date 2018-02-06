@@ -15,15 +15,15 @@ const main = async (chain, web3) => {
 
 	const callGas = 1212121
 	const callValue = 1337
-	const donation = 1
-	const payment = 66
+	const fee = 1
+	const bounty = 66
 
 	const endowment = eacScheduler.calcEndowment(
 		new BigNumber(callGas),
 		new BigNumber(callValue),
 		new BigNumber(gasPrice),
-		new BigNumber(donation),
-		new BigNumber(payment)
+		new BigNumber(fee),
+		new BigNumber(bounty)
 	)
 
 	eacScheduler.initSender({
@@ -40,8 +40,8 @@ const main = async (chain, web3) => {
 		255, //windowSize
 		windowStart,
 		gasPrice,
-		donation, //donation
-		payment, //payment
+		fee, //fee
+		bounty, //bounty
 		requiredDeposit
 	)
 }

@@ -8,7 +8,7 @@ const claim = async (conf, txRequest) => {
 
   // All the checks have been done in routing, now we follow through on the actions.
   const claimPaymentModifier = (await txRequest.claimPaymentModifier()).dividedToIntegerBy(100)
-  const paymentWhenClaimed = txRequest.payment
+  const paymentWhenClaimed = txRequest.bounty
     .times(claimPaymentModifier)
     .floor()
   const claimDeposit = txRequest.requiredDeposit
@@ -102,7 +102,7 @@ const execute = async (conf, txRequest) => {
         )
     }
   } else {
-      return txRequest.execute().send({
+      return txRequest.execute({
           from: web3.eth.defaultAccount,
           value: 0,
           gas: executeGas,

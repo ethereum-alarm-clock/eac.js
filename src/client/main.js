@@ -69,7 +69,7 @@ const main = async (
   }
 
   // Loads conf
-  const conf = new Config(
+  let conf = await Config.create(
     scanSpread, // conf.scanSpread
     logfile, // conf.logger.logfile
     logLevel, // conf.logger.logLevel
@@ -82,7 +82,6 @@ const main = async (
     pw, // wallet password
     autostart
   )
-  await conf.instantiateWallet(walletFile, pw)
 
   conf.client = "parity"
   conf.chain = chain

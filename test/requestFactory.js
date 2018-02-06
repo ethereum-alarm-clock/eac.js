@@ -2,8 +2,6 @@ const BigNumber = require("bignumber.js")
 const Deployer = require("../deploy.js")
 const expect = require("chai").expect
 
-const eac = require("../src")()
-
 describe("Request Factory", () => {
 	let eac
 	let web3
@@ -31,16 +29,16 @@ describe("Request Factory", () => {
 		const windowSize = 255
 		const windowStart = (await eac.Util.getBlockNumber(web3)) + 25
 		const gasPrice = web3.toWei("55", "gwei")
-		const donation = web3.toWei("120", "finney")
-		const payment = web3.toWei("250", "finney")
+		const fee = web3.toWei("120", "finney")
+		const bounty = web3.toWei("250", "finney")
 		const requiredDeposit = web3.toWei("50", "finney")
 
 		const endowment = eacScheduler.calcEndowment(
 			new BigNumber(callGas),
 			new BigNumber(callValue),
 			new BigNumber(gasPrice),
-			new BigNumber(donation),
-			new BigNumber(payment)
+			new BigNumber(fee),
+			new BigNumber(bounty)
 		)
 
 		eacScheduler.initSender({
@@ -57,8 +55,8 @@ describe("Request Factory", () => {
 			windowSize,
 			windowStart,
 			gasPrice,
-			donation,
-			payment,
+			fee,
+			bounty,
 			requiredDeposit
 		)
 
@@ -122,19 +120,19 @@ describe("Request Factory", () => {
 		const windowSize = 255
 		const windowStart = (await eac.Util.getBlockNumber(web3)) + 25
 		const gasPrice = web3.toWei("55", "gwei")
-		const donation = web3.toWei("120", "finney")
-		const payment = web3.toWei("250", "finney")
+		const fee = web3.toWei("120", "finney")
+		const bounty = web3.toWei("250", "finney")
         const requiredDeposit = web3.toWei("50", "finney")
         
         const addressArgs = [
             web3.eth.defaultAccount,    //owner
-            "0xfffC9C61754a0C4616FC5323dC946e89Eb272302",   //donation benefactor
+            "0xfffC9C61754a0C4616FC5323dC946e89Eb272302",   //fee benefactor
             toAddress
         ]
 
         const uintArgs = [
-            donation,
-            payment,
+            fee,
+            bounty,
             255,        //claimWindowSize default
             10,         // freezePeriod default
             16,         // reservedWindowsize default
@@ -151,8 +149,8 @@ describe("Request Factory", () => {
             new BigNumber(callGas),
 			new BigNumber(callValue),
 			new BigNumber(gasPrice),
-			new BigNumber(donation),
-			new BigNumber(payment)
+			new BigNumber(fee),
+			new BigNumber(bounty)
         )
 
         const isValid = await requestFactory.validateRequestParams(

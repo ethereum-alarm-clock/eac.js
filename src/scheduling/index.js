@@ -56,8 +56,8 @@ class Scheduler {
     windowSize,
     windowStart,
     gasPrice,
-    donation,
-    payment,
+    fee,
+    bounty,
     requiredDeposit
   ) {
     return new Promise((resolve, reject) => {
@@ -70,8 +70,8 @@ class Scheduler {
           windowSize,
           windowStart,
           gasPrice,
-          donation,
-          payment,
+          fee,
+          bounty,
           requiredDeposit,
         ],
         {
@@ -99,8 +99,8 @@ class Scheduler {
     windowSize,
     windowStart,
     gasPrice,
-    donation,
-    payment,
+    fee,
+    bounty,
     requiredDeposit
   ) {
     return new Promise((resolve, reject) => {
@@ -113,8 +113,8 @@ class Scheduler {
           windowSize,
           windowStart,
           gasPrice,
-          donation,
-          payment,
+          fee,
+          bounty,
           requiredDeposit,
         ],
         {
@@ -167,7 +167,7 @@ class Scheduler {
    * @param {Number|String|BigNumber} fee
    * @param {Number|String|BigNumber} bount
    */
-  static calcEndowment(callGas, callValue, gasPrice, fee, bount) {
+  static calcEndowment(callGas, callValue, gasPrice, fee, bounty) {
     // Convert the value to a bignumber works even if it's already one.
     const callGasBN = new BigNumber(callGas)
     const callValueBN = new BigNumber(callValue)

@@ -16,11 +16,11 @@ describe("Scheduler", () => {
 		const callGas = new BigNumber(3000000)
 		const callValue = new BigNumber(123454321)
 		const gasPrice = new BigNumber(web3.toWei("55", "gwei"))
-		const donation = new BigNumber(web3.toWei("120", "finney"))
-		const payment = new BigNumber(web3.toWei("250", "finney"))
+		const fee = new BigNumber(web3.toWei("120", "finney"))
+		const bounty = new BigNumber(web3.toWei("250", "finney"))
 
-		const expectedEndowment = payment
-			.plus(donation.mul(2))
+		const expectedEndowment = bounty
+			.plus(fee.mul(2))
 			.plus(callGas.mul(gasPrice))
 			.plus(gasPrice.mul(180000))
 			.plus(callValue)
@@ -29,8 +29,8 @@ describe("Scheduler", () => {
 			callGas,
 			callValue,
 			gasPrice,
-			donation,
-			payment
+			fee,
+			bounty
 		)
 
 		expect(endowment.toString()).to.equal(expectedEndowment.toString())
@@ -44,16 +44,16 @@ describe("Scheduler", () => {
 		const windowSize = 255
 		const windowStart = (await eac.Util.getBlockNumber()) + 25
 		const gasPrice = web3.toWei("55", "gwei")
-		const donation = web3.toWei("120", "finney")
-		const payment = web3.toWei("250", "finney")
+		const fee = web3.toWei("120", "finney")
+		const bounty = web3.toWei("250", "finney")
 		const requiredDeposit = web3.toWei("50", "finney")
 
 		const endowment = eac.Util.calcEndowment(
 			new BigNumber(callGas),
 			new BigNumber(callValue),
 			new BigNumber(gasPrice),
-			new BigNumber(donation),
-			new BigNumber(payment)
+			new BigNumber(fee),
+			new BigNumber(bounty)
 		)
 
 		const eacScheduler = await eac.scheduler()
@@ -72,8 +72,8 @@ describe("Scheduler", () => {
 			windowSize,
 			windowStart,
 			gasPrice,
-			donation,
-			payment,
+			fee,
+			bounty,
 			requiredDeposit
 		)
 
@@ -91,16 +91,16 @@ describe("Scheduler", () => {
 		const windowSize = 255 * 15
 		const windowStart = (await eac.Util.getTimestamp()) + 25 * 15
 		const gasPrice = web3.toWei("55", "gwei")
-		const donation = web3.toWei("120", "finney")
-		const payment = web3.toWei("250", "finney")
+		const fee = web3.toWei("120", "finney")
+		const bounty = web3.toWei("250", "finney")
 		const requiredDeposit = web3.toWei("50", "finney")
 
 		const endowment = eac.Util.calcEndowment(
 			new BigNumber(callGas),
 			new BigNumber(callValue),
 			new BigNumber(gasPrice),
-			new BigNumber(donation),
-			new BigNumber(payment)
+			new BigNumber(fee),
+			new BigNumber(bounty)
 		)
 
 		const eacScheduler = await eac.scheduler()
@@ -119,8 +119,8 @@ describe("Scheduler", () => {
 			windowSize,
 			windowStart,
 			gasPrice,
-			donation,
-			payment,
+			fee,
+			bounty,
 			requiredDeposit
 		)
 

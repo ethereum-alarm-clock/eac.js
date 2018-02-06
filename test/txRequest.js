@@ -21,16 +21,16 @@ describe("TxRequest", () => {
 		const windowSize = 255
 		const windowStart = (await eac.Util.getBlockNumber()) + 25
 		const gasPrice = web3.toWei("55", "gwei")
-		const donation = web3.toWei("120", "finney")
-		const payment = web3.toWei("250", "finney")
+		const fee = web3.toWei("120", "finney")
+		const bounty = web3.toWei("250", "finney")
 		const requiredDeposit = web3.toWei("50", "finney")
 
 		const endowment = eac.Util.calcEndowment(
 			new BigNumber(callGas),
 			new BigNumber(callValue),
 			new BigNumber(gasPrice),
-			new BigNumber(donation),
-			new BigNumber(payment)
+			new BigNumber(fee),
+			new BigNumber(bounty)
 		)
 
 		const scheduler = await eac.scheduler()
@@ -49,8 +49,8 @@ describe("TxRequest", () => {
 			windowSize,
 			windowStart,
 			gasPrice,
-			donation,
-			payment,
+			fee,
+			bounty,
 			requiredDeposit
 		)
 
@@ -83,9 +83,9 @@ describe("TxRequest", () => {
 
 		expect(txRequest.gasPrice.toString()).to.equal(gasPrice)
 
-		expect(txRequest.donation.toString()).to.equal(donation)
+		expect(txRequest.fee.toString()).to.equal(fee)
 
-		expect(txRequest.payment.toString()).to.equal(payment)
+		expect(txRequest.bounty.toString()).to.equal(bounty)
 
 		expect(txRequest.requiredDeposit.toString()).to.equal(requiredDeposit)
 	})

@@ -26,19 +26,19 @@ class RequestData {
     }
 
     this.paymentData = {
-      donationBenefactor: data[0][3],
-      paymentBenefactor: data[0][4],
-      donation: new BigNumber(data[2][1]),
-      donationOwed: new BigNumber(data[2][2]),
-      payment: new BigNumber(data[2][3]),
-      paymentOwed: new BigNumber(data[2][4]),
+      feeRecipient: data[0][3],
+      bountyBenefactor: data[0][4],
+      fee: new BigNumber(data[2][1]),
+      feeOwed: new BigNumber(data[2][2]),
+      bounty: new BigNumber(data[2][3]),
+      bountyOwed: new BigNumber(data[2][4]),
     }
 
     this.schedule = {
       claimWindowSize: new BigNumber(data[2][5]),
       freezePeriod: new BigNumber(data[2][6]),
       reservedWindowSize: new BigNumber(data[2][7]),
-      temporalUnit: parseInt(data[2][8]),
+      temporalUnit: parseInt(data[2][8], 10),
       windowSize: new BigNumber(data[2][9]),
       windowStart: new BigNumber(data[2][10]),
     }

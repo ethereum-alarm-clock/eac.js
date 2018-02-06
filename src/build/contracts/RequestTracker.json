@@ -2,52 +2,6 @@
   "contractName": "RequestTracker",
   "abi": [
     {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "request",
-          "type": "address"
-        },
-        {
-          "name": "startWindow",
-          "type": "uint256"
-        }
-      ],
-      "name": "addRequest",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "factory",
-          "type": "address"
-        },
-        {
-          "name": "request",
-          "type": "address"
-        }
-      ],
-      "name": "getNextRequest",
-      "outputs": [
-        {
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "constant": true,
       "inputs": [
         {
@@ -64,52 +18,6 @@
         {
           "name": "",
           "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "request",
-          "type": "address"
-        }
-      ],
-      "name": "removeRequest",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "factory",
-          "type": "address"
-        },
-        {
-          "name": "operator",
-          "type": "bytes2"
-        },
-        {
-          "name": "value",
-          "type": "uint256"
-        }
-      ],
-      "name": "query",
-      "outputs": [
-        {
-          "name": "",
-          "type": "address"
         }
       ],
       "payable": false,
@@ -151,6 +59,71 @@
           "type": "address"
         }
       ],
+      "name": "getNextRequest",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "request",
+          "type": "address"
+        },
+        {
+          "name": "startWindow",
+          "type": "uint256"
+        }
+      ],
+      "name": "addRequest",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "request",
+          "type": "address"
+        }
+      ],
+      "name": "removeRequest",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "factory",
+          "type": "address"
+        },
+        {
+          "name": "request",
+          "type": "address"
+        }
+      ],
       "name": "isKnownRequest",
       "outputs": [
         {
@@ -161,20 +134,47 @@
       "payable": false,
       "stateMutability": "view",
       "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "factory",
+          "type": "address"
+        },
+        {
+          "name": "operator",
+          "type": "bytes2"
+        },
+        {
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "query",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
     }
   ],
-  "bytecode": "0x6060604052341561000f57600080fd5b610c528061001e6000396000f300606060405260043610610083576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806309d33f1d146100885780631acb2719146100e2578063592685d51461017a578063ac8d6030146101e6578063b15dcc2514610237578063bf2e694f146102e3578063c262df451461037b575b600080fd5b341561009357600080fd5b6100c8600480803573ffffffffffffffffffffffffffffffffffffffff169060200190919080359060200190919050506103eb565b604051808215151515815260200191505060405180910390f35b34156100ed57600080fd5b610138600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610572565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b341561018557600080fd5b6101d0600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610676565b6040518082815260200191505060405180910390f35b34156101f157600080fd5b61021d600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610776565b604051808215151515815260200191505060405180910390f35b341561024257600080fd5b6102a1600480803573ffffffffffffffffffffffffffffffffffffffff169060200190919080357dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916906020019091908035906020019091905050610867565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34156102ee57600080fd5b610339600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610a22565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b341561038657600080fd5b6103d1600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610b26565b604051808215151515815260200191505060405180910390f35b60008060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63bacd695890918573ffffffffffffffffffffffffffffffffffffffff1660010273__MathLib_______________________________6388102583876000604051602001526040518263ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018082815260200191505060206040518083038186803b15156104d457600080fd5b6102c65a03f415156104e557600080fd5b505050604051805190506040518463ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808481526020018360001916600019168152602001828152602001935050505060006040518083038186803b151561055457600080fd5b6102c65a03f4151561056557600080fd5b5050506001905092915050565b60008060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63c4144b2690918473ffffffffffffffffffffffffffffffffffffffff166001026000604051602001526040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060206040518083038186803b151561064f57600080fd5b6102c65a03f4151561066057600080fd5b5050506040518051905060019004905092915050565b60008060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63a3119e5790918473ffffffffffffffffffffffffffffffffffffffff166001026000604051602001526040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060206040518083038186803b151561075357600080fd5b6102c65a03f4151561076457600080fd5b50505060405180519050905092915050565b60008060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63ab7366f790918473ffffffffffffffffffffffffffffffffffffffff166001026040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060006040518083038186803b151561084a57600080fd5b6102c65a03f4151561085b57600080fd5b50505060019050919050565b60008060008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63e6ce3a6a90918573__MathLib_______________________________6388102583876000604051602001526040518263ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018082815260200191505060206040518083038186803b151561093757600080fd5b6102c65a03f4151561094857600080fd5b505050604051805190506000604051602001526040518463ffffffff167c010000000000000000000000000000000000000000000000000000000002815260040180848152602001837dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff19167dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff19168152602001828152602001935050505060206040518083038186803b15156109fa57600080fd5b6102c65a03f41515610a0b57600080fd5b505050604051805190506001900490509392505050565b60008060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63caa46c9c90918473ffffffffffffffffffffffffffffffffffffffff166001026000604051602001526040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060206040518083038186803b1515610aff57600080fd5b6102c65a03f41515610b1057600080fd5b5050506040518051905060019004905092915050565b60008060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63ed5bd7ea90918473ffffffffffffffffffffffffffffffffffffffff166001026000604051602001526040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060206040518083038186803b1515610c0357600080fd5b6102c65a03f41515610c1457600080fd5b505050604051805190509050929150505600a165627a7a723058207fe57aff8c7fba1d42ce35370864ebd0b6158e177dd2433f71e9811c77e934160029",
-  "deployedBytecode": "0x606060405260043610610083576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806309d33f1d146100885780631acb2719146100e2578063592685d51461017a578063ac8d6030146101e6578063b15dcc2514610237578063bf2e694f146102e3578063c262df451461037b575b600080fd5b341561009357600080fd5b6100c8600480803573ffffffffffffffffffffffffffffffffffffffff169060200190919080359060200190919050506103eb565b604051808215151515815260200191505060405180910390f35b34156100ed57600080fd5b610138600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610572565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b341561018557600080fd5b6101d0600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610676565b6040518082815260200191505060405180910390f35b34156101f157600080fd5b61021d600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610776565b604051808215151515815260200191505060405180910390f35b341561024257600080fd5b6102a1600480803573ffffffffffffffffffffffffffffffffffffffff169060200190919080357dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916906020019091908035906020019091905050610867565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34156102ee57600080fd5b610339600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610a22565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b341561038657600080fd5b6103d1600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610b26565b604051808215151515815260200191505060405180910390f35b60008060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63bacd695890918573ffffffffffffffffffffffffffffffffffffffff1660010273__MathLib_______________________________6388102583876000604051602001526040518263ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018082815260200191505060206040518083038186803b15156104d457600080fd5b6102c65a03f415156104e557600080fd5b505050604051805190506040518463ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808481526020018360001916600019168152602001828152602001935050505060006040518083038186803b151561055457600080fd5b6102c65a03f4151561056557600080fd5b5050506001905092915050565b60008060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63c4144b2690918473ffffffffffffffffffffffffffffffffffffffff166001026000604051602001526040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060206040518083038186803b151561064f57600080fd5b6102c65a03f4151561066057600080fd5b5050506040518051905060019004905092915050565b60008060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63a3119e5790918473ffffffffffffffffffffffffffffffffffffffff166001026000604051602001526040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060206040518083038186803b151561075357600080fd5b6102c65a03f4151561076457600080fd5b50505060405180519050905092915050565b60008060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63ab7366f790918473ffffffffffffffffffffffffffffffffffffffff166001026040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060006040518083038186803b151561084a57600080fd5b6102c65a03f4151561085b57600080fd5b50505060019050919050565b60008060008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63e6ce3a6a90918573__MathLib_______________________________6388102583876000604051602001526040518263ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018082815260200191505060206040518083038186803b151561093757600080fd5b6102c65a03f4151561094857600080fd5b505050604051805190506000604051602001526040518463ffffffff167c010000000000000000000000000000000000000000000000000000000002815260040180848152602001837dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff19167dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff19168152602001828152602001935050505060206040518083038186803b15156109fa57600080fd5b6102c65a03f41515610a0b57600080fd5b505050604051805190506001900490509392505050565b60008060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63caa46c9c90918473ffffffffffffffffffffffffffffffffffffffff166001026000604051602001526040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060206040518083038186803b1515610aff57600080fd5b6102c65a03f41515610b1057600080fd5b5050506040518051905060019004905092915050565b60008060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63ed5bd7ea90918473ffffffffffffffffffffffffffffffffffffffff166001026000604051602001526040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060206040518083038186803b1515610c0357600080fd5b6102c65a03f41515610c1457600080fd5b505050604051805190509050929150505600a165627a7a723058207fe57aff8c7fba1d42ce35370864ebd0b6158e177dd2433f71e9811c77e934160029",
-  "sourceMap": "282:2077:16:-;;;;;;;;;;;;;;;;;",
-  "deployedSourceMap": "282:2077:16:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1339:219;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1099:189;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;519:184;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1627:166;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2148:209;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;803:197;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1909:172;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1339:219;1419:4;1439:17;:29;1457:10;1439:29;;;;;;;;;;;;;;;:36;;;;1484:7;1476:16;;;;1494:7;:22;1517:11;1494:35;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1439:91;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1547:4;1540:11;;1339:219;;;;:::o;1099:189::-;1186:7;1224:17;:26;1242:7;1224:26;;;;;;;;;;;;;;;:38;;;;1271:7;1263:16;;;;1224:56;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1216:65;;;1209:72;;1099:189;;;;:::o;519:184::-;606:4;638:17;:26;656:7;638:26;;;;;;;;;;;;;;;:39;;;;686:7;678:16;;;;638:57;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;626:70;;519:184;;;;:::o;1627:166::-;1691:4;1711:17;:29;1729:10;1711:29;;;;;;;;;;;;;;;:36;;;;1756:7;1748:16;;;;1711:54;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1782:4;1775:11;;1627:166;;;:::o;2148:209::-;2238:7;2276:17;:26;2294:7;2276:26;;;;;;;;;;;;;;;:32;;;;2309:8;2319:7;:22;2342:5;2319:29;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2276:73;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2268:82;;;2261:89;;2148:209;;;;;:::o;803:197::-;894:7;932:17;:26;950:7;932:26;;;;;;;;;;;;;;;:42;;;;983:7;975:16;;;;932:60;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;924:69;;;917:76;;803:197;;;;:::o;1909:172::-;1996:4;2023:17;:26;2041:7;2023:26;;;;;;;;;;;;;;;:33;;;;2065:7;2057:16;;;;2023:51;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2016:58;;1909:172;;;;:::o",
-  "source": "pragma solidity ^0.4.18;\n\nimport \"contracts/Interface/RequestTrackerInterface.sol\";\nimport \"contracts/Library/GroveLib.sol\";\nimport \"contracts/Library/MathLib.sol\";\n\n/**\n * @title RequestTracker\n * @dev The API for the GroveLib backend that keeps track of transaction requests.\n */\ncontract RequestTracker is RequestTrackerInterface {\n    using GroveLib for GroveLib.Index;\n\n    mapping (address => GroveLib.Index) requestsByAddress;\n\n    /*\n     * @dev Returns the windowStart value for the given request.\n     */\n    function getWindowStart(address factory, address request)\n        public view returns (uint)\n    {\n        return uint(requestsByAddress[factory].getNodeValue(bytes32(request)));\n    }\n\n    /*\n     * @dev Returns the request which comes directly before the given request.\n     */\n    function getPreviousRequest(address factory, address request)\n        public view returns (address)\n    {\n        return address(requestsByAddress[factory].getPreviousNode(bytes32(request)));\n    }\n\n    /*\n     * @dev Returns the request which comes directly after the given request.\n     */\n    function getNextRequest(address factory, address request)\n        public view returns (address)\n    {\n        return address(requestsByAddress[factory].getNextNode(bytes32(request)));\n    }\n\n    /*\n     * Add the given request.\n     */\n    function addRequest(address request, uint startWindow) \n        public returns (bool)\n    {\n        requestsByAddress[msg.sender].insert(bytes32(request), MathLib.safeCastSigned(startWindow));\n        return true;\n    }\n\n    /*\n     * Remove the given address from the index.\n     */\n    function removeRequest(address request)\n        public returns (bool)\n    {\n        requestsByAddress[msg.sender].remove(bytes32(request));\n        return true;\n    }\n\n    /*\n     * Return boolean as to whether the given address is present for the given\n     * factory.\n     */\n    function isKnownRequest(address factory, address request)\n        public view returns (bool)\n    {\n        return requestsByAddress[factory].exists(bytes32(request));\n    }\n\n    /*\n     * Query the index for the given factory.\n     */\n    function query(address factory, bytes2 operator, uint value)\n        public view returns (address)\n    {\n        return address(requestsByAddress[factory].query(operator, MathLib.safeCastSigned(value)));\n    }\n}",
+  "bytecode": "0x6060604052341561000f57600080fd5b610c528061001e6000396000f300606060405260043610610083576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806309d33f1d146100885780631acb2719146100e2578063592685d51461017a578063ac8d6030146101e6578063b15dcc2514610237578063bf2e694f146102e3578063c262df451461037b575b600080fd5b341561009357600080fd5b6100c8600480803573ffffffffffffffffffffffffffffffffffffffff169060200190919080359060200190919050506103eb565b604051808215151515815260200191505060405180910390f35b34156100ed57600080fd5b610138600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610572565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b341561018557600080fd5b6101d0600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610676565b6040518082815260200191505060405180910390f35b34156101f157600080fd5b61021d600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610776565b604051808215151515815260200191505060405180910390f35b341561024257600080fd5b6102a1600480803573ffffffffffffffffffffffffffffffffffffffff169060200190919080357dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916906020019091908035906020019091905050610867565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34156102ee57600080fd5b610339600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610a22565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b341561038657600080fd5b6103d1600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610b26565b604051808215151515815260200191505060405180910390f35b60008060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63bacd695890918573ffffffffffffffffffffffffffffffffffffffff1660010273__MathLib_______________________________6388102583876000604051602001526040518263ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018082815260200191505060206040518083038186803b15156104d457600080fd5b6102c65a03f415156104e557600080fd5b505050604051805190506040518463ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808481526020018360001916600019168152602001828152602001935050505060006040518083038186803b151561055457600080fd5b6102c65a03f4151561056557600080fd5b5050506001905092915050565b60008060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63c4144b2690918473ffffffffffffffffffffffffffffffffffffffff166001026000604051602001526040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060206040518083038186803b151561064f57600080fd5b6102c65a03f4151561066057600080fd5b5050506040518051905060019004905092915050565b60008060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63a3119e5790918473ffffffffffffffffffffffffffffffffffffffff166001026000604051602001526040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060206040518083038186803b151561075357600080fd5b6102c65a03f4151561076457600080fd5b50505060405180519050905092915050565b60008060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63ab7366f790918473ffffffffffffffffffffffffffffffffffffffff166001026040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060006040518083038186803b151561084a57600080fd5b6102c65a03f4151561085b57600080fd5b50505060019050919050565b60008060008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63e6ce3a6a90918573__MathLib_______________________________6388102583876000604051602001526040518263ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018082815260200191505060206040518083038186803b151561093757600080fd5b6102c65a03f4151561094857600080fd5b505050604051805190506000604051602001526040518463ffffffff167c010000000000000000000000000000000000000000000000000000000002815260040180848152602001837dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff19167dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff19168152602001828152602001935050505060206040518083038186803b15156109fa57600080fd5b6102c65a03f41515610a0b57600080fd5b505050604051805190506001900490509392505050565b60008060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63caa46c9c90918473ffffffffffffffffffffffffffffffffffffffff166001026000604051602001526040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060206040518083038186803b1515610aff57600080fd5b6102c65a03f41515610b1057600080fd5b5050506040518051905060019004905092915050565b60008060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63ed5bd7ea90918473ffffffffffffffffffffffffffffffffffffffff166001026000604051602001526040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060206040518083038186803b1515610c0357600080fd5b6102c65a03f41515610c1457600080fd5b505050604051805190509050929150505600a165627a7a72305820f1183119d8f2a848b8b419156fcac6ca31bceac614c28abfc31727863ff5f16f0029",
+  "deployedBytecode": "0x606060405260043610610083576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806309d33f1d146100885780631acb2719146100e2578063592685d51461017a578063ac8d6030146101e6578063b15dcc2514610237578063bf2e694f146102e3578063c262df451461037b575b600080fd5b341561009357600080fd5b6100c8600480803573ffffffffffffffffffffffffffffffffffffffff169060200190919080359060200190919050506103eb565b604051808215151515815260200191505060405180910390f35b34156100ed57600080fd5b610138600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610572565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b341561018557600080fd5b6101d0600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610676565b6040518082815260200191505060405180910390f35b34156101f157600080fd5b61021d600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610776565b604051808215151515815260200191505060405180910390f35b341561024257600080fd5b6102a1600480803573ffffffffffffffffffffffffffffffffffffffff169060200190919080357dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916906020019091908035906020019091905050610867565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34156102ee57600080fd5b610339600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610a22565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b341561038657600080fd5b6103d1600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610b26565b604051808215151515815260200191505060405180910390f35b60008060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63bacd695890918573ffffffffffffffffffffffffffffffffffffffff1660010273__MathLib_______________________________6388102583876000604051602001526040518263ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018082815260200191505060206040518083038186803b15156104d457600080fd5b6102c65a03f415156104e557600080fd5b505050604051805190506040518463ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808481526020018360001916600019168152602001828152602001935050505060006040518083038186803b151561055457600080fd5b6102c65a03f4151561056557600080fd5b5050506001905092915050565b60008060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63c4144b2690918473ffffffffffffffffffffffffffffffffffffffff166001026000604051602001526040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060206040518083038186803b151561064f57600080fd5b6102c65a03f4151561066057600080fd5b5050506040518051905060019004905092915050565b60008060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63a3119e5790918473ffffffffffffffffffffffffffffffffffffffff166001026000604051602001526040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060206040518083038186803b151561075357600080fd5b6102c65a03f4151561076457600080fd5b50505060405180519050905092915050565b60008060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63ab7366f790918473ffffffffffffffffffffffffffffffffffffffff166001026040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060006040518083038186803b151561084a57600080fd5b6102c65a03f4151561085b57600080fd5b50505060019050919050565b60008060008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63e6ce3a6a90918573__MathLib_______________________________6388102583876000604051602001526040518263ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018082815260200191505060206040518083038186803b151561093757600080fd5b6102c65a03f4151561094857600080fd5b505050604051805190506000604051602001526040518463ffffffff167c010000000000000000000000000000000000000000000000000000000002815260040180848152602001837dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff19167dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff19168152602001828152602001935050505060206040518083038186803b15156109fa57600080fd5b6102c65a03f41515610a0b57600080fd5b505050604051805190506001900490509392505050565b60008060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63caa46c9c90918473ffffffffffffffffffffffffffffffffffffffff166001026000604051602001526040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060206040518083038186803b1515610aff57600080fd5b6102c65a03f41515610b1057600080fd5b5050506040518051905060019004905092915050565b60008060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002073__GroveLib______________________________63ed5bd7ea90918473ffffffffffffffffffffffffffffffffffffffff166001026000604051602001526040518363ffffffff167c01000000000000000000000000000000000000000000000000000000000281526004018083815260200182600019166000191681526020019250505060206040518083038186803b1515610c0357600080fd5b6102c65a03f41515610c1457600080fd5b505050604051805190509050929150505600a165627a7a72305820f1183119d8f2a848b8b419156fcac6ca31bceac614c28abfc31727863ff5f16f0029",
+  "sourceMap": "281:2077:16:-;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "281:2077:16:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1338:219;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1098:189;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;518:184;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1626:166;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2147:209;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;802:197;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1908:172;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1338:219;1418:4;1438:17;:29;1456:10;1438:29;;;;;;;;;;;;;;;:36;;;;1483:7;1475:16;;;;1493:7;:22;1516:11;1493:35;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1438:91;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1546:4;1539:11;;1338:219;;;;:::o;1098:189::-;1185:7;1223:17;:26;1241:7;1223:26;;;;;;;;;;;;;;;:38;;;;1270:7;1262:16;;;;1223:56;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1215:65;;;1208:72;;1098:189;;;;:::o;518:184::-;605:4;637:17;:26;655:7;637:26;;;;;;;;;;;;;;;:39;;;;685:7;677:16;;;;637:57;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;625:70;;518:184;;;;:::o;1626:166::-;1690:4;1710:17;:29;1728:10;1710:29;;;;;;;;;;;;;;;:36;;;;1755:7;1747:16;;;;1710:54;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1781:4;1774:11;;1626:166;;;:::o;2147:209::-;2237:7;2275:17;:26;2293:7;2275:26;;;;;;;;;;;;;;;:32;;;;2308:8;2318:7;:22;2341:5;2318:29;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2275:73;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2267:82;;;2260:89;;2147:209;;;;;:::o;802:197::-;893:7;931:17;:26;949:7;931:26;;;;;;;;;;;;;;;:42;;;;982:7;974:16;;;;931:60;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;923:69;;;916:76;;802:197;;;;:::o;1908:172::-;1995:4;2022:17;:26;2040:7;2022:26;;;;;;;;;;;;;;;:33;;;;2064:7;2056:16;;;;2022:51;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2015:58;;1908:172;;;;:::o",
+  "source": "pragma solidity 0.4.19;\n\nimport \"contracts/Interface/RequestTrackerInterface.sol\";\nimport \"contracts/Library/GroveLib.sol\";\nimport \"contracts/Library/MathLib.sol\";\n\n/**\n * @title RequestTracker\n * @dev The API for the GroveLib backend that keeps track of transaction requests.\n */\ncontract RequestTracker is RequestTrackerInterface {\n    using GroveLib for GroveLib.Index;\n\n    mapping (address => GroveLib.Index) requestsByAddress;\n\n    /*\n     * @dev Returns the windowStart value for the given request.\n     */\n    function getWindowStart(address factory, address request)\n        public view returns (uint)\n    {\n        return uint(requestsByAddress[factory].getNodeValue(bytes32(request)));\n    }\n\n    /*\n     * @dev Returns the request which comes directly before the given request.\n     */\n    function getPreviousRequest(address factory, address request)\n        public view returns (address)\n    {\n        return address(requestsByAddress[factory].getPreviousNode(bytes32(request)));\n    }\n\n    /*\n     * @dev Returns the request which comes directly after the given request.\n     */\n    function getNextRequest(address factory, address request)\n        public view returns (address)\n    {\n        return address(requestsByAddress[factory].getNextNode(bytes32(request)));\n    }\n\n    /*\n     * Add the given request.\n     */\n    function addRequest(address request, uint startWindow) \n        public returns (bool)\n    {\n        requestsByAddress[msg.sender].insert(bytes32(request), MathLib.safeCastSigned(startWindow));\n        return true;\n    }\n\n    /*\n     * Remove the given address from the index.\n     */\n    function removeRequest(address request)\n        public returns (bool)\n    {\n        requestsByAddress[msg.sender].remove(bytes32(request));\n        return true;\n    }\n\n    /*\n     * Return boolean as to whether the given address is present for the given\n     * factory.\n     */\n    function isKnownRequest(address factory, address request)\n        public view returns (bool)\n    {\n        return requestsByAddress[factory].exists(bytes32(request));\n    }\n\n    /*\n     * Query the index for the given factory.\n     */\n    function query(address factory, bytes2 operator, uint value)\n        public view returns (address)\n    {\n        return address(requestsByAddress[factory].query(operator, MathLib.safeCastSigned(value)));\n    }\n}",
   "sourcePath": "/home/logan/Work/ethereum-alarm-clock/contracts/RequestTracker.sol",
   "ast": {
     "attributes": {
       "absolutePath": "/home/logan/Work/ethereum-alarm-clock/contracts/RequestTracker.sol",
       "exportedSymbols": {
         "RequestTracker": [
-          5751
+          5757
         ]
       }
     },
@@ -183,74 +183,73 @@
         "attributes": {
           "literals": [
             "solidity",
-            "^",
             "0.4",
-            ".18"
+            ".19"
           ]
         },
-        "id": 5585,
+        "id": 5591,
         "name": "PragmaDirective",
-        "src": "0:24:16"
+        "src": "0:23:16"
       },
       {
         "attributes": {
-          "SourceUnit": 6662,
+          "SourceUnit": 6697,
           "absolutePath": "contracts/Interface/RequestTrackerInterface.sol",
           "file": "contracts/Interface/RequestTrackerInterface.sol",
-          "scope": 5752,
+          "scope": 5758,
           "symbolAliases": [
             null
           ],
           "unitAlias": ""
         },
-        "id": 5586,
+        "id": 5592,
         "name": "ImportDirective",
-        "src": "26:57:16"
+        "src": "25:57:16"
       },
       {
         "attributes": {
-          "SourceUnit": 8762,
+          "SourceUnit": 8797,
           "absolutePath": "contracts/Library/GroveLib.sol",
           "file": "contracts/Library/GroveLib.sol",
-          "scope": 5752,
+          "scope": 5758,
           "symbolAliases": [
             null
           ],
           "unitAlias": ""
         },
-        "id": 5587,
+        "id": 5593,
         "name": "ImportDirective",
-        "src": "84:40:16"
+        "src": "83:40:16"
       },
       {
         "attributes": {
-          "SourceUnit": 8826,
+          "SourceUnit": 8861,
           "absolutePath": "contracts/Library/MathLib.sol",
           "file": "contracts/Library/MathLib.sol",
-          "scope": 5752,
+          "scope": 5758,
           "symbolAliases": [
             null
           ],
           "unitAlias": ""
         },
-        "id": 5588,
+        "id": 5594,
         "name": "ImportDirective",
-        "src": "125:39:16"
+        "src": "124:39:16"
       },
       {
         "attributes": {
           "contractDependencies": [
-            6661
+            6696
           ],
           "contractKind": "contract",
           "documentation": "@title RequestTracker\n@dev The API for the GroveLib backend that keeps track of transaction requests.",
           "fullyImplemented": true,
           "linearizedBaseContracts": [
-            5751,
-            6661
+            5757,
+            6696
           ],
           "name": "RequestTracker",
-          "scope": 5752
+          "scope": 5758
         },
         "children": [
           {
@@ -264,17 +263,17 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "RequestTrackerInterface",
-                  "referencedDeclaration": 6661,
+                  "referencedDeclaration": 6696,
                   "type": "contract RequestTrackerInterface"
                 },
-                "id": 5589,
+                "id": 5595,
                 "name": "UserDefinedTypeName",
-                "src": "309:23:16"
+                "src": "308:23:16"
               }
             ],
-            "id": 5590,
+            "id": 5596,
             "name": "InheritanceSpecifier",
-            "src": "309:23:16"
+            "src": "308:23:16"
           },
           {
             "children": [
@@ -282,34 +281,34 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "GroveLib",
-                  "referencedDeclaration": 8761,
+                  "referencedDeclaration": 8796,
                   "type": "library GroveLib"
                 },
-                "id": 5591,
+                "id": 5597,
                 "name": "UserDefinedTypeName",
-                "src": "345:8:16"
+                "src": "344:8:16"
               },
               {
                 "attributes": {
                   "contractScope": null,
                   "name": "GroveLib.Index",
-                  "referencedDeclaration": 7019,
+                  "referencedDeclaration": 7054,
                   "type": "struct GroveLib.Index storage pointer"
                 },
-                "id": 5592,
+                "id": 5598,
                 "name": "UserDefinedTypeName",
-                "src": "358:14:16"
+                "src": "357:14:16"
               }
             ],
-            "id": 5593,
+            "id": 5599,
             "name": "UsingForDirective",
-            "src": "339:34:16"
+            "src": "338:34:16"
           },
           {
             "attributes": {
               "constant": false,
               "name": "requestsByAddress",
-              "scope": 5751,
+              "scope": 5757,
               "stateVariable": true,
               "storageLocation": "default",
               "type": "mapping(address => struct GroveLib.Index storage ref)",
@@ -327,30 +326,30 @@
                       "name": "address",
                       "type": "address"
                     },
-                    "id": 5594,
+                    "id": 5600,
                     "name": "ElementaryTypeName",
-                    "src": "388:7:16"
+                    "src": "387:7:16"
                   },
                   {
                     "attributes": {
                       "contractScope": null,
                       "name": "GroveLib.Index",
-                      "referencedDeclaration": 7019,
+                      "referencedDeclaration": 7054,
                       "type": "struct GroveLib.Index storage pointer"
                     },
-                    "id": 5595,
+                    "id": 5601,
                     "name": "UserDefinedTypeName",
-                    "src": "399:14:16"
+                    "src": "398:14:16"
                   }
                 ],
-                "id": 5596,
+                "id": 5602,
                 "name": "Mapping",
-                "src": "379:35:16"
+                "src": "378:35:16"
               }
             ],
-            "id": 5597,
+            "id": 5603,
             "name": "VariableDeclaration",
-            "src": "379:53:16"
+            "src": "378:53:16"
           },
           {
             "attributes": {
@@ -362,9 +361,9 @@
               ],
               "name": "getWindowStart",
               "payable": false,
-              "scope": 5751,
+              "scope": 5757,
               "stateMutability": "view",
-              "superFunction": 6606,
+              "superFunction": 6641,
               "visibility": "public"
             },
             "children": [
@@ -374,7 +373,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "factory",
-                      "scope": 5618,
+                      "scope": 5624,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -387,20 +386,20 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 5598,
+                        "id": 5604,
                         "name": "ElementaryTypeName",
-                        "src": "543:7:16"
+                        "src": "542:7:16"
                       }
                     ],
-                    "id": 5599,
+                    "id": 5605,
                     "name": "VariableDeclaration",
-                    "src": "543:15:16"
+                    "src": "542:15:16"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "request",
-                      "scope": 5618,
+                      "scope": 5624,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -413,19 +412,19 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 5600,
+                        "id": 5606,
                         "name": "ElementaryTypeName",
-                        "src": "560:7:16"
+                        "src": "559:7:16"
                       }
                     ],
-                    "id": 5601,
+                    "id": 5607,
                     "name": "VariableDeclaration",
-                    "src": "560:15:16"
+                    "src": "559:15:16"
                   }
                 ],
-                "id": 5602,
+                "id": 5608,
                 "name": "ParameterList",
-                "src": "542:34:16"
+                "src": "541:34:16"
               },
               {
                 "children": [
@@ -433,7 +432,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 5618,
+                      "scope": 5624,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -446,25 +445,25 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 5603,
+                        "id": 5609,
                         "name": "ElementaryTypeName",
-                        "src": "606:4:16"
+                        "src": "605:4:16"
                       }
                     ],
-                    "id": 5604,
+                    "id": 5610,
                     "name": "VariableDeclaration",
-                    "src": "606:4:16"
+                    "src": "605:4:16"
                   }
                 ],
-                "id": 5605,
+                "id": 5611,
                 "name": "ParameterList",
-                "src": "605:6:16"
+                "src": "604:6:16"
               },
               {
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 5605
+                      "functionReturnParameters": 5611
                     },
                     "children": [
                       {
@@ -497,9 +496,9 @@
                               "type": "type(uint256)",
                               "value": "uint"
                             },
-                            "id": 5606,
+                            "id": 5612,
                             "name": "ElementaryTypeNameExpression",
-                            "src": "633:4:16"
+                            "src": "632:4:16"
                           },
                           {
                             "attributes": {
@@ -529,7 +528,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "getNodeValue",
-                                  "referencedDeclaration": 7083,
+                                  "referencedDeclaration": 7118,
                                   "type": "function (struct GroveLib.Index storage pointer,bytes32) view returns (int256)"
                                 },
                                 "children": [
@@ -549,13 +548,13 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 5597,
+                                          "referencedDeclaration": 5603,
                                           "type": "mapping(address => struct GroveLib.Index storage ref)",
                                           "value": "requestsByAddress"
                                         },
-                                        "id": 5607,
+                                        "id": 5613,
                                         "name": "Identifier",
-                                        "src": "638:17:16"
+                                        "src": "637:17:16"
                                       },
                                       {
                                         "attributes": {
@@ -563,23 +562,23 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 5599,
+                                          "referencedDeclaration": 5605,
                                           "type": "address",
                                           "value": "factory"
                                         },
-                                        "id": 5608,
+                                        "id": 5614,
                                         "name": "Identifier",
-                                        "src": "656:7:16"
+                                        "src": "655:7:16"
                                       }
                                     ],
-                                    "id": 5609,
+                                    "id": 5615,
                                     "name": "IndexAccess",
-                                    "src": "638:26:16"
+                                    "src": "637:26:16"
                                   }
                                 ],
-                                "id": 5610,
+                                "id": 5616,
                                 "name": "MemberAccess",
-                                "src": "638:39:16"
+                                "src": "637:39:16"
                               },
                               {
                                 "attributes": {
@@ -611,9 +610,9 @@
                                       "type": "type(bytes32)",
                                       "value": "bytes32"
                                     },
-                                    "id": 5611,
+                                    "id": 5617,
                                     "name": "ElementaryTypeNameExpression",
-                                    "src": "678:7:16"
+                                    "src": "677:7:16"
                                   },
                                   {
                                     "attributes": {
@@ -621,43 +620,43 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 5601,
+                                      "referencedDeclaration": 5607,
                                       "type": "address",
                                       "value": "request"
                                     },
-                                    "id": 5612,
+                                    "id": 5618,
                                     "name": "Identifier",
-                                    "src": "686:7:16"
+                                    "src": "685:7:16"
                                   }
                                 ],
-                                "id": 5613,
+                                "id": 5619,
                                 "name": "FunctionCall",
-                                "src": "678:16:16"
+                                "src": "677:16:16"
                               }
                             ],
-                            "id": 5614,
+                            "id": 5620,
                             "name": "FunctionCall",
-                            "src": "638:57:16"
+                            "src": "637:57:16"
                           }
                         ],
-                        "id": 5615,
+                        "id": 5621,
                         "name": "FunctionCall",
-                        "src": "633:63:16"
+                        "src": "632:63:16"
                       }
                     ],
-                    "id": 5616,
+                    "id": 5622,
                     "name": "Return",
-                    "src": "626:70:16"
+                    "src": "625:70:16"
                   }
                 ],
-                "id": 5617,
+                "id": 5623,
                 "name": "Block",
-                "src": "616:87:16"
+                "src": "615:87:16"
               }
             ],
-            "id": 5618,
+            "id": 5624,
             "name": "FunctionDefinition",
-            "src": "519:184:16"
+            "src": "518:184:16"
           },
           {
             "attributes": {
@@ -669,9 +668,9 @@
               ],
               "name": "getPreviousRequest",
               "payable": false,
-              "scope": 5751,
+              "scope": 5757,
               "stateMutability": "view",
-              "superFunction": 6615,
+              "superFunction": 6650,
               "visibility": "public"
             },
             "children": [
@@ -681,7 +680,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "factory",
-                      "scope": 5639,
+                      "scope": 5645,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -694,20 +693,20 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 5619,
+                        "id": 5625,
                         "name": "ElementaryTypeName",
-                        "src": "831:7:16"
+                        "src": "830:7:16"
                       }
                     ],
-                    "id": 5620,
+                    "id": 5626,
                     "name": "VariableDeclaration",
-                    "src": "831:15:16"
+                    "src": "830:15:16"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "request",
-                      "scope": 5639,
+                      "scope": 5645,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -720,19 +719,19 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 5621,
+                        "id": 5627,
                         "name": "ElementaryTypeName",
-                        "src": "848:7:16"
+                        "src": "847:7:16"
                       }
                     ],
-                    "id": 5622,
+                    "id": 5628,
                     "name": "VariableDeclaration",
-                    "src": "848:15:16"
+                    "src": "847:15:16"
                   }
                 ],
-                "id": 5623,
+                "id": 5629,
                 "name": "ParameterList",
-                "src": "830:34:16"
+                "src": "829:34:16"
               },
               {
                 "children": [
@@ -740,7 +739,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 5639,
+                      "scope": 5645,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -753,25 +752,25 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 5624,
+                        "id": 5630,
                         "name": "ElementaryTypeName",
-                        "src": "894:7:16"
+                        "src": "893:7:16"
                       }
                     ],
-                    "id": 5625,
+                    "id": 5631,
                     "name": "VariableDeclaration",
-                    "src": "894:7:16"
+                    "src": "893:7:16"
                   }
                 ],
-                "id": 5626,
+                "id": 5632,
                 "name": "ParameterList",
-                "src": "893:9:16"
+                "src": "892:9:16"
               },
               {
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 5626
+                      "functionReturnParameters": 5632
                     },
                     "children": [
                       {
@@ -804,9 +803,9 @@
                               "type": "type(address)",
                               "value": "address"
                             },
-                            "id": 5627,
+                            "id": 5633,
                             "name": "ElementaryTypeNameExpression",
-                            "src": "924:7:16"
+                            "src": "923:7:16"
                           },
                           {
                             "attributes": {
@@ -836,7 +835,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "getPreviousNode",
-                                  "referencedDeclaration": 7258,
+                                  "referencedDeclaration": 7293,
                                   "type": "function (struct GroveLib.Index storage pointer,bytes32) view returns (bytes32)"
                                 },
                                 "children": [
@@ -856,13 +855,13 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 5597,
+                                          "referencedDeclaration": 5603,
                                           "type": "mapping(address => struct GroveLib.Index storage ref)",
                                           "value": "requestsByAddress"
                                         },
-                                        "id": 5628,
+                                        "id": 5634,
                                         "name": "Identifier",
-                                        "src": "932:17:16"
+                                        "src": "931:17:16"
                                       },
                                       {
                                         "attributes": {
@@ -870,23 +869,23 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 5620,
+                                          "referencedDeclaration": 5626,
                                           "type": "address",
                                           "value": "factory"
                                         },
-                                        "id": 5629,
+                                        "id": 5635,
                                         "name": "Identifier",
-                                        "src": "950:7:16"
+                                        "src": "949:7:16"
                                       }
                                     ],
-                                    "id": 5630,
+                                    "id": 5636,
                                     "name": "IndexAccess",
-                                    "src": "932:26:16"
+                                    "src": "931:26:16"
                                   }
                                 ],
-                                "id": 5631,
+                                "id": 5637,
                                 "name": "MemberAccess",
-                                "src": "932:42:16"
+                                "src": "931:42:16"
                               },
                               {
                                 "attributes": {
@@ -918,9 +917,9 @@
                                       "type": "type(bytes32)",
                                       "value": "bytes32"
                                     },
-                                    "id": 5632,
+                                    "id": 5638,
                                     "name": "ElementaryTypeNameExpression",
-                                    "src": "975:7:16"
+                                    "src": "974:7:16"
                                   },
                                   {
                                     "attributes": {
@@ -928,43 +927,43 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 5622,
+                                      "referencedDeclaration": 5628,
                                       "type": "address",
                                       "value": "request"
                                     },
-                                    "id": 5633,
+                                    "id": 5639,
                                     "name": "Identifier",
-                                    "src": "983:7:16"
+                                    "src": "982:7:16"
                                   }
                                 ],
-                                "id": 5634,
+                                "id": 5640,
                                 "name": "FunctionCall",
-                                "src": "975:16:16"
+                                "src": "974:16:16"
                               }
                             ],
-                            "id": 5635,
+                            "id": 5641,
                             "name": "FunctionCall",
-                            "src": "932:60:16"
+                            "src": "931:60:16"
                           }
                         ],
-                        "id": 5636,
+                        "id": 5642,
                         "name": "FunctionCall",
-                        "src": "924:69:16"
+                        "src": "923:69:16"
                       }
                     ],
-                    "id": 5637,
+                    "id": 5643,
                     "name": "Return",
-                    "src": "917:76:16"
+                    "src": "916:76:16"
                   }
                 ],
-                "id": 5638,
+                "id": 5644,
                 "name": "Block",
-                "src": "907:93:16"
+                "src": "906:93:16"
               }
             ],
-            "id": 5639,
+            "id": 5645,
             "name": "FunctionDefinition",
-            "src": "803:197:16"
+            "src": "802:197:16"
           },
           {
             "attributes": {
@@ -976,9 +975,9 @@
               ],
               "name": "getNextRequest",
               "payable": false,
-              "scope": 5751,
+              "scope": 5757,
               "stateMutability": "view",
-              "superFunction": 6624,
+              "superFunction": 6659,
               "visibility": "public"
             },
             "children": [
@@ -988,7 +987,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "factory",
-                      "scope": 5660,
+                      "scope": 5666,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1001,20 +1000,20 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 5640,
+                        "id": 5646,
                         "name": "ElementaryTypeName",
-                        "src": "1123:7:16"
+                        "src": "1122:7:16"
                       }
                     ],
-                    "id": 5641,
+                    "id": 5647,
                     "name": "VariableDeclaration",
-                    "src": "1123:15:16"
+                    "src": "1122:15:16"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "request",
-                      "scope": 5660,
+                      "scope": 5666,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1027,19 +1026,19 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 5642,
+                        "id": 5648,
                         "name": "ElementaryTypeName",
-                        "src": "1140:7:16"
+                        "src": "1139:7:16"
                       }
                     ],
-                    "id": 5643,
+                    "id": 5649,
                     "name": "VariableDeclaration",
-                    "src": "1140:15:16"
+                    "src": "1139:15:16"
                   }
                 ],
-                "id": 5644,
+                "id": 5650,
                 "name": "ParameterList",
-                "src": "1122:34:16"
+                "src": "1121:34:16"
               },
               {
                 "children": [
@@ -1047,7 +1046,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 5660,
+                      "scope": 5666,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1060,25 +1059,25 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 5645,
+                        "id": 5651,
                         "name": "ElementaryTypeName",
-                        "src": "1186:7:16"
+                        "src": "1185:7:16"
                       }
                     ],
-                    "id": 5646,
+                    "id": 5652,
                     "name": "VariableDeclaration",
-                    "src": "1186:7:16"
+                    "src": "1185:7:16"
                   }
                 ],
-                "id": 5647,
+                "id": 5653,
                 "name": "ParameterList",
-                "src": "1185:9:16"
+                "src": "1184:9:16"
               },
               {
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 5647
+                      "functionReturnParameters": 5653
                     },
                     "children": [
                       {
@@ -1111,9 +1110,9 @@
                               "type": "type(address)",
                               "value": "address"
                             },
-                            "id": 5648,
+                            "id": 5654,
                             "name": "ElementaryTypeNameExpression",
-                            "src": "1216:7:16"
+                            "src": "1215:7:16"
                           },
                           {
                             "attributes": {
@@ -1143,7 +1142,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "getNextNode",
-                                  "referencedDeclaration": 7369,
+                                  "referencedDeclaration": 7404,
                                   "type": "function (struct GroveLib.Index storage pointer,bytes32) view returns (bytes32)"
                                 },
                                 "children": [
@@ -1163,13 +1162,13 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 5597,
+                                          "referencedDeclaration": 5603,
                                           "type": "mapping(address => struct GroveLib.Index storage ref)",
                                           "value": "requestsByAddress"
                                         },
-                                        "id": 5649,
+                                        "id": 5655,
                                         "name": "Identifier",
-                                        "src": "1224:17:16"
+                                        "src": "1223:17:16"
                                       },
                                       {
                                         "attributes": {
@@ -1177,23 +1176,23 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 5641,
+                                          "referencedDeclaration": 5647,
                                           "type": "address",
                                           "value": "factory"
                                         },
-                                        "id": 5650,
+                                        "id": 5656,
                                         "name": "Identifier",
-                                        "src": "1242:7:16"
+                                        "src": "1241:7:16"
                                       }
                                     ],
-                                    "id": 5651,
+                                    "id": 5657,
                                     "name": "IndexAccess",
-                                    "src": "1224:26:16"
+                                    "src": "1223:26:16"
                                   }
                                 ],
-                                "id": 5652,
+                                "id": 5658,
                                 "name": "MemberAccess",
-                                "src": "1224:38:16"
+                                "src": "1223:38:16"
                               },
                               {
                                 "attributes": {
@@ -1225,9 +1224,9 @@
                                       "type": "type(bytes32)",
                                       "value": "bytes32"
                                     },
-                                    "id": 5653,
+                                    "id": 5659,
                                     "name": "ElementaryTypeNameExpression",
-                                    "src": "1263:7:16"
+                                    "src": "1262:7:16"
                                   },
                                   {
                                     "attributes": {
@@ -1235,43 +1234,43 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 5643,
+                                      "referencedDeclaration": 5649,
                                       "type": "address",
                                       "value": "request"
                                     },
-                                    "id": 5654,
+                                    "id": 5660,
                                     "name": "Identifier",
-                                    "src": "1271:7:16"
+                                    "src": "1270:7:16"
                                   }
                                 ],
-                                "id": 5655,
+                                "id": 5661,
                                 "name": "FunctionCall",
-                                "src": "1263:16:16"
+                                "src": "1262:16:16"
                               }
                             ],
-                            "id": 5656,
+                            "id": 5662,
                             "name": "FunctionCall",
-                            "src": "1224:56:16"
+                            "src": "1223:56:16"
                           }
                         ],
-                        "id": 5657,
+                        "id": 5663,
                         "name": "FunctionCall",
-                        "src": "1216:65:16"
+                        "src": "1215:65:16"
                       }
                     ],
-                    "id": 5658,
+                    "id": 5664,
                     "name": "Return",
-                    "src": "1209:72:16"
+                    "src": "1208:72:16"
                   }
                 ],
-                "id": 5659,
+                "id": 5665,
                 "name": "Block",
-                "src": "1199:89:16"
+                "src": "1198:89:16"
               }
             ],
-            "id": 5660,
+            "id": 5666,
             "name": "FunctionDefinition",
-            "src": "1099:189:16"
+            "src": "1098:189:16"
           },
           {
             "attributes": {
@@ -1283,9 +1282,9 @@
               ],
               "name": "addRequest",
               "payable": false,
-              "scope": 5751,
+              "scope": 5757,
               "stateMutability": "nonpayable",
-              "superFunction": 6633,
+              "superFunction": 6668,
               "visibility": "public"
             },
             "children": [
@@ -1295,7 +1294,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "request",
-                      "scope": 5686,
+                      "scope": 5692,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1308,20 +1307,20 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 5661,
+                        "id": 5667,
                         "name": "ElementaryTypeName",
-                        "src": "1359:7:16"
+                        "src": "1358:7:16"
                       }
                     ],
-                    "id": 5662,
+                    "id": 5668,
                     "name": "VariableDeclaration",
-                    "src": "1359:15:16"
+                    "src": "1358:15:16"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "startWindow",
-                      "scope": 5686,
+                      "scope": 5692,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -1334,19 +1333,19 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 5663,
+                        "id": 5669,
                         "name": "ElementaryTypeName",
-                        "src": "1376:4:16"
+                        "src": "1375:4:16"
                       }
                     ],
-                    "id": 5664,
+                    "id": 5670,
                     "name": "VariableDeclaration",
-                    "src": "1376:16:16"
+                    "src": "1375:16:16"
                   }
                 ],
-                "id": 5665,
+                "id": 5671,
                 "name": "ParameterList",
-                "src": "1358:35:16"
+                "src": "1357:35:16"
               },
               {
                 "children": [
@@ -1354,7 +1353,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 5686,
+                      "scope": 5692,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bool",
@@ -1367,19 +1366,19 @@
                           "name": "bool",
                           "type": "bool"
                         },
-                        "id": 5666,
+                        "id": 5672,
                         "name": "ElementaryTypeName",
-                        "src": "1419:4:16"
+                        "src": "1418:4:16"
                       }
                     ],
-                    "id": 5667,
+                    "id": 5673,
                     "name": "VariableDeclaration",
-                    "src": "1419:4:16"
+                    "src": "1418:4:16"
                   }
                 ],
-                "id": 5668,
+                "id": 5674,
                 "name": "ParameterList",
-                "src": "1418:6:16"
+                "src": "1417:6:16"
               },
               {
                 "children": [
@@ -1417,7 +1416,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "insert",
-                              "referencedDeclaration": 7513,
+                              "referencedDeclaration": 7548,
                               "type": "function (struct GroveLib.Index storage pointer,bytes32,int256)"
                             },
                             "children": [
@@ -1437,13 +1436,13 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 5597,
+                                      "referencedDeclaration": 5603,
                                       "type": "mapping(address => struct GroveLib.Index storage ref)",
                                       "value": "requestsByAddress"
                                     },
-                                    "id": 5669,
+                                    "id": 5675,
                                     "name": "Identifier",
-                                    "src": "1439:17:16"
+                                    "src": "1438:17:16"
                                   },
                                   {
                                     "attributes": {
@@ -1463,28 +1462,28 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 12196,
+                                          "referencedDeclaration": 12237,
                                           "type": "msg",
                                           "value": "msg"
                                         },
-                                        "id": 5670,
+                                        "id": 5676,
                                         "name": "Identifier",
-                                        "src": "1457:3:16"
+                                        "src": "1456:3:16"
                                       }
                                     ],
-                                    "id": 5671,
+                                    "id": 5677,
                                     "name": "MemberAccess",
-                                    "src": "1457:10:16"
+                                    "src": "1456:10:16"
                                   }
                                 ],
-                                "id": 5672,
+                                "id": 5678,
                                 "name": "IndexAccess",
-                                "src": "1439:29:16"
+                                "src": "1438:29:16"
                               }
                             ],
-                            "id": 5673,
+                            "id": 5679,
                             "name": "MemberAccess",
-                            "src": "1439:36:16"
+                            "src": "1438:36:16"
                           },
                           {
                             "attributes": {
@@ -1516,9 +1515,9 @@
                                   "type": "type(bytes32)",
                                   "value": "bytes32"
                                 },
-                                "id": 5674,
+                                "id": 5680,
                                 "name": "ElementaryTypeNameExpression",
-                                "src": "1476:7:16"
+                                "src": "1475:7:16"
                               },
                               {
                                 "attributes": {
@@ -1526,18 +1525,18 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 5662,
+                                  "referencedDeclaration": 5668,
                                   "type": "address",
                                   "value": "request"
                                 },
-                                "id": 5675,
+                                "id": 5681,
                                 "name": "Identifier",
-                                "src": "1484:7:16"
+                                "src": "1483:7:16"
                               }
                             ],
-                            "id": 5676,
+                            "id": 5682,
                             "name": "FunctionCall",
-                            "src": "1476:16:16"
+                            "src": "1475:16:16"
                           },
                           {
                             "attributes": {
@@ -1567,7 +1566,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "safeCastSigned",
-                                  "referencedDeclaration": 8824,
+                                  "referencedDeclaration": 8859,
                                   "type": "function (uint256) pure returns (int256)"
                                 },
                                 "children": [
@@ -1577,18 +1576,18 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 8825,
+                                      "referencedDeclaration": 8860,
                                       "type": "type(library MathLib)",
                                       "value": "MathLib"
                                     },
-                                    "id": 5677,
+                                    "id": 5683,
                                     "name": "Identifier",
-                                    "src": "1494:7:16"
+                                    "src": "1493:7:16"
                                   }
                                 ],
-                                "id": 5678,
+                                "id": 5684,
                                 "name": "MemberAccess",
-                                "src": "1494:22:16"
+                                "src": "1493:22:16"
                               },
                               {
                                 "attributes": {
@@ -1596,32 +1595,32 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 5664,
+                                  "referencedDeclaration": 5670,
                                   "type": "uint256",
                                   "value": "startWindow"
                                 },
-                                "id": 5679,
+                                "id": 5685,
                                 "name": "Identifier",
-                                "src": "1517:11:16"
+                                "src": "1516:11:16"
                               }
                             ],
-                            "id": 5680,
+                            "id": 5686,
                             "name": "FunctionCall",
-                            "src": "1494:35:16"
+                            "src": "1493:35:16"
                           }
                         ],
-                        "id": 5681,
+                        "id": 5687,
                         "name": "FunctionCall",
-                        "src": "1439:91:16"
+                        "src": "1438:91:16"
                       }
                     ],
-                    "id": 5682,
+                    "id": 5688,
                     "name": "ExpressionStatement",
-                    "src": "1439:91:16"
+                    "src": "1438:91:16"
                   },
                   {
                     "attributes": {
-                      "functionReturnParameters": 5668
+                      "functionReturnParameters": 5674
                     },
                     "children": [
                       {
@@ -1637,24 +1636,24 @@
                           "type": "bool",
                           "value": "true"
                         },
-                        "id": 5683,
+                        "id": 5689,
                         "name": "Literal",
-                        "src": "1547:4:16"
+                        "src": "1546:4:16"
                       }
                     ],
-                    "id": 5684,
+                    "id": 5690,
                     "name": "Return",
-                    "src": "1540:11:16"
+                    "src": "1539:11:16"
                   }
                 ],
-                "id": 5685,
+                "id": 5691,
                 "name": "Block",
-                "src": "1429:129:16"
+                "src": "1428:129:16"
               }
             ],
-            "id": 5686,
+            "id": 5692,
             "name": "FunctionDefinition",
-            "src": "1339:219:16"
+            "src": "1338:219:16"
           },
           {
             "attributes": {
@@ -1666,9 +1665,9 @@
               ],
               "name": "removeRequest",
               "payable": false,
-              "scope": 5751,
+              "scope": 5757,
               "stateMutability": "nonpayable",
-              "superFunction": 6640,
+              "superFunction": 6675,
               "visibility": "public"
             },
             "children": [
@@ -1678,7 +1677,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "request",
-                      "scope": 5706,
+                      "scope": 5712,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1691,19 +1690,19 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 5687,
+                        "id": 5693,
                         "name": "ElementaryTypeName",
-                        "src": "1650:7:16"
+                        "src": "1649:7:16"
                       }
                     ],
-                    "id": 5688,
+                    "id": 5694,
                     "name": "VariableDeclaration",
-                    "src": "1650:15:16"
+                    "src": "1649:15:16"
                   }
                 ],
-                "id": 5689,
+                "id": 5695,
                 "name": "ParameterList",
-                "src": "1649:17:16"
+                "src": "1648:17:16"
               },
               {
                 "children": [
@@ -1711,7 +1710,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 5706,
+                      "scope": 5712,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bool",
@@ -1724,19 +1723,19 @@
                           "name": "bool",
                           "type": "bool"
                         },
-                        "id": 5690,
+                        "id": 5696,
                         "name": "ElementaryTypeName",
-                        "src": "1691:4:16"
+                        "src": "1690:4:16"
                       }
                     ],
-                    "id": 5691,
+                    "id": 5697,
                     "name": "VariableDeclaration",
-                    "src": "1691:4:16"
+                    "src": "1690:4:16"
                   }
                 ],
-                "id": 5692,
+                "id": 5698,
                 "name": "ParameterList",
-                "src": "1690:6:16"
+                "src": "1689:6:16"
               },
               {
                 "children": [
@@ -1770,7 +1769,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "remove",
-                              "referencedDeclaration": 7882,
+                              "referencedDeclaration": 7917,
                               "type": "function (struct GroveLib.Index storage pointer,bytes32)"
                             },
                             "children": [
@@ -1790,13 +1789,13 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 5597,
+                                      "referencedDeclaration": 5603,
                                       "type": "mapping(address => struct GroveLib.Index storage ref)",
                                       "value": "requestsByAddress"
                                     },
-                                    "id": 5693,
+                                    "id": 5699,
                                     "name": "Identifier",
-                                    "src": "1711:17:16"
+                                    "src": "1710:17:16"
                                   },
                                   {
                                     "attributes": {
@@ -1816,28 +1815,28 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 12196,
+                                          "referencedDeclaration": 12237,
                                           "type": "msg",
                                           "value": "msg"
                                         },
-                                        "id": 5694,
+                                        "id": 5700,
                                         "name": "Identifier",
-                                        "src": "1729:3:16"
+                                        "src": "1728:3:16"
                                       }
                                     ],
-                                    "id": 5695,
+                                    "id": 5701,
                                     "name": "MemberAccess",
-                                    "src": "1729:10:16"
+                                    "src": "1728:10:16"
                                   }
                                 ],
-                                "id": 5696,
+                                "id": 5702,
                                 "name": "IndexAccess",
-                                "src": "1711:29:16"
+                                "src": "1710:29:16"
                               }
                             ],
-                            "id": 5697,
+                            "id": 5703,
                             "name": "MemberAccess",
-                            "src": "1711:36:16"
+                            "src": "1710:36:16"
                           },
                           {
                             "attributes": {
@@ -1869,9 +1868,9 @@
                                   "type": "type(bytes32)",
                                   "value": "bytes32"
                                 },
-                                "id": 5698,
+                                "id": 5704,
                                 "name": "ElementaryTypeNameExpression",
-                                "src": "1748:7:16"
+                                "src": "1747:7:16"
                               },
                               {
                                 "attributes": {
@@ -1879,32 +1878,32 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 5688,
+                                  "referencedDeclaration": 5694,
                                   "type": "address",
                                   "value": "request"
                                 },
-                                "id": 5699,
+                                "id": 5705,
                                 "name": "Identifier",
-                                "src": "1756:7:16"
+                                "src": "1755:7:16"
                               }
                             ],
-                            "id": 5700,
+                            "id": 5706,
                             "name": "FunctionCall",
-                            "src": "1748:16:16"
+                            "src": "1747:16:16"
                           }
                         ],
-                        "id": 5701,
+                        "id": 5707,
                         "name": "FunctionCall",
-                        "src": "1711:54:16"
+                        "src": "1710:54:16"
                       }
                     ],
-                    "id": 5702,
+                    "id": 5708,
                     "name": "ExpressionStatement",
-                    "src": "1711:54:16"
+                    "src": "1710:54:16"
                   },
                   {
                     "attributes": {
-                      "functionReturnParameters": 5692
+                      "functionReturnParameters": 5698
                     },
                     "children": [
                       {
@@ -1920,24 +1919,24 @@
                           "type": "bool",
                           "value": "true"
                         },
-                        "id": 5703,
+                        "id": 5709,
                         "name": "Literal",
-                        "src": "1782:4:16"
+                        "src": "1781:4:16"
                       }
                     ],
-                    "id": 5704,
+                    "id": 5710,
                     "name": "Return",
-                    "src": "1775:11:16"
+                    "src": "1774:11:16"
                   }
                 ],
-                "id": 5705,
+                "id": 5711,
                 "name": "Block",
-                "src": "1701:92:16"
+                "src": "1700:92:16"
               }
             ],
-            "id": 5706,
+            "id": 5712,
             "name": "FunctionDefinition",
-            "src": "1627:166:16"
+            "src": "1626:166:16"
           },
           {
             "attributes": {
@@ -1949,9 +1948,9 @@
               ],
               "name": "isKnownRequest",
               "payable": false,
-              "scope": 5751,
+              "scope": 5757,
               "stateMutability": "view",
-              "superFunction": 6649,
+              "superFunction": 6684,
               "visibility": "public"
             },
             "children": [
@@ -1961,7 +1960,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "factory",
-                      "scope": 5725,
+                      "scope": 5731,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1974,20 +1973,20 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 5707,
+                        "id": 5713,
                         "name": "ElementaryTypeName",
-                        "src": "1933:7:16"
+                        "src": "1932:7:16"
                       }
                     ],
-                    "id": 5708,
+                    "id": 5714,
                     "name": "VariableDeclaration",
-                    "src": "1933:15:16"
+                    "src": "1932:15:16"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "request",
-                      "scope": 5725,
+                      "scope": 5731,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -2000,19 +1999,19 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 5709,
+                        "id": 5715,
                         "name": "ElementaryTypeName",
-                        "src": "1950:7:16"
+                        "src": "1949:7:16"
                       }
                     ],
-                    "id": 5710,
+                    "id": 5716,
                     "name": "VariableDeclaration",
-                    "src": "1950:15:16"
+                    "src": "1949:15:16"
                   }
                 ],
-                "id": 5711,
+                "id": 5717,
                 "name": "ParameterList",
-                "src": "1932:34:16"
+                "src": "1931:34:16"
               },
               {
                 "children": [
@@ -2020,7 +2019,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 5725,
+                      "scope": 5731,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bool",
@@ -2033,25 +2032,25 @@
                           "name": "bool",
                           "type": "bool"
                         },
-                        "id": 5712,
+                        "id": 5718,
                         "name": "ElementaryTypeName",
-                        "src": "1996:4:16"
+                        "src": "1995:4:16"
                       }
                     ],
-                    "id": 5713,
+                    "id": 5719,
                     "name": "VariableDeclaration",
-                    "src": "1996:4:16"
+                    "src": "1995:4:16"
                   }
                 ],
-                "id": 5714,
+                "id": 5720,
                 "name": "ParameterList",
-                "src": "1995:6:16"
+                "src": "1994:6:16"
               },
               {
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 5714
+                      "functionReturnParameters": 5720
                     },
                     "children": [
                       {
@@ -2082,7 +2081,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "exists",
-                              "referencedDeclaration": 7532,
+                              "referencedDeclaration": 7567,
                               "type": "function (struct GroveLib.Index storage pointer,bytes32) view returns (bool)"
                             },
                             "children": [
@@ -2102,13 +2101,13 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 5597,
+                                      "referencedDeclaration": 5603,
                                       "type": "mapping(address => struct GroveLib.Index storage ref)",
                                       "value": "requestsByAddress"
                                     },
-                                    "id": 5715,
+                                    "id": 5721,
                                     "name": "Identifier",
-                                    "src": "2023:17:16"
+                                    "src": "2022:17:16"
                                   },
                                   {
                                     "attributes": {
@@ -2116,23 +2115,23 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 5708,
+                                      "referencedDeclaration": 5714,
                                       "type": "address",
                                       "value": "factory"
                                     },
-                                    "id": 5716,
+                                    "id": 5722,
                                     "name": "Identifier",
-                                    "src": "2041:7:16"
+                                    "src": "2040:7:16"
                                   }
                                 ],
-                                "id": 5717,
+                                "id": 5723,
                                 "name": "IndexAccess",
-                                "src": "2023:26:16"
+                                "src": "2022:26:16"
                               }
                             ],
-                            "id": 5718,
+                            "id": 5724,
                             "name": "MemberAccess",
-                            "src": "2023:33:16"
+                            "src": "2022:33:16"
                           },
                           {
                             "attributes": {
@@ -2164,9 +2163,9 @@
                                   "type": "type(bytes32)",
                                   "value": "bytes32"
                                 },
-                                "id": 5719,
+                                "id": 5725,
                                 "name": "ElementaryTypeNameExpression",
-                                "src": "2057:7:16"
+                                "src": "2056:7:16"
                               },
                               {
                                 "attributes": {
@@ -2174,38 +2173,38 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 5710,
+                                  "referencedDeclaration": 5716,
                                   "type": "address",
                                   "value": "request"
                                 },
-                                "id": 5720,
+                                "id": 5726,
                                 "name": "Identifier",
-                                "src": "2065:7:16"
+                                "src": "2064:7:16"
                               }
                             ],
-                            "id": 5721,
+                            "id": 5727,
                             "name": "FunctionCall",
-                            "src": "2057:16:16"
+                            "src": "2056:16:16"
                           }
                         ],
-                        "id": 5722,
+                        "id": 5728,
                         "name": "FunctionCall",
-                        "src": "2023:51:16"
+                        "src": "2022:51:16"
                       }
                     ],
-                    "id": 5723,
+                    "id": 5729,
                     "name": "Return",
-                    "src": "2016:58:16"
+                    "src": "2015:58:16"
                   }
                 ],
-                "id": 5724,
+                "id": 5730,
                 "name": "Block",
-                "src": "2006:75:16"
+                "src": "2005:75:16"
               }
             ],
-            "id": 5725,
+            "id": 5731,
             "name": "FunctionDefinition",
-            "src": "1909:172:16"
+            "src": "1908:172:16"
           },
           {
             "attributes": {
@@ -2217,9 +2216,9 @@
               ],
               "name": "query",
               "payable": false,
-              "scope": 5751,
+              "scope": 5757,
               "stateMutability": "view",
-              "superFunction": 6660,
+              "superFunction": 6695,
               "visibility": "public"
             },
             "children": [
@@ -2229,7 +2228,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "factory",
-                      "scope": 5750,
+                      "scope": 5756,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -2242,20 +2241,20 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 5726,
+                        "id": 5732,
                         "name": "ElementaryTypeName",
-                        "src": "2163:7:16"
+                        "src": "2162:7:16"
                       }
                     ],
-                    "id": 5727,
+                    "id": 5733,
                     "name": "VariableDeclaration",
-                    "src": "2163:15:16"
+                    "src": "2162:15:16"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "operator",
-                      "scope": 5750,
+                      "scope": 5756,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bytes2",
@@ -2268,20 +2267,20 @@
                           "name": "bytes2",
                           "type": "bytes2"
                         },
-                        "id": 5728,
+                        "id": 5734,
                         "name": "ElementaryTypeName",
-                        "src": "2180:6:16"
+                        "src": "2179:6:16"
                       }
                     ],
-                    "id": 5729,
+                    "id": 5735,
                     "name": "VariableDeclaration",
-                    "src": "2180:15:16"
+                    "src": "2179:15:16"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "value",
-                      "scope": 5750,
+                      "scope": 5756,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2294,19 +2293,19 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 5730,
+                        "id": 5736,
                         "name": "ElementaryTypeName",
-                        "src": "2197:4:16"
+                        "src": "2196:4:16"
                       }
                     ],
-                    "id": 5731,
+                    "id": 5737,
                     "name": "VariableDeclaration",
-                    "src": "2197:10:16"
+                    "src": "2196:10:16"
                   }
                 ],
-                "id": 5732,
+                "id": 5738,
                 "name": "ParameterList",
-                "src": "2162:46:16"
+                "src": "2161:46:16"
               },
               {
                 "children": [
@@ -2314,7 +2313,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 5750,
+                      "scope": 5756,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -2327,25 +2326,25 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 5733,
+                        "id": 5739,
                         "name": "ElementaryTypeName",
-                        "src": "2238:7:16"
+                        "src": "2237:7:16"
                       }
                     ],
-                    "id": 5734,
+                    "id": 5740,
                     "name": "VariableDeclaration",
-                    "src": "2238:7:16"
+                    "src": "2237:7:16"
                   }
                 ],
-                "id": 5735,
+                "id": 5741,
                 "name": "ParameterList",
-                "src": "2237:9:16"
+                "src": "2236:9:16"
               },
               {
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 5735
+                      "functionReturnParameters": 5741
                     },
                     "children": [
                       {
@@ -2378,9 +2377,9 @@
                               "type": "type(address)",
                               "value": "address"
                             },
-                            "id": 5736,
+                            "id": 5742,
                             "name": "ElementaryTypeNameExpression",
-                            "src": "2268:7:16"
+                            "src": "2267:7:16"
                           },
                           {
                             "attributes": {
@@ -2414,7 +2413,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "query",
-                                  "referencedDeclaration": 8276,
+                                  "referencedDeclaration": 8311,
                                   "type": "function (struct GroveLib.Index storage pointer,bytes2,int256) view returns (bytes32)"
                                 },
                                 "children": [
@@ -2434,13 +2433,13 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 5597,
+                                          "referencedDeclaration": 5603,
                                           "type": "mapping(address => struct GroveLib.Index storage ref)",
                                           "value": "requestsByAddress"
                                         },
-                                        "id": 5737,
+                                        "id": 5743,
                                         "name": "Identifier",
-                                        "src": "2276:17:16"
+                                        "src": "2275:17:16"
                                       },
                                       {
                                         "attributes": {
@@ -2448,23 +2447,23 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 5727,
+                                          "referencedDeclaration": 5733,
                                           "type": "address",
                                           "value": "factory"
                                         },
-                                        "id": 5738,
+                                        "id": 5744,
                                         "name": "Identifier",
-                                        "src": "2294:7:16"
+                                        "src": "2293:7:16"
                                       }
                                     ],
-                                    "id": 5739,
+                                    "id": 5745,
                                     "name": "IndexAccess",
-                                    "src": "2276:26:16"
+                                    "src": "2275:26:16"
                                   }
                                 ],
-                                "id": 5740,
+                                "id": 5746,
                                 "name": "MemberAccess",
-                                "src": "2276:32:16"
+                                "src": "2275:32:16"
                               },
                               {
                                 "attributes": {
@@ -2472,13 +2471,13 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 5729,
+                                  "referencedDeclaration": 5735,
                                   "type": "bytes2",
                                   "value": "operator"
                                 },
-                                "id": 5741,
+                                "id": 5747,
                                 "name": "Identifier",
-                                "src": "2309:8:16"
+                                "src": "2308:8:16"
                               },
                               {
                                 "attributes": {
@@ -2508,7 +2507,7 @@
                                       "isPure": false,
                                       "lValueRequested": false,
                                       "member_name": "safeCastSigned",
-                                      "referencedDeclaration": 8824,
+                                      "referencedDeclaration": 8859,
                                       "type": "function (uint256) pure returns (int256)"
                                     },
                                     "children": [
@@ -2518,18 +2517,18 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 8825,
+                                          "referencedDeclaration": 8860,
                                           "type": "type(library MathLib)",
                                           "value": "MathLib"
                                         },
-                                        "id": 5742,
+                                        "id": 5748,
                                         "name": "Identifier",
-                                        "src": "2319:7:16"
+                                        "src": "2318:7:16"
                                       }
                                     ],
-                                    "id": 5743,
+                                    "id": 5749,
                                     "name": "MemberAccess",
-                                    "src": "2319:22:16"
+                                    "src": "2318:22:16"
                                   },
                                   {
                                     "attributes": {
@@ -2537,76 +2536,76 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 5731,
+                                      "referencedDeclaration": 5737,
                                       "type": "uint256",
                                       "value": "value"
                                     },
-                                    "id": 5744,
+                                    "id": 5750,
                                     "name": "Identifier",
-                                    "src": "2342:5:16"
+                                    "src": "2341:5:16"
                                   }
                                 ],
-                                "id": 5745,
+                                "id": 5751,
                                 "name": "FunctionCall",
-                                "src": "2319:29:16"
+                                "src": "2318:29:16"
                               }
                             ],
-                            "id": 5746,
+                            "id": 5752,
                             "name": "FunctionCall",
-                            "src": "2276:73:16"
+                            "src": "2275:73:16"
                           }
                         ],
-                        "id": 5747,
+                        "id": 5753,
                         "name": "FunctionCall",
-                        "src": "2268:82:16"
+                        "src": "2267:82:16"
                       }
                     ],
-                    "id": 5748,
+                    "id": 5754,
                     "name": "Return",
-                    "src": "2261:89:16"
+                    "src": "2260:89:16"
                   }
                 ],
-                "id": 5749,
+                "id": 5755,
                 "name": "Block",
-                "src": "2251:106:16"
+                "src": "2250:106:16"
               }
             ],
-            "id": 5750,
+            "id": 5756,
             "name": "FunctionDefinition",
-            "src": "2148:209:16"
+            "src": "2147:209:16"
           }
         ],
-        "id": 5751,
+        "id": 5757,
         "name": "ContractDefinition",
-        "src": "282:2077:16"
+        "src": "281:2077:16"
       }
     ],
-    "id": 5752,
+    "id": 5758,
     "name": "SourceUnit",
-    "src": "0:2359:16"
+    "src": "0:2358:16"
   },
   "compiler": {
     "name": "solc",
-    "version": "0.4.18+commit.9cf6e910.Emscripten.clang"
+    "version": "0.4.19+commit.c4cbbb05.Emscripten.clang"
   },
   "networks": {
     "3": {
       "events": {},
       "links": {
-        "GroveLib": "0xca72fe8a56e6b6829b0cbfdb4a30f9c2712f353f",
-        "MathLib": "0x4d09acb1551907235e3b28fec1ced02c51274212"
+        "GroveLib": "0x71e85a9cb282b87b1f293438cbae93a681958fa1",
+        "MathLib": "0xcd09466b45110cb237ee6e9ebb9cf55d1035dfe1"
       },
-      "address": "0x2d1091a8fc1b90bd54603d44c3cbd81a80461893"
+      "address": "0x638b57d6612b2f71e01818e3e21812403071b32f"
     },
-    "4": {
+    "42": {
       "events": {},
       "links": {
-        "GroveLib": "0xf628e5650720c66b8ee5a1de1abde2825fdc78e7",
-        "MathLib": "0xda81053737a137d624db2b9cbf1722bef6a21d1a"
+        "GroveLib": "0xb8dc447896adabcbcd2e888cd5fa3ddac0969b96",
+        "MathLib": "0x003e059c6772f3e28e675b64611855391ce83700"
       },
-      "address": "0xb852c89103eaf0b01b9f010000a7e16effcd14c3"
+      "address": "0xb19882bc8f1ce08430a31d9660bf0aec6d9a80cb"
     }
   },
   "schemaVersion": "1.0.1",
-  "updatedAt": "2018-01-14T21:26:14.082Z"
+  "updatedAt": "2018-02-05T22:09:16.327Z"
 }

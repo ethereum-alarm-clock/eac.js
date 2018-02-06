@@ -188,12 +188,12 @@ class TxRequest {
     return this.data.txData.gasPrice
   }
 
-  get donation() {
-    return this.data.paymentData.donation
+  get fee() {
+    return this.data.paymentData.fee
   }
 
-  get payment() {
-    return this.data.paymentData.payment
+  get bounty() {
+    return this.data.paymentData.bounty
   }
 
   /**
