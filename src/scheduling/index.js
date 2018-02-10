@@ -58,7 +58,8 @@ class Scheduler {
     gasPrice,
     fee,
     bounty,
-    requiredDeposit
+    requiredDeposit,
+    waitForMined = true
   ) {
     return new Promise((resolve, reject) => {
       this.blockScheduler.schedule.sendTransaction(
@@ -82,9 +83,11 @@ class Scheduler {
         (err, txHash) => {
           if (err) reject(err)
           else {
-            Util.waitForTransactionToBeMined(this.web3, txHash)
+            if (waitForMined) {
+              Util.waitForTransactionToBeMined(this.web3, txHash)
               .then(receipt => resolve(receipt))
               .catch(e => reject(e))
+            }
           }
         }
       )
@@ -101,7 +104,8 @@ class Scheduler {
     gasPrice,
     fee,
     bounty,
-    requiredDeposit
+    requiredDeposit,
+    waitForMined = true
   ) {
     return new Promise((resolve, reject) => {
       this.timestampScheduler.schedule(
@@ -125,9 +129,13 @@ class Scheduler {
         (err, txHash) => {
           if (err) reject(err)
           else {
-            Util.waitForTransactionToBeMined(this.web3, txHash)
+            if (waitForMined) {
+              Util.waitForTransactionToBeMined(this.web3, txHash)
               .then(receipt => resolve(receipt))
               .catch(e => reject(e))
+            } else {
+              resolve(txHash)
+            }
           }
         }
       )
