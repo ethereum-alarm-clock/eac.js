@@ -83,10 +83,17 @@ class Scheduler {
         (err, txHash) => {
           if (err) reject(err)
           else {
+            const miningPromise = Util.waitForTransactionToBeMined(this.web3, txHash);
+
             if (waitForMined) {
-              Util.waitForTransactionToBeMined(this.web3, txHash)
-              .then(receipt => resolve(receipt))
-              .catch(e => reject(e))
+              miningPromise
+                .then(receipt => resolve(receipt))
+                .catch(e => reject(e))
+            } else {
+              resolve({
+                transactionHash: txHash,
+                miningPromise
+              });
             }
           }
         }
@@ -129,12 +136,17 @@ class Scheduler {
         (err, txHash) => {
           if (err) reject(err)
           else {
+            const miningPromise = Util.waitForTransactionToBeMined(this.web3, txHash);
+
             if (waitForMined) {
-              Util.waitForTransactionToBeMined(this.web3, txHash)
-              .then(receipt => resolve(receipt))
-              .catch(e => reject(e))
+              miningPromise
+                .then(receipt => resolve(receipt))
+                .catch(e => reject(e))
             } else {
-              resolve(txHash)
+              resolve({
+                transactionHash: txHash,
+                miningPromise
+              });
             }
           }
         }
