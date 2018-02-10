@@ -40,7 +40,7 @@ it in before instead.
 
 See the example below.
 
-### eac.Scheduler.blockSchedule(toAddress, callData, callGas, callValue, windowSize, windowStart, gasPrice, donation, payment, requiredDeposit)
+### eac.Scheduler.blockSchedule(toAddress, callData, callGas, callValue, windowSize, windowStart, gasPrice, donation, payment, requiredDeposit, waitForMined = true)
 
  - `toAddress`     - an Ethereum address
  - `callData`      - hex encoded call data
@@ -52,6 +52,7 @@ See the example below.
  - `donation` - `BigNumber` | String
  - `payment` - `BigNumber` | String
  - `requiredDeposit` - `BigNumber` | String
+ - `waitForMined` - Boolean
 
 Returns a `Promise` that will resolve to the `receipt` of the transaction if successful.
 
@@ -84,7 +85,7 @@ const receipt = await eacScheduler.blockSchedule(
 )
 ```
 
-### eac.Scheduler.timestampSchedule(toAddress, callData, callGas, callValue, windowSize, windowStart, gasPrice, donation, payment, requiredDeposit)
+### eac.Scheduler.timestampSchedule(toAddress, callData, callGas, callValue, windowSize, windowStart, gasPrice, donation, payment, requiredDeposit, waitForMined = true)
 
  - `toAddress`     - an Ethereum address
  - `callData`      - hex encoded call data
@@ -96,5 +97,6 @@ const receipt = await eacScheduler.blockSchedule(
  - `donation` - `BigNumber` | String
  - `payment` - `BigNumber` | String
  - `requiredDeposit` - `BigNumber` | String
+ - `waitForMined` - Boolean
 
 Returns a `Promise` that will resolve to the `receipt` of the transaction if successful.
