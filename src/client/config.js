@@ -14,10 +14,16 @@ class Config {
     provider,
     walletFile,
     password,
-    autostart
+    autostart,
+    logger
   ) {
     this.scanSpread = scanSpread
-    this.logger = new Logger(logfile, logLevel)
+
+    if (logger) {
+      this.logger = logger
+    } else  {
+      this.logger = new Logger(logfile, logLevel)
+    }
 
     this.cache = new Cache(this.logger)
     this.factory = factory
@@ -39,7 +45,8 @@ class Config {
     provider,
     walletFile,
     password,
-    autostart
+    autostart,
+    logger
   ) {
     let conf = new Config(
       scanSpread,
@@ -52,7 +59,8 @@ class Config {
       provider,
       walletFile,
       password,
-      autostart
+      autostart,
+      logger
     )
     if (walletFile) {
       await conf.instantiateWallet(walletFile, password)

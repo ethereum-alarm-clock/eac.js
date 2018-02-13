@@ -16,12 +16,5 @@ describe("Util", () => {
         const util = require('../src')().Util
         expect(util)
         .to.exist
-        // console.log(util)
     })
-
-    // it('tests init', async () => {
-    //     const chainName = await eac.Util.getChainName()
-    //     console.log(chainName)
-
-    // })
 })
