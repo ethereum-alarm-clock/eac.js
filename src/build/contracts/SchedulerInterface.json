@@ -128,13 +128,13 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity 0.4.19;\n\nimport \"contracts/Library/RequestScheduleLib.sol\";\nimport \"contracts/Library/SchedulerLib.sol\";\n\n/**\n * @title SchedulerInterface\n * @dev The base contract that the higher contracts: BaseScheduler, BlockScheduler and TimestampScheduler all inherit from.\n */\ncontract SchedulerInterface {\n    using SchedulerLib for SchedulerLib.FutureTransaction;\n\n    // The RequestFactory address which produces requests for this scheduler.\n    address public factoryAddress;\n    \n    // The TemporalUnit of this scheduler.\n    RequestScheduleLib.TemporalUnit public temporalUnit;\n\n    /*\n     * Local storage variable used to house the data for transaction\n     * scheduling.\n     */\n    SchedulerLib.FutureTransaction public futureTransaction;\n\n    /*\n     * When applied to a function, causes the local futureTransaction to\n     * get reset to it's defaults on each function call.\n     */\n    modifier doReset {\n        if (temporalUnit == RequestScheduleLib.TemporalUnit.Blocks) {\n            futureTransaction.resetAsBlock();\n        } else if (temporalUnit == RequestScheduleLib.TemporalUnit.Timestamp) {\n            futureTransaction.resetAsTimestamp();\n        } else {\n            revert();\n        }\n        _;\n    }\n        \n    function schedule(address   _toAddress,\n                      bytes     _callData,\n                      uint[8]   _uintArgs)\n        doReset\n        public payable returns (address);\n\n}\n",
-  "sourcePath": "/home/logan/Work/ethereum-alarm-clock/contracts/Interface/SchedulerInterface.sol",
+  "sourcePath": "contracts/Interface/SchedulerInterface.sol",
   "ast": {
     "attributes": {
-      "absolutePath": "/home/logan/Work/ethereum-alarm-clock/contracts/Interface/SchedulerInterface.sol",
+      "absolutePath": "contracts/Interface/SchedulerInterface.sol",
       "exportedSymbols": {
         "SchedulerInterface": [
-          125
+          6873
         ]
       }
     },
@@ -147,39 +147,39 @@
             ".19"
           ]
         },
-        "id": 66,
+        "id": 6814,
         "name": "PragmaDirective",
-        "src": "0:23:1"
+        "src": "0:23:29"
       },
       {
         "attributes": {
-          "SourceUnit": 6283,
+          "SourceUnit": 11483,
           "absolutePath": "contracts/Library/RequestScheduleLib.sol",
           "file": "contracts/Library/RequestScheduleLib.sol",
-          "scope": 126,
+          "scope": 6874,
           "symbolAliases": [
             null
           ],
           "unitAlias": ""
         },
-        "id": 67,
+        "id": 6815,
         "name": "ImportDirective",
-        "src": "25:50:1"
+        "src": "25:50:29"
       },
       {
         "attributes": {
-          "SourceUnit": 6707,
+          "SourceUnit": 11907,
           "absolutePath": "contracts/Library/SchedulerLib.sol",
           "file": "contracts/Library/SchedulerLib.sol",
-          "scope": 126,
+          "scope": 6874,
           "symbolAliases": [
             null
           ],
           "unitAlias": ""
         },
-        "id": 68,
+        "id": 6816,
         "name": "ImportDirective",
-        "src": "76:44:1"
+        "src": "76:44:29"
       },
       {
         "attributes": {
@@ -193,10 +193,10 @@
           "documentation": "@title SchedulerInterface\n@dev The base contract that the higher contracts: BaseScheduler, BlockScheduler and TimestampScheduler all inherit from.",
           "fullyImplemented": false,
           "linearizedBaseContracts": [
-            125
+            6873
           ],
           "name": "SchedulerInterface",
-          "scope": 126
+          "scope": 6874
         },
         "children": [
           {
@@ -205,34 +205,34 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "SchedulerLib",
-                  "referencedDeclaration": 6706,
+                  "referencedDeclaration": 11906,
                   "type": "library SchedulerLib"
                 },
-                "id": 69,
+                "id": 6817,
                 "name": "UserDefinedTypeName",
-                "src": "323:12:1"
+                "src": "323:12:29"
               },
               {
                 "attributes": {
                   "contractScope": null,
                   "name": "SchedulerLib.FutureTransaction",
-                  "referencedDeclaration": 6322,
+                  "referencedDeclaration": 11522,
                   "type": "struct SchedulerLib.FutureTransaction storage pointer"
                 },
-                "id": 70,
+                "id": 6818,
                 "name": "UserDefinedTypeName",
-                "src": "340:30:1"
+                "src": "340:30:29"
               }
             ],
-            "id": 71,
+            "id": 6819,
             "name": "UsingForDirective",
-            "src": "317:54:1"
+            "src": "317:54:29"
           },
           {
             "attributes": {
               "constant": false,
               "name": "factoryAddress",
-              "scope": 125,
+              "scope": 6873,
               "stateVariable": true,
               "storageLocation": "default",
               "type": "address",
@@ -245,20 +245,20 @@
                   "name": "address",
                   "type": "address"
                 },
-                "id": 72,
+                "id": 6820,
                 "name": "ElementaryTypeName",
-                "src": "455:7:1"
+                "src": "455:7:29"
               }
             ],
-            "id": 73,
+            "id": 6821,
             "name": "VariableDeclaration",
-            "src": "455:29:1"
+            "src": "455:29:29"
           },
           {
             "attributes": {
               "constant": false,
               "name": "temporalUnit",
-              "scope": 125,
+              "scope": 6873,
               "stateVariable": true,
               "storageLocation": "default",
               "type": "enum RequestScheduleLib.TemporalUnit",
@@ -270,23 +270,23 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "RequestScheduleLib.TemporalUnit",
-                  "referencedDeclaration": 5924,
+                  "referencedDeclaration": 11124,
                   "type": "enum RequestScheduleLib.TemporalUnit"
                 },
-                "id": 74,
+                "id": 6822,
                 "name": "UserDefinedTypeName",
-                "src": "538:31:1"
+                "src": "538:31:29"
               }
             ],
-            "id": 75,
+            "id": 6823,
             "name": "VariableDeclaration",
-            "src": "538:51:1"
+            "src": "538:51:29"
           },
           {
             "attributes": {
               "constant": false,
               "name": "futureTransaction",
-              "scope": 125,
+              "scope": 6873,
               "stateVariable": true,
               "storageLocation": "default",
               "type": "struct SchedulerLib.FutureTransaction storage ref",
@@ -298,17 +298,17 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "SchedulerLib.FutureTransaction",
-                  "referencedDeclaration": 6322,
+                  "referencedDeclaration": 11522,
                   "type": "struct SchedulerLib.FutureTransaction storage pointer"
                 },
-                "id": 76,
+                "id": 6824,
                 "name": "UserDefinedTypeName",
-                "src": "699:30:1"
+                "src": "699:30:29"
               }
             ],
-            "id": 77,
+            "id": 6825,
             "name": "VariableDeclaration",
-            "src": "699:55:1"
+            "src": "699:55:29"
           },
           {
             "attributes": {
@@ -323,9 +323,9 @@
                   ]
                 },
                 "children": [],
-                "id": 78,
+                "id": 6826,
                 "name": "ParameterList",
-                "src": "923:0:1"
+                "src": "923:0:29"
               },
               {
                 "children": [
@@ -335,7 +335,7 @@
                         "attributes": {
                           "argumentTypes": null,
                           "commonType": {
-                            "typeIdentifier": "t_enum$_TemporalUnit_$5924",
+                            "typeIdentifier": "t_enum$_TemporalUnit_$11124",
                             "typeString": "enum RequestScheduleLib.TemporalUnit"
                           },
                           "isConstant": false,
@@ -352,13 +352,13 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 75,
+                              "referencedDeclaration": 6823,
                               "type": "enum RequestScheduleLib.TemporalUnit",
                               "value": "temporalUnit"
                             },
-                            "id": 79,
+                            "id": 6827,
                             "name": "Identifier",
-                            "src": "937:12:1"
+                            "src": "937:12:29"
                           },
                           {
                             "attributes": {
@@ -380,7 +380,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "TemporalUnit",
-                                  "referencedDeclaration": 5924,
+                                  "referencedDeclaration": 11124,
                                   "type": "type(enum RequestScheduleLib.TemporalUnit)"
                                 },
                                 "children": [
@@ -390,28 +390,28 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 6282,
+                                      "referencedDeclaration": 11482,
                                       "type": "type(library RequestScheduleLib)",
                                       "value": "RequestScheduleLib"
                                     },
-                                    "id": 80,
+                                    "id": 6828,
                                     "name": "Identifier",
-                                    "src": "953:18:1"
+                                    "src": "953:18:29"
                                   }
                                 ],
-                                "id": 81,
+                                "id": 6829,
                                 "name": "MemberAccess",
-                                "src": "953:31:1"
+                                "src": "953:31:29"
                               }
                             ],
-                            "id": 82,
+                            "id": 6830,
                             "name": "MemberAccess",
-                            "src": "953:38:1"
+                            "src": "953:38:29"
                           }
                         ],
-                        "id": 83,
+                        "id": 6831,
                         "name": "BinaryOperation",
-                        "src": "937:54:1"
+                        "src": "937:54:29"
                       },
                       {
                         "children": [
@@ -445,7 +445,7 @@
                                       "isPure": false,
                                       "lValueRequested": false,
                                       "member_name": "resetAsBlock",
-                                      "referencedDeclaration": 6529,
+                                      "referencedDeclaration": 11729,
                                       "type": "function (struct SchedulerLib.FutureTransaction storage pointer) returns (bool)"
                                     },
                                     "children": [
@@ -455,33 +455,33 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 77,
+                                          "referencedDeclaration": 6825,
                                           "type": "struct SchedulerLib.FutureTransaction storage ref",
                                           "value": "futureTransaction"
                                         },
-                                        "id": 84,
+                                        "id": 6832,
                                         "name": "Identifier",
-                                        "src": "1007:17:1"
+                                        "src": "1007:17:29"
                                       }
                                     ],
-                                    "id": 86,
+                                    "id": 6834,
                                     "name": "MemberAccess",
-                                    "src": "1007:30:1"
+                                    "src": "1007:30:29"
                                   }
                                 ],
-                                "id": 87,
+                                "id": 6835,
                                 "name": "FunctionCall",
-                                "src": "1007:32:1"
+                                "src": "1007:32:29"
                               }
                             ],
-                            "id": 88,
+                            "id": 6836,
                             "name": "ExpressionStatement",
-                            "src": "1007:32:1"
+                            "src": "1007:32:29"
                           }
                         ],
-                        "id": 89,
+                        "id": 6837,
                         "name": "Block",
-                        "src": "993:57:1"
+                        "src": "993:57:29"
                       },
                       {
                         "children": [
@@ -489,7 +489,7 @@
                             "attributes": {
                               "argumentTypes": null,
                               "commonType": {
-                                "typeIdentifier": "t_enum$_TemporalUnit_$5924",
+                                "typeIdentifier": "t_enum$_TemporalUnit_$11124",
                                 "typeString": "enum RequestScheduleLib.TemporalUnit"
                               },
                               "isConstant": false,
@@ -506,13 +506,13 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 75,
+                                  "referencedDeclaration": 6823,
                                   "type": "enum RequestScheduleLib.TemporalUnit",
                                   "value": "temporalUnit"
                                 },
-                                "id": 90,
+                                "id": 6838,
                                 "name": "Identifier",
-                                "src": "1060:12:1"
+                                "src": "1060:12:29"
                               },
                               {
                                 "attributes": {
@@ -534,7 +534,7 @@
                                       "isPure": false,
                                       "lValueRequested": false,
                                       "member_name": "TemporalUnit",
-                                      "referencedDeclaration": 5924,
+                                      "referencedDeclaration": 11124,
                                       "type": "type(enum RequestScheduleLib.TemporalUnit)"
                                     },
                                     "children": [
@@ -544,28 +544,28 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 6282,
+                                          "referencedDeclaration": 11482,
                                           "type": "type(library RequestScheduleLib)",
                                           "value": "RequestScheduleLib"
                                         },
-                                        "id": 91,
+                                        "id": 6839,
                                         "name": "Identifier",
-                                        "src": "1076:18:1"
+                                        "src": "1076:18:29"
                                       }
                                     ],
-                                    "id": 92,
+                                    "id": 6840,
                                     "name": "MemberAccess",
-                                    "src": "1076:31:1"
+                                    "src": "1076:31:29"
                                   }
                                 ],
-                                "id": 93,
+                                "id": 6841,
                                 "name": "MemberAccess",
-                                "src": "1076:41:1"
+                                "src": "1076:41:29"
                               }
                             ],
-                            "id": 94,
+                            "id": 6842,
                             "name": "BinaryOperation",
-                            "src": "1060:57:1"
+                            "src": "1060:57:29"
                           },
                           {
                             "children": [
@@ -599,7 +599,7 @@
                                           "isPure": false,
                                           "lValueRequested": false,
                                           "member_name": "resetAsTimestamp",
-                                          "referencedDeclaration": 6611,
+                                          "referencedDeclaration": 11811,
                                           "type": "function (struct SchedulerLib.FutureTransaction storage pointer) returns (bool)"
                                         },
                                         "children": [
@@ -609,33 +609,33 @@
                                               "overloadedDeclarations": [
                                                 null
                                               ],
-                                              "referencedDeclaration": 77,
+                                              "referencedDeclaration": 6825,
                                               "type": "struct SchedulerLib.FutureTransaction storage ref",
                                               "value": "futureTransaction"
                                             },
-                                            "id": 95,
+                                            "id": 6843,
                                             "name": "Identifier",
-                                            "src": "1133:17:1"
+                                            "src": "1133:17:29"
                                           }
                                         ],
-                                        "id": 97,
+                                        "id": 6845,
                                         "name": "MemberAccess",
-                                        "src": "1133:34:1"
+                                        "src": "1133:34:29"
                                       }
                                     ],
-                                    "id": 98,
+                                    "id": 6846,
                                     "name": "FunctionCall",
-                                    "src": "1133:36:1"
+                                    "src": "1133:36:29"
                                   }
                                 ],
-                                "id": 99,
+                                "id": 6847,
                                 "name": "ExpressionStatement",
-                                "src": "1133:36:1"
+                                "src": "1133:36:29"
                               }
                             ],
-                            "id": 100,
+                            "id": 6848,
                             "name": "Block",
-                            "src": "1119:61:1"
+                            "src": "1119:61:29"
                           },
                           {
                             "children": [
@@ -667,53 +667,53 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 6817,
+                                          "referencedDeclaration": 12357,
                                           "type": "function () pure",
                                           "value": "revert"
                                         },
-                                        "id": 101,
+                                        "id": 6849,
                                         "name": "Identifier",
-                                        "src": "1200:6:1"
+                                        "src": "1200:6:29"
                                       }
                                     ],
-                                    "id": 102,
+                                    "id": 6850,
                                     "name": "FunctionCall",
-                                    "src": "1200:8:1"
+                                    "src": "1200:8:29"
                                   }
                                 ],
-                                "id": 103,
+                                "id": 6851,
                                 "name": "ExpressionStatement",
-                                "src": "1200:8:1"
+                                "src": "1200:8:29"
                               }
                             ],
-                            "id": 104,
+                            "id": 6852,
                             "name": "Block",
-                            "src": "1186:33:1"
+                            "src": "1186:33:29"
                           }
                         ],
-                        "id": 105,
+                        "id": 6853,
                         "name": "IfStatement",
-                        "src": "1056:163:1"
+                        "src": "1056:163:29"
                       }
                     ],
-                    "id": 106,
+                    "id": 6854,
                     "name": "IfStatement",
-                    "src": "933:286:1"
+                    "src": "933:286:29"
                   },
                   {
-                    "id": 107,
+                    "id": 6855,
                     "name": "PlaceholderStatement",
-                    "src": "1228:1:1"
+                    "src": "1228:1:29"
                   }
                 ],
-                "id": 108,
+                "id": 6856,
                 "name": "Block",
-                "src": "923:313:1"
+                "src": "923:313:29"
               }
             ],
-            "id": 109,
+            "id": 6857,
             "name": "ModifierDefinition",
-            "src": "906:330:1"
+            "src": "906:330:29"
           },
           {
             "attributes": {
@@ -723,7 +723,7 @@
               "isConstructor": false,
               "name": "schedule",
               "payable": true,
-              "scope": 125,
+              "scope": 6873,
               "stateMutability": "payable",
               "superFunction": null,
               "visibility": "public"
@@ -735,7 +735,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_toAddress",
-                      "scope": 124,
+                      "scope": 6872,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -748,20 +748,20 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 110,
+                        "id": 6858,
                         "name": "ElementaryTypeName",
-                        "src": "1268:7:1"
+                        "src": "1268:7:29"
                       }
                     ],
-                    "id": 111,
+                    "id": 6859,
                     "name": "VariableDeclaration",
-                    "src": "1268:20:1"
+                    "src": "1268:20:29"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_callData",
-                      "scope": 124,
+                      "scope": 6872,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bytes memory",
@@ -774,20 +774,20 @@
                           "name": "bytes",
                           "type": "bytes storage pointer"
                         },
-                        "id": 112,
+                        "id": 6860,
                         "name": "ElementaryTypeName",
-                        "src": "1312:5:1"
+                        "src": "1312:5:29"
                       }
                     ],
-                    "id": 113,
+                    "id": 6861,
                     "name": "VariableDeclaration",
-                    "src": "1312:19:1"
+                    "src": "1312:19:29"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_uintArgs",
-                      "scope": 124,
+                      "scope": 6872,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256[8] memory",
@@ -805,9 +805,9 @@
                               "name": "uint",
                               "type": "uint256"
                             },
-                            "id": 114,
+                            "id": 6862,
                             "name": "ElementaryTypeName",
-                            "src": "1355:4:1"
+                            "src": "1355:4:29"
                           },
                           {
                             "attributes": {
@@ -822,24 +822,24 @@
                               "type": "int_const 8",
                               "value": "8"
                             },
-                            "id": 115,
+                            "id": 6863,
                             "name": "Literal",
-                            "src": "1360:1:1"
+                            "src": "1360:1:29"
                           }
                         ],
-                        "id": 116,
+                        "id": 6864,
                         "name": "ArrayTypeName",
-                        "src": "1355:7:1"
+                        "src": "1355:7:29"
                       }
                     ],
-                    "id": 117,
+                    "id": 6865,
                     "name": "VariableDeclaration",
-                    "src": "1355:19:1"
+                    "src": "1355:19:29"
                   }
                 ],
-                "id": 118,
+                "id": 6866,
                 "name": "ParameterList",
-                "src": "1267:108:1"
+                "src": "1267:108:29"
               },
               {
                 "children": [
@@ -847,7 +847,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 124,
+                      "scope": 6872,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -860,19 +860,19 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 121,
+                        "id": 6869,
                         "name": "ElementaryTypeName",
-                        "src": "1424:7:1"
+                        "src": "1424:7:29"
                       }
                     ],
-                    "id": 122,
+                    "id": 6870,
                     "name": "VariableDeclaration",
-                    "src": "1424:7:1"
+                    "src": "1424:7:29"
                   }
                 ],
-                "id": 123,
+                "id": 6871,
                 "name": "ParameterList",
-                "src": "1423:9:1"
+                "src": "1423:9:29"
               },
               {
                 "attributes": {
@@ -887,33 +887,33 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 109,
+                      "referencedDeclaration": 6857,
                       "type": "modifier ()",
                       "value": "doReset"
                     },
-                    "id": 119,
+                    "id": 6867,
                     "name": "Identifier",
-                    "src": "1384:7:1"
+                    "src": "1384:7:29"
                   }
                 ],
-                "id": 120,
+                "id": 6868,
                 "name": "ModifierInvocation",
-                "src": "1384:7:1"
+                "src": "1384:7:29"
               }
             ],
-            "id": 124,
+            "id": 6872,
             "name": "FunctionDefinition",
-            "src": "1250:183:1"
+            "src": "1250:183:29"
           }
         ],
-        "id": 125,
+        "id": 6873,
         "name": "ContractDefinition",
-        "src": "283:1153:1"
+        "src": "283:1153:29"
       }
     ],
-    "id": 126,
+    "id": 6874,
     "name": "SourceUnit",
-    "src": "0:1437:1"
+    "src": "0:1437:29"
   },
   "compiler": {
     "name": "solc",
@@ -921,5 +921,5 @@
   },
   "networks": {},
   "schemaVersion": "1.0.1",
-  "updatedAt": "2018-02-05T22:09:16.333Z"
+  "updatedAt": "2018-02-13T06:56:00.765Z"
 }

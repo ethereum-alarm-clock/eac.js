@@ -10,7 +10,7 @@ class TxRequest {
     }
     this.web3 = web3
     this.instance = this.web3.eth
-      .contract(Util.getABI("TransactionRequest"))
+      .contract(Util.getABI("TransactionRequestCore"))
       .at(address)
   }
 
@@ -127,6 +127,17 @@ class TxRequest {
   }
 
   /**
+   *
+   */
+  createdAt() {
+
+  }
+
+  executedAt() {
+
+  }
+
+  /**
    * Claim props/methods
    */
 
@@ -162,6 +173,10 @@ class TxRequest {
 
   get wasCalled() {
     return this.data.meta.wasCalled
+  }
+
+  get wasSuccessful() {
+      return this.data.meta.wasSuccessful
   }
 
   get owner() {

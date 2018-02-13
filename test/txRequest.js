@@ -1,6 +1,7 @@
 const BigNumber = require("bignumber.js")
 const expect = require("chai").expect
 const Deployer = require("../deploy")
+const { timetravel } = require('./helper/mine2')
 
 describe("TxRequest", () => {
 	let eac
@@ -88,5 +89,34 @@ describe("TxRequest", () => {
 		expect(txRequest.bounty.toString()).to.equal(bounty)
 
 		expect(txRequest.requiredDeposit.toString()).to.equal(requiredDeposit)
+
+		// Test the dynamic getters
+		expect(await eac.Util.getBlockNumber()).to.equal(
+			(await txRequest.now()).toNumber()
+		)
+		expect(await txRequest.beforeClaimWindow()).to.be.false
+		expect(await txRequest.inClaimWindow()).to.be.true
+		expect(await txRequest.inFreezePeriod()).to.be.false
+		expect(await txRequest.inExecutionWindow()).to.be.false
+		expect(await txRequest.inReservedWindow()).to.be.false
+		expect(await txRequest.afterExecutionWindow()).to.be.false
+
+		// Now wait until freeze window
+		const freezeStart = txRequest.freezePeriodStart
+		console.log(freezeStart)
+		await timetravel(
+			web3,
+			10,
+			freezeStart
+		)
+		console.log(await eac.Util.getBlockNumber(),
+			(await txRequest.now()).toNumber()
+		)
+		// expect(await txRequest.beforeClaimWindow()).to.be.false
+		// expect(await txRequest.inClaimWindow()).to.be.false
+		// expect(await txRequest.inFreezePeriod()).to.be.true
+		// expect(await txRequest.inExecutionWindow()).to.be.false
+		// expect(await txRequest.inReservedWindow()).to.be.false
+		// expect(await txRequest.afterExecutionWindow()).to.be.fals
 	})
 })
