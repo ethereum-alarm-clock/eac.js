@@ -42,7 +42,7 @@ async function main() {
     const SafeMath              = getArtifact('SafeMath')
     const SchedulerLib          = getArtifact('SchedulerLib')
     const TimestampScheduler    = getArtifact('TimestampScheduler')
-    const TransactionRequest    = getArtifact('TransactionRequest')
+    const TransactionRequestCore= getArtifact('TransactionRequestCore')
 
     let blockScheduler,
         claimLib,
@@ -59,7 +59,7 @@ async function main() {
         safeMath,
         schedulerLib,
         timestampScheduler,
-        transactionRequest
+        transactionRequestCore
 
     return new Promise((resolve, reject) => {
         let ___
@@ -67,14 +67,14 @@ async function main() {
         .then(accounts => {
             web3.eth.defaultAccount = accounts[0]
             ___ = {from: web3.eth.defaultAccount, gas: 7000000}
-            ExecutionLib.new(___)
+            return ExecutionLib.new(___)
         })
         .then(instance => {
-            executionLib = instance 
+            executionLib = instance
             return GroveLib.new(___)
         })
         .then(instance => {
-            groveLib = instance 
+            groveLib = instance
             return IterTools.new(___)
         })
         .then(instance => {
@@ -124,6 +124,18 @@ async function main() {
         })
         .then(instance => {
             requestTracker = instance
+            linkLibrary(TransactionRequestCore, claimLib)
+            linkLibrary(TransactionRequestCore, executionLib)
+            linkLibrary(TransactionRequestCore, mathLib)
+            linkLibrary(TransactionRequestCore, paymentLib)
+            linkLibrary(TransactionRequestCore, requestMetaLib)
+            linkLibrary(TransactionRequestCore, requestLib)
+            linkLibrary(TransactionRequestCore, requestScheduleLib)
+            linkLibrary(TransactionRequestCore, safeMath)
+            return TransactionRequestCore.new(___)
+        })
+        .then(instance => {
+            transactionRequestCore = instance
             linkLibrary(RequestFactory, claimLib)
             linkLibrary(RequestFactory, mathLib)
             linkLibrary(RequestFactory, requestScheduleLib)
@@ -131,7 +143,11 @@ async function main() {
             linkLibrary(RequestFactory, paymentLib)
             linkLibrary(RequestFactory, requestLib)
             linkLibrary(RequestFactory, requestTracker)
-            return RequestFactory.new(requestTracker.address, ___)
+            return RequestFactory.new(
+                requestTracker.address,
+                transactionRequestCore.address,
+                ___
+            )
         })
         .then(instance => {
             requestFactory = instance

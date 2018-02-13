@@ -103,12 +103,12 @@ describe("TxRequest", () => {
 
 		// Now wait until freeze window
 		const freezeStart = txRequest.freezePeriodStart
-		console.log(freezeStart)
-		await timetravel(
-			web3,
-			10,
-			freezeStart
-		)
+		// console.log(freezeStart)
+		// await timetravel(
+		// 	web3,
+		// 	10,
+		// 	freezeStart
+		// )
 		console.log(await eac.Util.getBlockNumber(),
 			(await txRequest.now()).toNumber()
 		)
