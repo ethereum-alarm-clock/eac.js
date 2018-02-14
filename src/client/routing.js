@@ -67,7 +67,10 @@ const execute = async (conf, txRequest) => {
   const log = conf.logger
   const { web3 } = conf
 
-  const executeGas = txRequest.callGas.add(180000)
+  // txRequest.callGas + 180000 is the exact amount of gas needed by the transaction
+  // to execute, however delegate call only recieves 63/64 of the total gas sent
+  // so we send a bit extra
+  const executeGas = txRequest.callGas.add(180000).div(64).times(65).round()
   const gasLimit = new BigNumber(web3.eth.getBlock("latest").gasLimit)
 
   const { gasPrice } = txRequest
@@ -82,7 +85,7 @@ const execute = async (conf, txRequest) => {
   if (conf.wallet) {
     const executeData = txRequest.executeData
     const walletClaimIndex =  conf.wallet.getAccounts().indexOf(txRequest.claimedBy)
-    
+
     if (walletClaimIndex !== -1) {
         return conf.wallet.sendFromIndex(
             walletClaimIndex,
@@ -149,7 +152,7 @@ const cleanup = async (conf, txRequest) => {
               cancelData
           )
       } else {
-          // The more likely scenario is that one of our accounts is not the 
+          // The more likely scenario is that one of our accounts is not the
           // owner of the expired transaction in which case, we check to see
           // if we will not lost money for sending this transaction then send
           // it from any account.
