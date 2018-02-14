@@ -21,7 +21,7 @@ class Config {
 
     if (logger) {
       this.logger = logger
-    } else  {
+    } else {
       this.logger = new Logger(logfile, logLevel)
     }
 

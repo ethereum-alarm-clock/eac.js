@@ -17,7 +17,7 @@ module.exports = (web3) => {
       Scheduler,
       TxRequest,
       Util: Util(),
-      alarmClient
+      AlarmClient
     }
   }
 
@@ -50,6 +50,6 @@ module.exports = (web3) => {
     },
     transactionRequest: address => new TxRequest(address, web3),
     Util: util,
-    alarmClient
+    AlarmClient
   }
 }
