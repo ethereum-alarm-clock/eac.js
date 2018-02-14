@@ -1,6 +1,6 @@
 const BigNumber = require("bignumber.js")
 const hasPending = require("./pending.js")
-const { Util } = require("../index")()
+const Util = require("../util")();
 
 const claim = async (conf, txRequest) => {
   const log = conf.logger

@@ -21,10 +21,6 @@ const startScanning = (ms, conf) => {
       Scanner.scanCache(conf).catch(err => log.error(err))
     }
   }, ms + 1000)
-
-  // setInterval(_ => {
-  // 	conf.cache.sweepExpired()
-  // }, 12 * 60 * 1000)
 }
 
 /**
@@ -51,7 +47,10 @@ const main = async (
   logLevel,
   walletFile,
   pw,
-  autostart
+  autostart,
+  logger,
+  repl = true,
+  browserDB
 ) => {
   // Assigns chain to the name of the network ID
   const chain = await eac.Util.getChainName()
@@ -60,10 +59,6 @@ const main = async (
   const requestFactory = await eac.requestFactory()
   const requestTracker = await eac.requestTracker()
 
-  // Parses the logfile
-  if (logfile === "console") {
-    console.log("Logging to console")
-  }
   if (logfile === "default") {
     logfile = `${require("os").homedir()}/.eac.log`
   }
@@ -80,26 +75,37 @@ const main = async (
     provider, // conf.provider
     walletFile, // conf.wallet
     pw, // wallet password
-    autostart
+    autostart,
+    logger,
+    repl
   )
+
+  const log = conf.logger
+
+  if (logfile === 'console') {
+    log.info("Logging to console")
+  }
 
   conf.client = "parity"
   conf.chain = chain
 
   // Creates StatsDB
-  conf.statsdb = new StatsDB(conf.web3)
+  conf.statsdb = new StatsDB(conf.web3, browserDB)
 
   // Determines wallet support
   // Determines wallet support
   if (conf.wallet) {
-    console.log('Wallet support: Enabled')
-    console.log('\nExecuting from accounts:')
+    log.info('Wallet support: Enabled')
+    log.info('\nExecuting from accounts:')
+
     conf.wallet.getAccounts().forEach(async account => {
-        console.log(`${account} | Balance: ${web3.fromWei(await eac.Util.getBalance(account))}`)
+        log.info(`${account} | Balance: ${web3.fromWei(await eac.Util.getBalance(account))}`)
     })
+
     conf.statsdb.initialize(conf.wallet.getAccounts())
   } else { 
-    console.log('Wallet support: Disabled')
+    log.info('Wallet support: Disabled')
+
     // Loads the default account.
     const account = web3.eth.accounts[0]
     /* eslint-disable */
@@ -108,15 +114,18 @@ const main = async (
     if (!eac.Util.checkValidAddress(web3.eth.defaultAccount)) {
       throw new Error("Wallet is disabled but you do not have a local account unlocked.")
     }
-    console.log(`\nExecuting from account: ${account} | Balance: ${web3.fromWei(await eac.Util.getBalance(account))}`)
+
+    log.info(`\nExecuting from account: ${account} | Balance: ${web3.fromWei(await eac.Util.getBalance(account))}`)
     conf.statsdb.initialize([account])
   }
 
   // Begin
   startScanning(ms, conf)
 
-  // Waits a bit before starting the repl so that the accounts have time to print.
-  setTimeout(() => Repl.start(conf, ms), 1200)
+  if (repl) {
+    // Waits a bit before starting the repl so that the accounts have time to print.
+    setTimeout(() => Repl.start(conf, ms), 1200)
+  }
 }
 
 module.exports = main

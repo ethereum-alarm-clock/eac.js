@@ -6,6 +6,7 @@ const RequestTracker = require("./requestTracker")
 const Scheduler = require("./scheduling")
 const TxRequest = require("./txRequest")
 const Util = require("./util")
+const AlarmClient = require("./client/main")
 
 module.exports = (web3) => {
   if (!web3) {
@@ -16,10 +17,12 @@ module.exports = (web3) => {
       Scheduler,
       TxRequest,
       Util: Util(),
+      AlarmClient
     }
   }
 
   const util = Util(web3)
+
   return {
     Constants,
     requestFactory: async () => {
@@ -47,5 +50,6 @@ module.exports = (web3) => {
     },
     transactionRequest: address => new TxRequest(address, web3),
     Util: util,
+    AlarmClient
   }
 }

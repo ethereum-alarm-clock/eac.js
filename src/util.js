@@ -131,6 +131,10 @@ const getTxRequestFromReceipt = (receipt) => {
  */
 const getChainName = web3 => new Promise((resolve, reject) => {
   web3.version.getNetwork((err, netID) => {
+    if (err) {
+      return reject('web3.getNetwork error: ' + err)
+    }
+
     if (!err) {
       if (netID === '1') {
         // return 'mainnet'
