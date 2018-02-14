@@ -33,10 +33,15 @@ class Scheduler {
     this.sender = opts.from
     this.gasLimit = opts.gas
     this.sendValue = opts.value
+    this.gasPrice = opts.gasPrice
   }
 
   setGas(gasLimit) {
     this.gasLimit = gasLimit
+  }
+
+  setGasPrice(gasPrice) {
+    this.gasPrice = gasPrice
   }
 
   setSender(address) {
@@ -79,6 +84,7 @@ class Scheduler {
           from: this.sender,
           gas: this.gasLimit,
           value: this.sendValue,
+          gasPrice: this.gasPrice
         },
         (err, txHash) => {
           if (err) reject(err)
@@ -132,6 +138,7 @@ class Scheduler {
           from: this.sender,
           gas: this.gasLimit,
           value: this.sendValue,
+          gasPrice: this.gasPrice
         },
         (err, txHash) => {
           if (err) reject(err)
