@@ -62,6 +62,7 @@ describe("Scheduler", () => {
 			from: web3.eth.defaultAccount,
 			gas: 3000000,
 			value: endowment,
+			gasPrice
 		})
 
 		const receipt = await eacScheduler.blockSchedule(
@@ -109,6 +110,7 @@ describe("Scheduler", () => {
 			from: web3.eth.defaultAccount,
 			gas: 3000000,
 			value: endowment,
+			gasPrice
 		})
 
 		const receipt = await eacScheduler.timestampSchedule(
