@@ -6,7 +6,7 @@ const RequestTracker = require("./requestTracker")
 const Scheduler = require("./scheduling")
 const TxRequest = require("./txRequest")
 const Util = require("./util")
-const alarmClient = require("./client/main")
+const AlarmClient = require("./client/main")
 
 module.exports = (web3) => {
   if (!web3) {
