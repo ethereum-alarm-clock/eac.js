@@ -10,11 +10,12 @@ const calcEndowment = (callGas, callValue, gasPrice, fee, bounty) => {
   const gasPriceBN = new BigNumber(gasPrice)
   const feeBN = new BigNumber(fee)
   const bountyBN = new BigNumber(bounty)
+  const executionGasOverhead = new BigNumber(180000).div(64).times(65).round()
 
   return bountyBN
     .plus(feeBN.times(2))
     .plus(callGasBN.times(gasPrice))
-    .plus(gasPriceBN.times(180000))
+    .plus(gasPriceBN.times(executionOverhead))
     .plus(callValueBN)
 }
 
