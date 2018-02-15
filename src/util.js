@@ -6,17 +6,15 @@ const ethUtil = require("ethereumjs-util")
 
 const calcEndowment = (callGas, callValue, gasPrice, fee, bounty) => {
   const callGasBN = new BigNumber(callGas)
-  const callValueBN = new BigNumber(callValue)
-  const gasPriceBN = new BigNumber(gasPrice)
-  const feeBN = new BigNumber(fee)
   const bountyBN = new BigNumber(bounty)
-  const executionGasOverhead = new BigNumber(180000).div(64).times(65).round()
+  const feeBN = new BigNumber(fee)
+  const executionGasOverheadBN = 180000
+  const totalGasForEndowementBN = callGasBN.plus(executionGasOverheadBN).div(64).times(65).round()
 
   return bountyBN
     .plus(feeBN.times(2))
-    .plus(callGasBN.times(gasPrice))
-    .plus(gasPriceBN.times(executionGasOverhead))
-    .plus(callValueBN)
+    .plus(totalGasForEndowementBN.times(gasPrice))
+    .plus(callValue)
 }
 
 const checkForUnlockedAccount = (web3) => {

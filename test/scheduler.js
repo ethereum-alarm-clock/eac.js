@@ -18,12 +18,12 @@ describe("Scheduler", () => {
 		const gasPrice = new BigNumber(web3.toWei("55", "gwei"))
 		const fee = new BigNumber(web3.toWei("120", "finney"))
 		const bounty = new BigNumber(web3.toWei("250", "finney"))
-		const executionGasOverhead = new BigNumber(180000).div(64).times(65).round()
+		const executionGasOverhead = new BigNumber(180000)
+  	const totalGasForEndowement = callGas.plus(executionGasOverhead).div(64).times(65).round()
 
 		const expectedEndowment = bounty
 			.plus(fee.mul(2))
-			.plus(callGas.mul(gasPrice))
-			.plus(gasPrice.mul(executionGasOverhead))
+			.plus(totalGasForEndowement.mul(gasPrice))
 			.plus(callValue)
 
 		const endowment = eac.Util.calcEndowment(
