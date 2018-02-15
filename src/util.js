@@ -15,7 +15,7 @@ const calcEndowment = (callGas, callValue, gasPrice, fee, bounty) => {
   return bountyBN
     .plus(feeBN.times(2))
     .plus(callGasBN.times(gasPrice))
-    .plus(gasPriceBN.times(executionOverhead))
+    .plus(gasPriceBN.times(executionGasOverhead))
     .plus(callValueBN)
 }
 

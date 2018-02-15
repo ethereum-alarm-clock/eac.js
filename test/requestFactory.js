@@ -175,7 +175,7 @@ describe("Request Factory", () => {
             addressArgs,
             uintArgs,
             callData,
-            endowment.sub('1000')
+            endowment.mul(64).div(65).sub('1000') //for now just a client check smart contract calulation update needed
         )
 
         expect(isValidFail[0])
