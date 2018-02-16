@@ -1,5 +1,6 @@
 const { Cache } = require("./cache.js")
 const LightWallet = require("./lightWallet.js")
+const MyEtherWallet = require("./myEtherWallet.js")
 const { Logger } = require("./logger.js")
 
 class Config {
@@ -75,9 +76,15 @@ class Config {
     if (file === "none") {
       return false
     }
-    const wallet = new LightWallet(this.web3)
-    await wallet.decryptAndLoad(file, password)
-    this.wallet = wallet 
+    
+    let wallet = null;
+    if (typeof file === "string" || typeof file === Object) {
+      wallet = new MyEtherWallet(this.web3, file, password)
+    } else {
+      wallet = new LightWallet(this.web3)
+      await wallet.decryptAndLoad(file, password)
+    }
+    this.wallet = wallet
   }
 }
 
