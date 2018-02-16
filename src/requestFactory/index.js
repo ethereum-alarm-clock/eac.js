@@ -85,7 +85,7 @@ class RequestFactory {
   async getRequestCreatedLogs(filter, startBlock, endBlock) {
     const f = filter || {}
     const curBlock = await Util.getBlockNumber(this.web3)
-    const start = startBlock || curBlock - 5000 > 0 ? curBlock - 5000 : 0
+    const start = startBlock || (curBlock - 5000 > 0 ? curBlock - 5000 : 0)
     const end = endBlock || "latest"
     const event = this.instance.RequestCreated(
       f,
