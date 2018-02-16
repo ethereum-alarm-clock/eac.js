@@ -3,16 +3,16 @@ const Repl = require("./repl")
 const Scanner = require("./scanning")
 const StatsDB = require("./statsdb")
 
-const startScanning = (ms, conf) => {
+const startScanning = async (ms, conf) => {
   const log = conf.logger
 
   log.info(`Scanning request tracker at ${conf.tracker.address}`)
   log.info(`Validating results with factory at ${conf.factory.address}`)
   log.info(`Scanning every ${ms / 1000} seconds.`)
 
-  setInterval((_) => {
+  setInterval(async (_) => {
     if (conf.scanning) {
-      Scanner.scanBlockchain(conf).catch(err => log.error(err))
+      await Scanner.scanBlockchain(conf).catch(err => log.error(err))
     }
   }, ms)
 
